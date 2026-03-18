@@ -637,29 +637,29 @@
         const db = {
             metadata: {
                 location: "Москва",
-                lastUpdated: "17 Марта 2026"
+                lastUpdated: "18 Марта 2026"
             },
             today: {
                 hasDataToday: true, 
-                overallRisk: "warning", 
+                overallRisk: "safe", 
                 allergens: [
-                    { id: "alder", name: "Ольха", value: 4, level: "safe", trend: "flat", icon: "leaf" },
-                    { id: "hazel", name: "Орешник", value: 13, level: "warning", trend: "up", icon: "tree-deciduous" },
-                    { id: "birch", name: "Береза", value: 3, level: "safe", trend: "up", icon: "tree-pine" }
+                    { id: "alder", name: "Ольха", value: 1, level: "safe", trend: "down", icon: "leaf" },
+                    { id: "hazel", name: "Орешник", value: 3, level: "safe", trend: "down", icon: "tree-deciduous" },
+                    { id: "birch", name: "Береза", value: 3, level: "safe", trend: "flat", icon: "tree-pine" }
                 ]
             },
             insights: [
-                { author: "Дмитрий, СЗАО", text: "Ольха упала до 4 единиц, наконец-то можно нормально дышать на улице!", time: "Сегодня, 11:20", verified: true },
-                { author: "Елена, ЗАО", text: "Орешник разогнался до 13. Глаза уже начали чесаться, пора доставать капли.", time: "Сегодня, 09:45", verified: true },
-                { author: "Ольга, ЮВАО", text: "Ого, береза уже 3 единицы! Похоже, ранний старт сезона. Закупаемся антигистаминными.", time: "Вчера, 21:10", verified: false }
+                { author: "Анна, ЮЗАО", text: "Орешник и ольха резко пошли на спад (всего 1 и 3 ед.). Отличный день для прогулок, наслаждаемся, пока нет березы!", time: "Сегодня, 10:15", verified: true },
+                { author: "Дмитрий, СЗАО", text: "Ольха упала до 4 единиц, наконец-то можно нормально дышать на улице!", time: "Вчера, 11:20", verified: true },
+                { author: "Елена, ЗАО", text: "Орешник разогнался до 13. Глаза уже начали чесаться, пора доставать капли.", time: "Вчера, 09:45", verified: true }
             ],
             charts: {
                 today: {
-                    labels: ["13 Мар", "14 Мар", "15 Мар", "16 Мар", "17 Мар"],
+                    labels: ["14 Мар", "15 Мар", "16 Мар", "17 Мар", "18 Мар"],
                     datasets: [
-                        { label: 'Ольха', data: [null, null, null, 4, 4], color: '#32D74B' },
-                        { label: 'Орешник', data: [null, null, null, 7, 13], color: '#FFD60A' },
-                        { label: 'Береза', data: [null, null, null, 0, 3], color: '#FF453A' }
+                        { label: 'Ольха', data: [null, null, 4, 4, 1], color: '#32D74B' },
+                        { label: 'Орешник', data: [null, null, 7, 13, 3], color: '#FFD60A' },
+                        { label: 'Береза', data: [null, null, 0, 3, 3], color: '#FF453A' }
                     ]
                 },
                 archive: {
