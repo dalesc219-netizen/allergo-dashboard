@@ -593,11 +593,21 @@
             <div class="view-pane" id="view-archive">
 
                 <div class="card">
-                    <h3 class="section-title"><i data-lucide="bar-chart-2" size="18"></i> Сравнение сезонов</h3>
-                    <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 5px;">Эстафета аллергенов (Сезон 2025)</p>
-                    <p style="font-size: 11px; color: var(--text-secondary); margin-bottom: 15px;">* Нажмите на легенду, чтобы скрыть/показать график</p>
+                    <h3 class="section-title"><i data-lucide="bar-chart-2" size="18"></i> Сравнение сезонов (Весна)</h3>
+                    <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 5px;">Эстафета аллергенов: Деревья</p>
+                    <p style="font-size: 11px; color: var(--text-secondary); margin-bottom: 15px;">* Логарифмическая шкала. Нажмите на пункт в легенде, чтобы показать/скрыть график.</p>
                     <div class="chart-container">
                         <canvas id="archiveChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- НОВЫЙ БЛОК: Летне-осенний сезон 2023 -->
+                <div class="card">
+                    <h3 class="section-title"><i data-lucide="sun" size="18"></i> Летне-осенний сезон (2023)</h3>
+                    <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 5px;">Злаки, сорные травы и плесневые грибы.</p>
+                    <p style="font-size: 11px; color: var(--text-secondary); margin-bottom: 15px;">* Кладоспориум достигает 10 000+ ед., используется логарифмическая шкала.</p>
+                    <div class="chart-container">
+                        <canvas id="summerArchiveChart"></canvas>
                     </div>
                 </div>
 
@@ -619,19 +629,59 @@
     <script>
         // --- 1. Внутренняя База Данных (Hardcoded JSON) ---
         const ARCHIVE_2025 = {
+            // Март: Ранний старт 2023 года
+            "03-24": { alder: 0, birch: 0, oak: 0, alder_2023: 122, hazel_2023: 33 },
+            "03-28": { alder: 0, birch: 0, oak: 0, alder_2023: 323, hazel_2023: 1 },
+            // Апрель: Эстафета Ольха -> Береза
+            "04-01": { alder: 18, birch: 0, oak: 0, temp: "Н/Д", note: "Дождь", birch_2026: 5 }, 
             "04-02": { alder: 226, birch: 0, oak: 0, temp: "+18°C" },
             "04-03": { alder: 31, birch: 0, oak: 0, temp: "+12°C" },
-            "04-09": { alder: 28, birch: 1, oak: 0, temp: "+8°C" },
-            "04-14": { alder: 13, birch: 114, oak: 0, temp: "+14°C" },
+            "04-06": { alder: 23, birch: 0, oak: 0, temp: "Н/Д", note: "Снег, Ветер", alder_2023: 38, hazel_2023: 47 },
+            "04-08": { alder: 6, birch: 0, oak: 0, temp: "Н/Д", note: "Снег" },
+            "04-09": { alder: 28, birch: 1, oak: 0, temp: "+8°C", note: "Снег" },
+            "04-10": { alder: 2, birch: 1, oak: 0, temp: "Н/Д", note: "Снег" },
+            "04-13": { alder: 2, birch: 0, oak: 0, temp: "Н/Д", note: "Потеплело" },
+            "04-14": { alder: 13, birch: 114, oak: 0, temp: "+14°C", alder_2023: 17, hazel_2023: 21, birch_2023: 289 },
+            "04-15": { alder: 1, birch: 11, oak: 0, temp: "Н/Д" },
+            "04-16": { alder: 0, birch: 33, oak: 0, temp: "+21.8°C", note: "Старт ранних (берёза)" },
             "04-17": { alder: 4, birch: 172, oak: 0, temp: "+19°C" },
-            "04-20": { alder: 1, birch: 14403, oak: 0, temp: "+25.8°C", note: "ПИК СЕЗОНА" },
-            "04-23": { alder: 1, birch: 3968, oak: 0, temp: "+25.8°C" },
+            "04-19": { alder: 0, birch: 0, oak: 0, alder_2023: 4, hazel_2023: 24, birch_2023: 732 },
+            "04-20": { alder: 1, birch: 14403, oak: 0, temp: "+25.8°C", note: "ПИК БЕРЁЗЫ", birch_2023: 4186 },
+            "04-21": { alder: 0, birch: 8310, oak: 0, temp: "+25.9°C", alder_2023: 6, hazel_2023: 11, birch_2023: 11206 },
+            "04-22": { alder: 1, birch: 1203, oak: 0, temp: "+23.3°C", birch_2023: 6000 },
+            "04-23": { alder: 1, birch: 3968, oak: 0, temp: "+25.8°C", birch_2023: 5000 },
+            "04-24": { alder: 0, birch: 1700, oak: 0, temp: "+18°C", alder_2023: 1, hazel_2023: 2, birch_2023: 9092 },
+            "04-27": { alder: 4, birch: 389, oak: 0, temp: "+10°C", birch_2023: 935 },
+            "04-28": { alder: 0, birch: 150, oak: 0, temp: "+10°C", alder_2023: 1, hazel_2023: 1, birch_2023: 848 },
+            "04-29": { alder: 1, birch: 130, oak: 0, temp: "+10°C" },
+            
+            // Май: Вторая волна березы
             "05-05": { alder: 0, birch: 113, oak: 0, temp: "+18°C" },
-            "05-06": { alder: 0, birch: 0, oak: 40, temp: "+19°C" },
-            "05-15": { alder: 0, birch: 0, oak: 30, temp: "+22°C" },
-            "05-21": { alder: 0, birch: 0, oak: 80, temp: "+21°C" },
+            "05-06": { alder: 0, birch: 40, oak: 0, temp: "+19°C" },
+            "05-09": { alder: 0, birch: 37, oak: 0, temp: "+15°C" },
+            "05-13": { alder: 0, birch: 13, oak: 0, temp: "+15°C" },
+            "05-14": { alder: 0, birch: 29, oak: 0, temp: "+18°C" },
+            "05-15": { alder: 0, birch: 30, oak: 0, temp: "+22°C" },
+            "05-18": { alder: 0, birch: 40, oak: 0, temp: "+20°C" },
+            "05-19": { alder: 0, birch: 4, oak: 0, temp: "Н/Д" },
+            "05-20": { alder: 0, birch: 100, oak: 0, temp: "+24°C" },
+            "05-21": { alder: 0, birch: 80, oak: 0, temp: "+21°C" },
             "05-22": { alder: 0, birch: 140, oak: 0, temp: "+24°C", note: "Вторая волна березы" },
-            "05-25": { alder: 5, birch: 0, oak: 0, temp: "+20°C" }
+            "05-25": { alder: 0, birch: 5, oak: 0, temp: "+20°C" },
+            "05-27": { alder: 0, birch: 9, oak: 0, temp: "Н/Д" },
+            "05-28": { alder: 0, birch: 3, oak: 0, temp: "Н/Д" }
+        };
+
+        const ARCHIVE_SUMMER_2023 = {
+            "06-20": { grass: 5, weed: 0, clado: 1830, alt: 130 },
+            "07-04": { grass: 27, weed: 0, clado: 6190, alt: 310 },
+            "07-06": { grass: 12, weed: 21, clado: 10250, alt: 1220 },
+            "08-07": { grass: 7, weed: 130, clado: 7035, alt: 552 },
+            "08-15": { grass: 11, weed: 72, clado: 8453, alt: 2 },
+            "09-01": { grass: 0, weed: 22, clado: 8902, alt: 600 },
+            "09-04": { grass: 0, weed: 11, clado: 5051, alt: 71 },
+            "09-11": { grass: 0, weed: 0, clado: 4051, alt: 41 },
+            "09-13": { grass: 0, weed: 0, clado: 4008, alt: 0 }
         };
 
         const db = {
@@ -660,13 +710,6 @@
                         { label: 'Ольха', data: [null, null, 4, 4, 1], color: '#32D74B' },
                         { label: 'Орешник', data: [null, null, 7, 13, 3], color: '#FFD60A' },
                         { label: 'Береза', data: [null, null, 0, 3, 0], color: '#FF453A' }
-                    ]
-                },
-                archive: {
-                    labels: ["20 Апр", "21 Апр", "22 Апр", "23 Апр", "24 Апр", "27 Апр"],
-                    datasets: [
-                        { label: 'Береза (факт 2025)', data: [14403, 8310, 1203, 3968, 1700, 389], color: '#FF453A' },
-                        { label: 'Береза (факт 2023)', data: [4186, 11206, 6000, 5000, 9092, 935], color: '#32D74B' }
                     ]
                 }
             },
@@ -974,7 +1017,13 @@
 
             const ctxArchive = document.getElementById('archiveChart').getContext('2d');
             const archiveDates = Object.keys(ARCHIVE_2025);
-            const formatMonth = (m) => m === '04' ? 'Апр' : 'Мая';
+            
+            // Расширенное форматирование месяцев, включая лето и осень
+            const formatMonth = (m) => {
+                const months = {'03': 'Мар', '04': 'Апр', '05': 'Мая', '06': 'Июн', '07': 'Июл', '08': 'Авг', '09': 'Сен'};
+                return months[m] || m;
+            };
+            
             const labelsArchive = archiveDates.map(d => `${parseInt(d.split('-')[1])} ${formatMonth(d.split('-')[0])}`);
 
             new Chart(ctxArchive, {
@@ -982,9 +1031,13 @@
                 data: {
                     labels: labelsArchive,
                     datasets: [
-                        { label: 'Ольха', data: archiveDates.map(d => ARCHIVE_2025[d].alder), backgroundColor: '#FF9F0A', borderRadius: 4 },
-                        { label: 'Береза', data: archiveDates.map(d => ARCHIVE_2025[d].birch), backgroundColor: '#FF453A', borderRadius: 4 },
-                        { label: 'Дуб', data: archiveDates.map(d => ARCHIVE_2025[d].oak), backgroundColor: '#0A84FF', borderRadius: 4 }
+                        { label: 'Ольха', data: archiveDates.map(d => ARCHIVE_2025[d].alder > 0 ? ARCHIVE_2025[d].alder : null), backgroundColor: '#FF9F0A', borderRadius: 4 },
+                        { label: 'Береза (2025)', data: archiveDates.map(d => ARCHIVE_2025[d].birch > 0 ? ARCHIVE_2025[d].birch : null), backgroundColor: '#FF453A', borderRadius: 4 },
+                        { label: 'Дуб', data: archiveDates.map(d => ARCHIVE_2025[d].oak > 0 ? ARCHIVE_2025[d].oak : null), backgroundColor: '#0A84FF', borderRadius: 4 },
+                        { label: 'Ольха (2023)', data: archiveDates.map(d => ARCHIVE_2025[d].alder_2023 > 0 ? ARCHIVE_2025[d].alder_2023 : null), backgroundColor: '#FFD60A', borderRadius: 4, hidden: true },
+                        { label: 'Орешник (2023)', data: archiveDates.map(d => ARCHIVE_2025[d].hazel_2023 > 0 ? ARCHIVE_2025[d].hazel_2023 : null), backgroundColor: '#EBEBF599', borderRadius: 4, hidden: true },
+                        { label: 'Береза (2023)', data: archiveDates.map(d => ARCHIVE_2025[d].birch_2023 > 0 ? ARCHIVE_2025[d].birch_2023 : null), backgroundColor: '#32D74B', borderRadius: 4, hidden: true },
+                        { label: 'Береза (2026)', data: archiveDates.map(d => ARCHIVE_2025[d].birch_2026 > 0 ? ARCHIVE_2025[d].birch_2026 : null), backgroundColor: '#BF5AF2', borderRadius: 4 }
                     ]
                 },
                 options: {
@@ -995,6 +1048,7 @@
                         tooltip: {
                             callbacks: {
                                 afterBody: function(context) {
+                                    if (context[0].dataset.label.includes('2023') || context[0].dataset.label.includes('2026')) return ''; 
                                     const dateKey = archiveDates[context[0].dataIndex];
                                     const temp = ARCHIVE_2025[dateKey].temp;
                                     const note = ARCHIVE_2025[dateKey].note;
@@ -1007,7 +1061,56 @@
                     },
                     scales: {
                         x: { grid: { display: false } },
-                        y: { grid: { color: 'rgba(255,255,255,0.05)' } }
+                        y: { 
+                            type: 'logarithmic',
+                            min: 0.5, 
+                            grid: { color: 'rgba(255,255,255,0.05)' },
+                            ticks: {
+                                callback: function(value) {
+                                    if (value === 1 || value === 10 || value === 100 || value === 1000 || value === 10000) return value;
+                                    return null;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // График Летне-осеннего сезона (2023)
+            const ctxSummer = document.getElementById('summerArchiveChart').getContext('2d');
+            const summerDates = Object.keys(ARCHIVE_SUMMER_2023);
+            const labelsSummer = summerDates.map(d => `${parseInt(d.split('-')[1])} ${formatMonth(d.split('-')[0])}`);
+
+            new Chart(ctxSummer, {
+                type: 'bar',
+                data: {
+                    labels: labelsSummer,
+                    datasets: [
+                        { label: 'Злаки', data: summerDates.map(d => ARCHIVE_SUMMER_2023[d].grass > 0 ? ARCHIVE_SUMMER_2023[d].grass : null), backgroundColor: '#FFD60A', borderRadius: 4 },
+                        { label: 'Сорные (Полынь)', data: summerDates.map(d => ARCHIVE_SUMMER_2023[d].weed > 0 ? ARCHIVE_SUMMER_2023[d].weed : null), backgroundColor: '#32D74B', borderRadius: 4 },
+                        { label: 'Кладоспориум', data: summerDates.map(d => ARCHIVE_SUMMER_2023[d].clado > 0 ? ARCHIVE_SUMMER_2023[d].clado : null), backgroundColor: '#BF5AF2', borderRadius: 4 },
+                        { label: 'Альтернария', data: summerDates.map(d => ARCHIVE_SUMMER_2023[d].alt > 0 ? ARCHIVE_SUMMER_2023[d].alt : null), backgroundColor: '#FF453A', borderRadius: 4 }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { 
+                        legend: { position: 'top', labels: { usePointStyle: true, boxWidth: 8 } }
+                    },
+                    scales: {
+                        x: { grid: { display: false } },
+                        y: { 
+                            type: 'logarithmic',
+                            min: 0.5,
+                            grid: { color: 'rgba(255,255,255,0.05)' },
+                            ticks: {
+                                callback: function(value) {
+                                    if (value === 1 || value === 10 || value === 100 || value === 1000 || value === 10000) return value;
+                                    return null;
+                                }
+                            }
+                        }
                     }
                 }
             });
