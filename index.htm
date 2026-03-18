@@ -40,10 +40,9 @@
             font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
             background-color: var(--bg-color);
             color: var(--text-main);
-            overflow: hidden; /* Prevent body scroll, handle inside containers */
+            overflow: hidden;
         }
 
-        /* Hide scrollbars for clean UI */
         ::-webkit-scrollbar {
             display: none;
         }
@@ -52,10 +51,9 @@
             display: flex;
             flex-direction: column;
             height: 100vh;
-            height: 100dvh; /* Dynamic viewport height for mobile browsers */
+            height: 100dvh;
         }
 
-        /* Header & Navigation */
         .header {
             padding: max(50px, env(safe-area-inset-top)) 20px 15px;
             background: rgba(0, 0, 0, 0.8);
@@ -70,13 +68,13 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 15px;
-            flex-wrap: nowrap; /* Строго одна строка */
-            gap: 5px; /* Минимальный зазор */
+            flex-wrap: nowrap;
+            gap: 5px;
             white-space: nowrap;
         }
 
         .app-title {
-            font-size: clamp(18px, 5.5vw, 24px); /* Резиновый размер */
+            font-size: clamp(18px, 5.5vw, 24px);
             font-weight: 700;
             margin: 0;
             letter-spacing: 0.5px;
@@ -122,14 +120,13 @@
             transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
 
-        /* Swiper Container */
         .views-wrapper {
             flex: 1;
             display: flex;
             overflow-x: auto;
             scroll-snap-type: x mandatory;
             scroll-behavior: smooth;
-            padding-bottom: 90px; /* Space for download button */
+            padding-bottom: 90px;
         }
 
         .view-pane {
@@ -140,7 +137,6 @@
             overflow-y: auto;
         }
 
-        /* Glassmorphism Cards */
         .card {
             background: var(--surface-color);
             backdrop-filter: blur(20px);
@@ -151,7 +147,6 @@
             margin-bottom: 15px;
         }
 
-        /* Dashboard specific */
         .risk-header {
             display: flex;
             justify-content: space-between;
@@ -167,7 +162,6 @@
             text-transform: uppercase;
         }
 
-        /* Pollen Items */
         .pollen-list {
             display: flex;
             flex-direction: column;
@@ -219,7 +213,6 @@
             justify-content: flex-end;
         }
 
-        /* Insights */
         .insight-item {
             border-bottom: 0.5px solid var(--glass-border);
             padding: 15px 0;
@@ -265,14 +258,12 @@
             gap: 8px;
         }
 
-        /* Charts */
         .chart-container {
             position: relative;
             height: 200px;
             width: 100%;
         }
 
-        /* Floating Button */
         .floating-action {
             position: fixed;
             bottom: 30px;
@@ -299,7 +290,6 @@
             transform: translateX(-50%) scale(0.95);
         }
 
-        /* Summary Table */
         .summary-table {
             width: 100%;
             border-collapse: collapse;
@@ -333,7 +323,6 @@
             font-size: 14px;
         }
 
-        /* Погода в шапке и анимации */
         .date-text {
             color: var(--text-secondary);
             font-size: clamp(10px, 3vw, 14px);
@@ -374,7 +363,6 @@
         .icon-wind { animation: anim-wind 2.5s infinite ease-in-out; color: var(--safe); }
         .icon-drop { animation: anim-drop 2s infinite ease-in-out; color: var(--accent); }
 
-        /* Анимация иконок аллергенов */
         .pollen-anim-icon {
             animation: pollen-sway 3s infinite ease-in-out;
             transform-origin: bottom center;
@@ -384,7 +372,6 @@
             50% { transform: rotate(8deg) scale(1.05); }
         }
 
-        /* Экран входа (Login Screen) */
         .login-overlay {
             position: fixed;
             top: 0;
@@ -469,7 +456,6 @@
             opacity: 1;
         }
 
-        /* Анимация при неверном пароле */
         .shake {
             animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both;
         }
@@ -481,28 +467,26 @@
             40%, 60% { transform: translate3d(6px, 0, 0); }
         }
 
-        /* АДАПТАЦИЯ ПОД ГОРИЗОНТАЛЬНЫЙ РЕЖИМ (Landscape) */
         @media (orientation: landscape) and (max-height: 600px) {
             .header {
-                padding: max(15px, env(safe-area-inset-top)) 20px 10px; /* Убираем огромный отступ */
+                padding: max(15px, env(safe-area-inset-top)) 20px 10px;
             }
             .header-top {
                 margin-bottom: 10px;
             }
             .app-title {
-                font-size: 18px; /* Уменьшаем заголовок */
+                font-size: 18px;
             }
             .card {
-                padding: 15px; /* Компактные карточки */
+                padding: 15px;
                 margin-bottom: 10px;
             }
             .chart-container {
-                height: 160px; /* Компактный график */
+                height: 160px;
             }
             .views-wrapper {
-                padding-bottom: 20px; /* Убираем пустоту внизу */
+                padding-bottom: 20px;
             }
-            /* Кнопка сохранения становится иконкой справа снизу */
             .floating-action {
                 bottom: 15px;
                 right: max(15px, env(safe-area-inset-right));
@@ -514,10 +498,10 @@
                 border-radius: 50%;
             }
             .floating-action span {
-                display: none; /* Прячем текст */
+                display: none;
             }
             .floating-action:active {
-                transform: scale(0.9); /* Исправленная анимация нажатия для сбоку */
+                transform: scale(0.9);
             }
         }
 
@@ -525,7 +509,6 @@
 </head>
 <body>
 
-    <!-- Приветственный экран с паролем -->
     <div class="login-overlay" id="login-overlay">
         <div class="login-card" id="login-card">
             <i data-lucide="shield-check" size="56" style="color: var(--accent); margin-bottom: 15px;"></i>
@@ -540,12 +523,10 @@
     </div>
 
     <div class="app-container">
-        <!-- Header -->
         <header class="header">
             <div class="header-top">
                 <h1 class="app-title">Москва <span class="date-text" id="current-date"></span></h1>
                 
-                <!-- Автоматическая погода -->
                 <div class="header-weather" id="live-weather">
                     <div class="weather-stat-mini"><i data-lucide="thermometer" size="16" class="icon-temp"></i><span id="w-temp">--</span></div>
                     <div class="weather-stat-mini"><i data-lucide="wind" size="16" class="icon-wind"></i><span id="w-wind">--</span></div>
@@ -560,18 +541,15 @@
             </div>
         </header>
 
-        <!-- Main Content (Swipeable) -->
         <div class="views-wrapper" id="views-wrapper" onscroll="handleScroll()">
             
             <!-- VIEW 1: TODAY -->
             <div class="view-pane" id="view-today">
                 
-                <!-- Уведомление об отсутствии данных (по умолчанию скрыто) -->
                 <div id="no-data-msg" style="display: none; text-align: center; color: var(--text-secondary); margin-top: 10px; margin-bottom: 40px; font-size: 16px;">
                     Данных с ловушек за сегодня пока нет 🤷‍♂️
                 </div>
 
-                <!-- Объединенная карточка: Заголовок с бейджем и данные ловушек -->
                 <div class="card">
                     <div class="risk-header" style="margin-bottom: 15px; align-items: flex-start;">
                         <div>
@@ -588,9 +566,18 @@
                 </div>
 
                 <div class="card">
-                    <h3 class="section-title"><i data-lucide="trending-up" size="18"></i> Динамика (5 дней)</h3>
+                    <h3 class="section-title"><i data-lucide="trending-up" size="18"></i> Динамика ловушек</h3>
                     <div class="chart-container">
                         <canvas id="todayChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- НОВЫЙ БЛОК: ПРОГНОЗ CAMS/SILAM -->
+                <div class="card">
+                    <h3 class="section-title"><i data-lucide="radar" size="18"></i> Прогноз CAMS / SILAM</h3>
+                    <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 10px;">Ежедневные максимумы на 5 дней вперед на основе атмосферных моделей (FMI/Copernicus).</p>
+                    <div class="chart-container">
+                        <canvas id="forecastChart"></canvas>
                     </div>
                 </div>
 
@@ -624,7 +611,6 @@
             </div>
         </div>
 
-        <!-- Floating Action Button -->
         <button class="floating-action" onclick="downloadApp()">
             <i data-lucide="download" size="20" id="dl-icon"></i> <span id="dl-text">Сохранить 앱</span>
         </button>
@@ -633,16 +619,13 @@
     <script>
         // --- 1. Внутренняя База Данных (Hardcoded JSON) ---
         const ARCHIVE_2025 = {
-            // Ранний сезон: Ольха (Alder) в топе
             "04-02": { alder: 226, birch: 0, oak: 0, temp: "+18°C" },
             "04-03": { alder: 31, birch: 0, oak: 0, temp: "+12°C" },
             "04-09": { alder: 28, birch: 1, oak: 0, temp: "+8°C" },
-            // Переходный период: Береза (Birch) перехватывает лидерство
             "04-14": { alder: 13, birch: 114, oak: 0, temp: "+14°C" },
             "04-17": { alder: 4, birch: 172, oak: 0, temp: "+19°C" },
             "04-20": { alder: 1, birch: 14403, oak: 0, temp: "+25.8°C", note: "ПИК СЕЗОНА" },
             "04-23": { alder: 1, birch: 3968, oak: 0, temp: "+25.8°C" },
-            // Поздний сезон: Точные данные по цветам календаря (Береза, Ольха, Дуб)
             "05-05": { alder: 0, birch: 113, oak: 0, temp: "+18°C" },
             "05-06": { alder: 0, birch: 0, oak: 40, temp: "+19°C" },
             "05-15": { alder: 0, birch: 0, oak: 30, temp: "+22°C" },
@@ -657,62 +640,26 @@
                 lastUpdated: "17 Марта 2026"
             },
             today: {
-                hasDataToday: true, // Измените на false, чтобы протестировать интерфейс без данных
-                overallRisk: "warning", // safe, warning, high, critical
+                hasDataToday: true, 
+                overallRisk: "warning", 
                 allergens: [
-                    { 
-                        id: "alder", 
-                        name: "Ольха", 
-                        value: 4, 
-                        level: "safe", // CSS var mapping
-                        trend: "flat", // up, down, flat
-                        icon: "leaf"
-                    },
-                    { 
-                        id: "hazel", 
-                        name: "Орешник", 
-                        value: 13, 
-                        level: "warning", 
-                        trend: "up",
-                        icon: "tree-deciduous"
-                    },
-                    { 
-                        id: "birch", 
-                        name: "Береза", 
-                        value: 3, 
-                        level: "safe", 
-                        trend: "up",
-                        icon: "tree-pine"
-                    }
+                    { id: "alder", name: "Ольха", value: 4, level: "safe", trend: "flat", icon: "leaf" },
+                    { id: "hazel", name: "Орешник", value: 13, level: "warning", trend: "up", icon: "tree-deciduous" },
+                    { id: "birch", name: "Береза", value: 3, level: "safe", trend: "up", icon: "tree-pine" }
                 ]
             },
             insights: [
-                {
-                    author: "Дмитрий, СЗАО",
-                    text: "Ольха упала до 4 единиц, наконец-то можно нормально дышать на улице!",
-                    time: "Сегодня, 11:20",
-                    verified: true
-                },
-                {
-                    author: "Елена, ЗАО",
-                    text: "Орешник разогнался до 13. Глаза уже начали чесаться, пора доставать капли.",
-                    time: "Сегодня, 09:45",
-                    verified: true
-                },
-                {
-                    author: "Ольга, ЮВАО",
-                    text: "Ого, береза уже 3 единицы! Похоже, ранний старт сезона. Закупаемся антигистаминными.",
-                    time: "Вчера, 21:10",
-                    verified: false
-                }
+                { author: "Дмитрий, СЗАО", text: "Ольха упала до 4 единиц, наконец-то можно нормально дышать на улице!", time: "Сегодня, 11:20", verified: true },
+                { author: "Елена, ЗАО", text: "Орешник разогнался до 13. Глаза уже начали чесаться, пора доставать капли.", time: "Сегодня, 09:45", verified: true },
+                { author: "Ольга, ЮВАО", text: "Ого, береза уже 3 единицы! Похоже, ранний старт сезона. Закупаемся антигистаминными.", time: "Вчера, 21:10", verified: false }
             ],
             charts: {
                 today: {
                     labels: ["13 Мар", "14 Мар", "15 Мар", "16 Мар", "17 Мар"],
                     datasets: [
-                        { label: 'Ольха', data: [null, null, null, 4, 4], color: '#32D74B' },    // Зеленый
-                        { label: 'Орешник', data: [null, null, null, 7, 13], color: '#FFD60A' }, // Желтый
-                        { label: 'Береза', data: [null, null, null, 0, 3], color: '#FF453A' }    // Красный
+                        { label: 'Ольха', data: [null, null, null, 4, 4], color: '#32D74B' },
+                        { label: 'Орешник', data: [null, null, null, 7, 13], color: '#FFD60A' },
+                        { label: 'Береза', data: [null, null, null, 0, 3], color: '#FF453A' }
                     ]
                 },
                 archive: {
@@ -731,28 +678,9 @@
             ]
         };
 
-        // --- 2. Цветовые маппинги ---
-        const colorMap = {
-            'safe': 'var(--safe)',
-            'warning': 'var(--warning)',
-            'high': 'var(--high)',
-            'critical': 'var(--critical)',
-            'burgundy': 'var(--burgundy)'
-        };
-
-        const bgAlphaMap = {
-            'safe': 'rgba(50, 215, 75, 0.15)',
-            'warning': 'rgba(255, 214, 10, 0.15)',
-            'high': 'rgba(255, 159, 10, 0.15)',
-            'critical': 'rgba(255, 69, 58, 0.15)',
-            'burgundy': 'rgba(138, 3, 3, 0.15)'
-        };
-
-        const iconTrendMap = {
-            'up': '<i data-lucide="trending-up" size="14"></i> Рост',
-            'down': '<i data-lucide="trending-down" size="14"></i> Спад',
-            'flat': '<i data-lucide="minus" size="14"></i> Нет данных'
-        };
+        const colorMap = { 'safe': 'var(--safe)', 'warning': 'var(--warning)', 'high': 'var(--high)', 'critical': 'var(--critical)', 'burgundy': 'var(--burgundy)' };
+        const bgAlphaMap = { 'safe': 'rgba(50, 215, 75, 0.15)', 'warning': 'rgba(255, 214, 10, 0.15)', 'high': 'rgba(255, 159, 10, 0.15)', 'critical': 'rgba(255, 69, 58, 0.15)', 'burgundy': 'rgba(138, 3, 3, 0.15)' };
+        const iconTrendMap = { 'up': '<i data-lucide="trending-up" size="14"></i> Рост', 'down': '<i data-lucide="trending-down" size="14"></i> Спад', 'flat': '<i data-lucide="minus" size="14"></i> Нет данных' };
 
         // --- 3. Инициализация UI ---
         document.addEventListener("DOMContentLoaded", () => {
@@ -764,38 +692,27 @@
             renderSummaryTable();
             
             initCharts();
-            lucide.createIcons(); // Initialize all icons
+            fetchForecastData(); // Вызов загрузки прогноза SILAM/CAMS
+            lucide.createIcons();
 
-            // Вход по нажатию Enter
             document.getElementById('pwd-input').addEventListener('keypress', function (e) {
-                if (e.key === 'Enter') {
-                    checkPassword();
-                }
+                if (e.key === 'Enter') checkPassword();
             });
         });
 
-        // --- Логика авторизации ---
         function checkPassword() {
             const input = document.getElementById('pwd-input').value;
             const errorText = document.getElementById('login-error');
             const card = document.getElementById('login-card');
             
             if (input === '885522') {
-                // Успешный вход: скрываем окно
                 document.getElementById('login-overlay').classList.add('hidden');
-                setTimeout(() => {
-                    document.getElementById('login-overlay').style.display = 'none';
-                }, 400);
+                setTimeout(() => document.getElementById('login-overlay').style.display = 'none', 400);
             } else {
-                // Неверный пароль: показываем текст и запускаем анимацию
                 errorText.classList.add('show');
                 card.classList.add('shake');
                 document.getElementById('pwd-input').value = '';
-                
-                // Удаляем класс анимации после её завершения, чтобы можно было трясти снова
-                setTimeout(() => {
-                    card.classList.remove('shake');
-                }, 400);
+                setTimeout(() => card.classList.remove('shake'), 400);
             }
         }
 
@@ -803,14 +720,7 @@
             const list = document.getElementById('pollen-list');
             const noDataMsg = document.getElementById('no-data-msg');
             const badge = document.getElementById('main-risk-badge');
-            
-            const riskLabels = {
-                'safe': 'БЕЗОПАСНО',
-                'warning': 'СРЕДНИЙ',
-                'high': 'ВЫСОКИЙ',
-                'critical': 'КРИТИЧЕСКИЙ',
-                'burgundy': 'ЭКСТРЕМАЛЬНЫЙ'
-            };
+            const riskLabels = { 'safe': 'БЕЗОПАСНО', 'warning': 'СРЕДНИЙ', 'high': 'ВЫСОКИЙ', 'critical': 'КРИТИЧЕСКИЙ', 'burgundy': 'ЭКСТРЕМАЛЬНЫЙ' };
 
             if (!db.today.hasDataToday) {
                 noDataMsg.style.display = 'block';
@@ -822,18 +732,15 @@
             }
 
             noDataMsg.style.display = 'none';
-            
-            // Динамическое обновление бейджа на основе db.today.overallRisk
             badge.innerText = riskLabels[db.today.overallRisk] || 'ВЫСОКИЙ';
             badge.style.background = bgAlphaMap[db.today.overallRisk] || 'rgba(255, 159, 10, 0.2)';
             badge.style.color = colorMap[db.today.overallRisk] || 'var(--high)';
 
             let html = '';
-
             db.today.allergens.forEach((item, index) => {
                 const color = colorMap[item.level];
                 const bg = bgAlphaMap[item.level];
-                const delay = index * 0.4; // Разная задержка для каждой иконки
+                const delay = index * 0.4; 
                 
                 html += `
                 <div class="pollen-item">
@@ -877,21 +784,16 @@
         function renderSummaryTable() {
             const table = document.getElementById('summary-table');
             let html = `<tr><th>Год</th><th>Статус / Пик</th></tr>`;
-            
             db.summary.forEach(row => {
                 html += `
                 <tr>
                     <td style="font-weight: 600;">${row.year}</td>
-                    <td>
-                        <span class="status-dot" style="background-color: ${colorMap[row.level]};"></span>
-                        ${row.status}
-                    </td>
+                    <td><span class="status-dot" style="background-color: ${colorMap[row.level]};"></span>${row.status}</td>
                 </tr>`;
             });
             table.innerHTML = html;
         }
 
-        // --- 4. Навигация и Свайпы ---
         const wrapper = document.getElementById('views-wrapper');
         const indicator = document.getElementById('segment-indicator');
         const btns = document.querySelectorAll('.segment-btn');
@@ -905,31 +807,23 @@
         function handleScroll() {
             const scrollLeft = wrapper.scrollLeft;
             const viewWidth = window.innerWidth;
-            // Calculate which tab is mostly in view
             const index = Math.round(scrollLeft / viewWidth);
             updateTabsUI(index);
         }
 
         function updateTabsUI(index) {
-            btns.forEach((btn, i) => {
-                btn.classList.toggle('active', i === index);
-            });
+            btns.forEach((btn, i) => btn.classList.toggle('active', i === index));
             indicator.style.transform = `translateX(${index * 100}%)`;
         }
 
-        // --- Интеграция погоды (Open-Meteo API) ---
         async function fetchWeather() {
             try {
-                // Координаты Москвы
                 const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=55.7558&longitude=37.6173&current=temperature_2m,relative_humidity_2m,wind_speed_10m,wind_direction_10m&wind_speed_unit=ms');
                 const data = await res.json();
-                
                 const temp = data.current.temperature_2m;
                 const hum = data.current.relative_humidity_2m;
                 const windSpeed = data.current.wind_speed_10m;
                 const windDir = data.current.wind_direction_10m;
-                
-                // Конвертация градусов в направление ветра
                 const dirs = ['С', 'СВ', 'В', 'ЮВ', 'Ю', 'ЮЗ', 'З', 'СЗ'];
                 const dirStr = dirs[Math.round(windDir / 45) % 8];
                 
@@ -938,13 +832,9 @@
                 document.getElementById('w-wind').innerText = `${dirStr} ${Math.round(windSpeed)}`;
             } catch (e) {
                 console.error('Ошибка получения погоды:', e);
-                document.getElementById('w-temp').innerText = '-';
-                document.getElementById('w-hum').innerText = '-';
-                document.getElementById('w-wind').innerText = '-';
             }
         }
 
-        // --- Динамическая дата ---
         function updateDate() {
             const options = { day: 'numeric', month: 'long', year: 'numeric' };
             let today = new Date();
@@ -953,7 +843,6 @@
             if(parts.length >= 2) parts[1] = parts[1].charAt(0).toUpperCase() + parts[1].slice(1);
             document.getElementById('current-date').innerText = parts.join(' ');
 
-            // Вчерашняя дата для ловушек
             let yesterday = new Date(today);
             yesterday.setDate(yesterday.getDate() - 1);
             let yDateStr = yesterday.toLocaleDateString('ru-RU', options).replace(' г.', '');
@@ -962,12 +851,98 @@
             document.getElementById('measurement-date').innerText = 'Дата измерений: ' + yParts.join(' ');
         }
 
+        // --- Интеграция прогноза SILAM / CAMS ---
+        async function fetchForecastData() {
+            try {
+                // Запрашиваем почасовой прогноз на 5 дней вперед
+                const res = await fetch(`https://air-quality-api.open-meteo.com/v1/air-quality?latitude=55.7558&longitude=37.6173&hourly=alder_pollen,birch_pollen&timezone=Europe%2FMoscow&forecast_days=5`);
+                const data = await res.json();
+
+                const times = data.hourly.time;
+                const alderHourly = data.hourly.alder_pollen;
+                const birchHourly = data.hourly.birch_pollen;
+
+                // Группируем почасовые данные по дням и ищем дневной максимум (обычная практика для пыльцы)
+                const dailyData = {};
+                
+                times.forEach((timeStr, index) => {
+                    const dateObj = new Date(timeStr);
+                    const dayKey = dateObj.toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' });
+                    
+                    if (!dailyData[dayKey]) {
+                        dailyData[dayKey] = { alder: 0, birch: 0 };
+                    }
+                    
+                    // Берем максимальное значение за день
+                    dailyData[dayKey].alder = Math.max(dailyData[dayKey].alder, alderHourly[index] || 0);
+                    dailyData[dayKey].birch = Math.max(dailyData[dayKey].birch, birchHourly[index] || 0);
+                });
+
+                const labels = Object.keys(dailyData);
+                const alderData = labels.map(l => dailyData[l].alder);
+                const birchData = labels.map(l => dailyData[l].birch);
+
+                renderForecastChart(labels, alderData, birchData);
+
+            } catch(e) {
+                console.error("Ошибка загрузки прогноза SILAM:", e);
+            }
+        }
+
+        function renderForecastChart(labels, alderData, birchData) {
+            const ctx = document.getElementById('forecastChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Ольха (прогноз)',
+                            data: alderData,
+                            borderColor: '#FF9F0A',
+                            borderDash: [5, 5], // Пунктирная линия для прогноза
+                            backgroundColor: 'transparent',
+                            borderWidth: 2,
+                            tension: 0.4,
+                            pointRadius: 4,
+                            pointBackgroundColor: '#FF9F0A'
+                        },
+                        {
+                            label: 'Береза (прогноз)',
+                            data: birchData,
+                            borderColor: '#32D74B',
+                            borderDash: [5, 5],
+                            backgroundColor: 'transparent',
+                            borderWidth: 2,
+                            tension: 0.4,
+                            pointRadius: 4,
+                            pointBackgroundColor: '#32D74B'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { 
+                        legend: { 
+                            position: 'top',
+                            labels: { usePointStyle: true, boxWidth: 8, color: 'rgba(235, 235, 245, 0.6)' }
+                        } 
+                    },
+                    scales: {
+                        x: { grid: { display: false } },
+                        y: { grid: { color: 'rgba(255,255,255,0.05)' }, beginAtZero: true }
+                    },
+                    interaction: { mode: 'index', intersect: false }
+                }
+            });
+        }
+
         // --- 5. Графики (Chart.js) ---
         function initCharts() {
             Chart.defaults.color = 'rgba(235, 235, 245, 0.6)';
             Chart.defaults.font.family = '-apple-system, BlinkMacSystemFont, sans-serif';
 
-            // Today Mini Chart
             const ctxToday = document.getElementById('todayChart').getContext('2d');
             new Chart(ctxToday, {
                 type: 'line',
@@ -977,11 +952,11 @@
                         label: ds.label,
                         data: ds.data,
                         borderColor: ds.color,
-                        backgroundColor: ds.color + '33', // 20% opacity
+                        backgroundColor: ds.color + '33', 
                         borderWidth: 3,
                         tension: 0.4,
                         fill: true,
-                        pointRadius: 3, // Точки видимы, так как данных мало
+                        pointRadius: 3, 
                         pointBackgroundColor: ds.color
                     }))
                 },
@@ -997,9 +972,7 @@
                 }
             });
 
-            // Archive Comparison Chart
             const ctxArchive = document.getElementById('archiveChart').getContext('2d');
-            
             const archiveDates = Object.keys(ARCHIVE_2025);
             const formatMonth = (m) => m === '04' ? 'Апр' : 'Мая';
             const labelsArchive = archiveDates.map(d => `${parseInt(d.split('-')[1])} ${formatMonth(d.split('-')[0])}`);
@@ -1009,34 +982,16 @@
                 data: {
                     labels: labelsArchive,
                     datasets: [
-                        {
-                            label: 'Ольха',
-                            data: archiveDates.map(d => ARCHIVE_2025[d].alder),
-                            backgroundColor: '#FF9F0A',
-                            borderRadius: 4
-                        },
-                        {
-                            label: 'Береза',
-                            data: archiveDates.map(d => ARCHIVE_2025[d].birch),
-                            backgroundColor: '#FF453A',
-                            borderRadius: 4
-                        },
-                        {
-                            label: 'Дуб',
-                            data: archiveDates.map(d => ARCHIVE_2025[d].oak),
-                            backgroundColor: '#0A84FF',
-                            borderRadius: 4
-                        }
+                        { label: 'Ольха', data: archiveDates.map(d => ARCHIVE_2025[d].alder), backgroundColor: '#FF9F0A', borderRadius: 4 },
+                        { label: 'Береза', data: archiveDates.map(d => ARCHIVE_2025[d].birch), backgroundColor: '#FF453A', borderRadius: 4 },
+                        { label: 'Дуб', data: archiveDates.map(d => ARCHIVE_2025[d].oak), backgroundColor: '#0A84FF', borderRadius: 4 }
                     ]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
                     plugins: { 
-                        legend: { 
-                            position: 'top',
-                            labels: { usePointStyle: true, boxWidth: 8 }
-                        },
+                        legend: { position: 'top', labels: { usePointStyle: true, boxWidth: 8 } },
                         tooltip: {
                             callbacks: {
                                 afterBody: function(context) {
@@ -1071,7 +1026,6 @@
             link.click();
             document.body.removeChild(link);
             
-            // Visual feedback (обновлено для поддержки режима иконки)
             const btnText = document.getElementById('dl-text');
             const btnIcon = document.getElementById('dl-icon');
             
