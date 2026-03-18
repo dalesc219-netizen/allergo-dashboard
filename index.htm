@@ -629,10 +629,13 @@
             "04-17": { alder: 4, birch: 172, oak: 0, temp: "+19°C" },
             "04-20": { alder: 1, birch: 14403, oak: 0, temp: "+25.8°C", note: "ПИК СЕЗОНА" },
             "04-23": { alder: 1, birch: 3968, oak: 0, temp: "+25.8°C" },
-            // Поздний сезон: Появление Дуба (Oak)
-            "05-05": { alder: 0, birch: 113, oak: 40, temp: "+18°C" },
-            "05-15": { alder: 0, birch: 20, oak: 80, temp: "+22°C" },
-            "05-22": { alder: 0, birch: 5, oak: 140, temp: "+24°C" }
+            // Поздний сезон: Точные данные по цветам календаря (Береза, Ольха, Дуб)
+            "05-05": { alder: 0, birch: 113, oak: 0, temp: "+18°C" },
+            "05-06": { alder: 0, birch: 0, oak: 40, temp: "+19°C" },
+            "05-15": { alder: 0, birch: 0, oak: 30, temp: "+22°C" },
+            "05-21": { alder: 0, birch: 0, oak: 80, temp: "+21°C" },
+            "05-22": { alder: 0, birch: 140, oak: 0, temp: "+24°C", note: "Вторая волна березы" },
+            "05-25": { alder: 5, birch: 0, oak: 0, temp: "+20°C" }
         };
 
         const db = {
@@ -642,30 +645,30 @@
             },
             today: {
                 hasDataToday: true, // Измените на false, чтобы протестировать интерфейс без данных
-                overallRisk: "high", // safe, warning, high, critical
+                overallRisk: "warning", // safe, warning, high, critical
                 allergens: [
                     { 
                         id: "alder", 
                         name: "Ольха", 
-                        value: 220, 
-                        level: "high", // CSS var mapping
-                        trend: "up", // up, down, flat
+                        value: 4, 
+                        level: "safe", // CSS var mapping
+                        trend: "flat", // up, down, flat
                         icon: "leaf"
                     },
                     { 
                         id: "hazel", 
                         name: "Орешник", 
-                        value: 16, 
+                        value: 13, 
                         level: "warning", 
-                        trend: "down",
+                        trend: "up",
                         icon: "tree-deciduous"
                     },
                     { 
                         id: "birch", 
                         name: "Береза", 
-                        value: 0, 
+                        value: 3, 
                         level: "safe", 
-                        trend: "flat",
+                        trend: "up",
                         icon: "tree-pine"
                     }
                 ]
@@ -673,19 +676,19 @@
             insights: [
                 {
                     author: "Дмитрий, СЗАО",
-                    text: "Ольха 220 сегодня, накрыло капитально. В прошлом году старт был немного другим. Ждем дождей.",
+                    text: "Ольха упала до 4 единиц, наконец-то можно нормально дышать на улице!",
                     time: "Сегодня, 11:20",
                     verified: true
                 },
                 {
                     author: "Елена, ЗАО",
-                    text: "По графику лещина всего 16, но по ощущениям все 100. В Филевском парке уже лучше не гулять без маски.",
+                    text: "Орешник разогнался до 13. Глаза уже начали чесаться, пора доставать капли.",
                     time: "Сегодня, 09:45",
                     verified: true
                 },
                 {
                     author: "Ольга, ЮВАО",
-                    text: "Березы пока нет, слава богу. Но помня прошлогодний ад весной 2025-го (свыше 14000 ед), заранее закупилась таблетками.",
+                    text: "Ого, береза уже 3 единицы! Похоже, ранний старт сезона. Закупаемся антигистаминными.",
                     time: "Вчера, 21:10",
                     verified: false
                 }
@@ -694,9 +697,9 @@
                 today: {
                     labels: ["13 Мар", "14 Мар", "15 Мар", "16 Мар", "17 Мар"],
                     datasets: [
-                        { label: 'Ольха', data: [39, 0, 0, 264, 220], color: '#FF9F0A' },
-                        { label: 'Орешник', data: [44, 0, 0, 25, 16], color: '#FFD60A' },
-                        { label: 'Береза', data: [0, 0, 0, 0, 0], color: '#32D74B' }
+                        { label: 'Ольха', data: [12, 8, 5, 4, 4], color: '#FF9F0A' },
+                        { label: 'Орешник', data: [2, 4, 5, 7, 13], color: '#FFD60A' },
+                        { label: 'Береза', data: [0, 0, 0, 0, 3], color: '#FF453A' }
                     ]
                 }
             },
