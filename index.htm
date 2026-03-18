@@ -374,6 +374,16 @@
         .icon-wind { animation: anim-wind 2.5s infinite ease-in-out; color: var(--safe); }
         .icon-drop { animation: anim-drop 2s infinite ease-in-out; color: var(--accent); }
 
+        /* Анимация иконок аллергенов */
+        .pollen-anim-icon {
+            animation: pollen-sway 3s infinite ease-in-out;
+            transform-origin: bottom center;
+        }
+        @keyframes pollen-sway {
+            0%, 100% { transform: rotate(0deg) scale(1); }
+            50% { transform: rotate(8deg) scale(1.05); }
+        }
+
         /* Экран входа (Login Screen) */
         .login-overlay {
             position: fixed;
@@ -563,8 +573,11 @@
 
                 <!-- Объединенная карточка: Заголовок с бейджем и данные ловушек -->
                 <div class="card">
-                    <div class="risk-header" style="margin-bottom: 15px;">
-                        <h3 class="section-title" style="margin-bottom: 0;"><i data-lucide="microscope" size="18"></i> Данные ловушек</h3>
+                    <div class="risk-header" style="margin-bottom: 15px; align-items: flex-start;">
+                        <div>
+                            <h3 class="section-title" style="margin-bottom: 2px;"><i data-lucide="microscope" size="18"></i> Данные ловушек</h3>
+                            <div style="font-size: 11px; color: var(--text-secondary); margin-left: 26px;" id="measurement-date">Дата измерений: --</div>
+                        </div>
                         <div class="risk-badge" id="main-risk-badge" style="background: rgba(255, 159, 10, 0.2); color: var(--high);">
                             ВЫСОКИЙ
                         </div>
@@ -697,9 +710,16 @@
                 today: {
                     labels: ["13 Мар", "14 Мар", "15 Мар", "16 Мар", "17 Мар"],
                     datasets: [
-                        { label: 'Ольха', data: [12, 8, 5, 4, 4], color: '#FF9F0A' },
-                        { label: 'Орешник', data: [2, 4, 5, 7, 13], color: '#FFD60A' },
-                        { label: 'Береза', data: [0, 0, 0, 0, 3], color: '#FF453A' }
+                        { label: 'Ольха', data: [null, null, null, 4, 4], color: '#32D74B' },    // Зеленый
+                        { label: 'Орешник', data: [null, null, null, 7, 13], color: '#FFD60A' }, // Желтый
+                        { label: 'Береза', data: [null, null, null, 0, 3], color: '#FF453A' }    // Красный
+                    ]
+                },
+                archive: {
+                    labels: ["20 Апр", "21 Апр", "22 Апр", "23 Апр", "24 Апр", "27 Апр"],
+                    datasets: [
+                        { label: 'Береза (факт 2025)', data: [14403, 8310, 1203, 3968, 1700, 389], color: '#FF453A' },
+                        { label: 'Береза (факт 2023)', data: [4186, 11206, 6000, 5000, 9092, 935], color: '#32D74B' }
                     ]
                 }
             },
@@ -810,15 +830,16 @@
 
             let html = '';
 
-            db.today.allergens.forEach(item => {
+            db.today.allergens.forEach((item, index) => {
                 const color = colorMap[item.level];
                 const bg = bgAlphaMap[item.level];
+                const delay = index * 0.4; // Разная задержка для каждой иконки
                 
                 html += `
                 <div class="pollen-item">
                     <div class="pollen-left">
                         <div class="pollen-icon-wrapper" style="background: ${bg}; color: ${color};">
-                            <i data-lucide="${item.icon}" size="20"></i>
+                            <i data-lucide="${item.icon}" size="20" class="pollen-anim-icon" style="animation-delay: ${delay}s"></i>
                         </div>
                         <div class="pollen-name">${item.name}</div>
                     </div>
@@ -926,10 +947,19 @@
         // --- Динамическая дата ---
         function updateDate() {
             const options = { day: 'numeric', month: 'long', year: 'numeric' };
-            let dateStr = new Date().toLocaleDateString('ru-RU', options).replace(' г.', '');
+            let today = new Date();
+            let dateStr = today.toLocaleDateString('ru-RU', options).replace(' г.', '');
             let parts = dateStr.split(' ');
             if(parts.length >= 2) parts[1] = parts[1].charAt(0).toUpperCase() + parts[1].slice(1);
             document.getElementById('current-date').innerText = parts.join(' ');
+
+            // Вчерашняя дата для ловушек
+            let yesterday = new Date(today);
+            yesterday.setDate(yesterday.getDate() - 1);
+            let yDateStr = yesterday.toLocaleDateString('ru-RU', options).replace(' г.', '');
+            let yParts = yDateStr.split(' ');
+            if(yParts.length >= 2) yParts[1] = yParts[1].toLowerCase();
+            document.getElementById('measurement-date').innerText = 'Дата измерений: ' + yParts.join(' ');
         }
 
         // --- 5. Графики (Chart.js) ---
@@ -951,7 +981,8 @@
                         borderWidth: 3,
                         tension: 0.4,
                         fill: true,
-                        pointRadius: 0
+                        pointRadius: 3, // Точки видимы, так как данных мало
+                        pointBackgroundColor: ds.color
                     }))
                 },
                 options: {
