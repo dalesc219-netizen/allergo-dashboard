@@ -57,7 +57,7 @@
 
         /* Header & Navigation */
         .header {
-            padding: 50px 20px 15px;
+            padding: max(50px, env(safe-area-inset-top)) 20px 15px;
             background: rgba(0, 0, 0, 0.8);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
@@ -70,18 +70,19 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 15px;
-            flex-wrap: wrap;
-            gap: 10px;
+            flex-wrap: nowrap; /* Строго одна строка */
+            gap: 5px; /* Минимальный зазор */
+            white-space: nowrap;
         }
 
         .app-title {
-            font-size: 24px;
+            font-size: clamp(18px, 5.5vw, 24px); /* Резиновый размер */
             font-weight: 700;
             margin: 0;
             letter-spacing: 0.5px;
             display: flex;
             align-items: baseline;
-            gap: 8px;
+            gap: 6px;
         }
 
         .segment-control {
@@ -164,20 +165,6 @@
             font-size: 14px;
             font-weight: 700;
             text-transform: uppercase;
-        }
-
-        .weather-info {
-            display: flex;
-            gap: 15px;
-            color: var(--text-secondary);
-            font-size: 14px;
-            align-items: center;
-        }
-
-        .weather-item {
-            display: flex;
-            align-items: center;
-            gap: 5px;
         }
 
         /* Pollen Items */
@@ -300,11 +287,12 @@
             font-weight: 600;
             display: flex;
             align-items: center;
+            justify-content: center;
             gap: 8px;
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
             cursor: pointer;
             z-index: 200;
-            transition: transform 0.2s;
+            transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
 
         .floating-action:active {
@@ -348,7 +336,7 @@
         /* Погода в шапке и анимации */
         .date-text {
             color: var(--text-secondary);
-            font-size: 14px;
+            font-size: clamp(10px, 3vw, 14px);
             font-weight: 500;
         }
 
@@ -356,8 +344,8 @@
             display: flex;
             align-items: center;
             justify-content: flex-end;
-            gap: 10px;
-            font-size: 13px;
+            gap: clamp(4px, 1.5vw, 10px);
+            font-size: clamp(10px, 3vw, 13px);
             font-weight: 600;
             white-space: nowrap;
             margin-left: auto;
@@ -483,6 +471,46 @@
             40%, 60% { transform: translate3d(6px, 0, 0); }
         }
 
+        /* АДАПТАЦИЯ ПОД ГОРИЗОНТАЛЬНЫЙ РЕЖИМ (Landscape) */
+        @media (orientation: landscape) and (max-height: 600px) {
+            .header {
+                padding: max(15px, env(safe-area-inset-top)) 20px 10px; /* Убираем огромный отступ */
+            }
+            .header-top {
+                margin-bottom: 10px;
+            }
+            .app-title {
+                font-size: 18px; /* Уменьшаем заголовок */
+            }
+            .card {
+                padding: 15px; /* Компактные карточки */
+                margin-bottom: 10px;
+            }
+            .chart-container {
+                height: 160px; /* Компактный график */
+            }
+            .views-wrapper {
+                padding-bottom: 20px; /* Убираем пустоту внизу */
+            }
+            /* Кнопка сохранения становится иконкой справа снизу */
+            .floating-action {
+                bottom: 15px;
+                right: max(15px, env(safe-area-inset-right));
+                left: auto;
+                transform: none;
+                width: 48px;
+                height: 48px;
+                padding: 0;
+                border-radius: 50%;
+            }
+            .floating-action span {
+                display: none; /* Прячем текст */
+            }
+            .floating-action:active {
+                transform: scale(0.9); /* Исправленная анимация нажатия для сбоку */
+            }
+        }
+
     </style>
 </head>
 <body>
@@ -584,7 +612,7 @@
 
         <!-- Floating Action Button -->
         <button class="floating-action" onclick="downloadApp()">
-            <i data-lucide="download" size="20"></i> Сохранить 앱
+            <i data-lucide="download" size="20" id="dl-icon"></i> <span id="dl-text">Сохранить 앱</span>
         </button>
     </div>
 
@@ -968,14 +996,17 @@
             link.click();
             document.body.removeChild(link);
             
-            // Visual feedback
-            const btn = document.querySelector('.floating-action');
-            const originalHTML = btn.innerHTML;
-            btn.innerHTML = '<i data-lucide="check" size="20"></i> Сохранено';
+            // Visual feedback (обновлено для поддержки режима иконки)
+            const btnText = document.getElementById('dl-text');
+            const btnIcon = document.getElementById('dl-icon');
+            
+            if (btnText) btnText.innerText = 'Сохранено';
+            if (btnIcon) btnIcon.setAttribute('data-lucide', 'check');
             lucide.createIcons();
             
             setTimeout(() => {
-                btn.innerHTML = originalHTML;
+                if (btnText) btnText.innerText = 'Сохранить 앱';
+                if (btnIcon) btnIcon.setAttribute('data-lucide', 'download');
                 lucide.createIcons();
             }, 2000);
         }
