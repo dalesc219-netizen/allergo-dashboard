@@ -594,7 +594,8 @@
 
                 <div class="card">
                     <h3 class="section-title"><i data-lucide="bar-chart-2" size="18"></i> Сравнение сезонов</h3>
-                    <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 15px;">Максимальные концентрации Березы (ед/м³)</p>
+                    <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 5px;">Эстафета аллергенов (Сезон 2025)</p>
+                    <p style="font-size: 11px; color: var(--text-secondary); margin-bottom: 15px;">* Нажмите на легенду, чтобы скрыть/показать график</p>
                     <div class="chart-container">
                         <canvas id="archiveChart"></canvas>
                     </div>
@@ -618,6 +619,22 @@
 
     <script>
         // --- 1. Внутренняя База Данных (Hardcoded JSON) ---
+        const ARCHIVE_2025 = {
+            // Ранний сезон: Ольха (Alder) в топе
+            "04-02": { alder: 226, birch: 0, oak: 0, temp: "+18°C" },
+            "04-03": { alder: 31, birch: 0, oak: 0, temp: "+12°C" },
+            "04-09": { alder: 28, birch: 1, oak: 0, temp: "+8°C" },
+            // Переходный период: Береза (Birch) перехватывает лидерство
+            "04-14": { alder: 13, birch: 114, oak: 0, temp: "+14°C" },
+            "04-17": { alder: 4, birch: 172, oak: 0, temp: "+19°C" },
+            "04-20": { alder: 1, birch: 14403, oak: 0, temp: "+25.8°C", note: "ПИК СЕЗОНА" },
+            "04-23": { alder: 1, birch: 3968, oak: 0, temp: "+25.8°C" },
+            // Поздний сезон: Появление Дуба (Oak)
+            "05-05": { alder: 0, birch: 113, oak: 40, temp: "+18°C" },
+            "05-15": { alder: 0, birch: 20, oak: 80, temp: "+22°C" },
+            "05-22": { alder: 0, birch: 5, oak: 140, temp: "+24°C" }
+        };
+
         const db = {
             metadata: {
                 location: "Москва",
@@ -680,13 +697,6 @@
                         { label: 'Ольха', data: [39, 0, 0, 264, 220], color: '#FF9F0A' },
                         { label: 'Орешник', data: [44, 0, 0, 25, 16], color: '#FFD60A' },
                         { label: 'Береза', data: [0, 0, 0, 0, 0], color: '#32D74B' }
-                    ]
-                },
-                archive: {
-                    labels: ["20 Апр", "21 Апр", "22 Апр", "23 Апр", "24 Апр", "27 Апр"],
-                    datasets: [
-                        { label: 'Береза (факт 2025)', data: [14403, 8310, 1203, 3968, 1700, 389], color: '#FF453A' },
-                        { label: 'Береза (факт 2023)', data: [4186, 11206, 6000, 5000, 9092, 935], color: '#32D74B' }
                     ]
                 }
             },
@@ -955,16 +965,35 @@
 
             // Archive Comparison Chart
             const ctxArchive = document.getElementById('archiveChart').getContext('2d');
+            
+            const archiveDates = Object.keys(ARCHIVE_2025);
+            const formatMonth = (m) => m === '04' ? 'Апр' : 'Мая';
+            const labelsArchive = archiveDates.map(d => `${parseInt(d.split('-')[1])} ${formatMonth(d.split('-')[0])}`);
+
             new Chart(ctxArchive, {
                 type: 'bar',
                 data: {
-                    labels: db.charts.archive.labels,
-                    datasets: db.charts.archive.datasets.map(ds => ({
-                        label: ds.label,
-                        data: ds.data,
-                        backgroundColor: ds.color,
-                        borderRadius: 4
-                    }))
+                    labels: labelsArchive,
+                    datasets: [
+                        {
+                            label: 'Ольха',
+                            data: archiveDates.map(d => ARCHIVE_2025[d].alder),
+                            backgroundColor: '#FF9F0A',
+                            borderRadius: 4
+                        },
+                        {
+                            label: 'Береза',
+                            data: archiveDates.map(d => ARCHIVE_2025[d].birch),
+                            backgroundColor: '#FF453A',
+                            borderRadius: 4
+                        },
+                        {
+                            label: 'Дуб',
+                            data: archiveDates.map(d => ARCHIVE_2025[d].oak),
+                            backgroundColor: '#0A84FF',
+                            borderRadius: 4
+                        }
+                    ]
                 },
                 options: {
                     responsive: true,
@@ -973,7 +1002,19 @@
                         legend: { 
                             position: 'top',
                             labels: { usePointStyle: true, boxWidth: 8 }
-                        } 
+                        },
+                        tooltip: {
+                            callbacks: {
+                                afterBody: function(context) {
+                                    const dateKey = archiveDates[context[0].dataIndex];
+                                    const temp = ARCHIVE_2025[dateKey].temp;
+                                    const note = ARCHIVE_2025[dateKey].note;
+                                    let str = `Погода: ${temp}`;
+                                    if(note) str += `\n⚠️ ${note}`;
+                                    return str;
+                                }
+                            }
+                        }
                     },
                     scales: {
                         x: { grid: { display: false } },
