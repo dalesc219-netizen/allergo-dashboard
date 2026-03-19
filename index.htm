@@ -687,29 +687,29 @@
         const db = {
             metadata: {
                 location: "Москва",
-                lastUpdated: "18 Марта 2026"
+                lastUpdated: "19 Марта 2026"
             },
             today: {
                 hasDataToday: true, 
                 overallRisk: "safe", 
                 allergens: [
-                    { id: "alder", name: "Ольха", value: 1, level: "safe", trend: "down", icon: "leaf" },
-                    { id: "hazel", name: "Орешник", value: 3, level: "safe", trend: "down", icon: "tree-deciduous" },
+                    { id: "alder", name: "Ольха", value: 1, level: "safe", trend: "flat", icon: "leaf" },
+                    { id: "hazel", name: "Орешник", value: 3, level: "safe", trend: "flat", icon: "tree-deciduous" },
                     { id: "birch", name: "Береза", value: 0, level: "safe", trend: "flat", icon: "tree-pine" }
                 ]
             },
             insights: [
-                { author: "Анна, ЮЗАО", text: "Орешник и ольха резко пошли на спад (всего 1 и 3 ед.). Отличный день для прогулок, наслаждаемся, пока нет березы!", time: "Сегодня, 10:15", verified: true },
-                { author: "Дмитрий, СЗАО", text: "Ольха упала до 4 единиц, наконец-то можно нормально дышать на улице!", time: "Вчера, 11:20", verified: true },
-                { author: "Елена, ЗАО", text: "Орешник разогнался до 13. Глаза уже начали чесаться, пора доставать капли.", time: "Вчера, 09:45", verified: true }
+                { author: "Иван, ВАО", text: "Показатели стабильно держатся на минимуме (ольха 1, орешник 3). Отличное время для занятий спортом на улице!", time: "Сегодня, 09:30", verified: true },
+                { author: "Анна, ЮЗАО", text: "Орешник и ольха резко пошли на спад. Отличный день для прогулок, наслаждаемся, пока нет березы!", time: "Вчера, 10:15", verified: true },
+                { author: "Дмитрий, СЗАО", text: "Ольха упала до 4 единиц, наконец-то можно нормально дышать на улице!", time: "17 Марта", verified: true }
             ],
             charts: {
                 today: {
-                    labels: ["14 Мар", "15 Мар", "16 Мар", "17 Мар", "18 Мар"],
+                    labels: ["15 Мар", "16 Мар", "17 Мар", "18 Мар", "19 Мар"],
                     datasets: [
-                        { label: 'Ольха', data: [null, null, 4, 4, 1], color: '#32D74B' },
-                        { label: 'Орешник', data: [null, null, 7, 13, 3], color: '#FFD60A' },
-                        { label: 'Береза', data: [null, null, 0, 3, 0], color: '#FF453A' }
+                        { label: 'Ольха', data: [null, 4, 4, 1, 1], color: '#32D74B' },
+                        { label: 'Орешник', data: [null, 7, 13, 3, 3], color: '#FFD60A' },
+                        { label: 'Береза', data: [null, 0, 3, 0, 0], color: '#FF453A' }
                     ]
                 }
             },
