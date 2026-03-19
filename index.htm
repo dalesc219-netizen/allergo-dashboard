@@ -629,11 +629,18 @@
     <script>
         // --- 1. Внутренняя База Данных (Hardcoded JSON) ---
         const ARCHIVE_2025 = {
+            // Март: Данные текущего 2026 года (интеграция свежих ловушек)
+            "03-16": { alder: 0, birch: 0, oak: 0, alder_2026: 4, hazel_2026: 7, temp: "Н/Д" },
+            "03-17": { alder: 0, birch: 0, oak: 0, alder_2026: 4, hazel_2026: 13, birch_2026: 3, temp: "Н/Д" },
+            "03-18": { alder: 0, birch: 0, oak: 0, alder_2026: 1, hazel_2026: 3, temp: "+1°C" },
+            "03-19": { alder: 0, birch: 0, oak: 0, alder_2026: 1, hazel_2026: 3, temp: "+1°C" },
+            
             // Март: Ранний старт 2023 года
             "03-24": { alder: 0, birch: 0, oak: 0, alder_2023: 122, hazel_2023: 33 },
             "03-28": { alder: 0, birch: 0, oak: 0, alder_2023: 323, hazel_2023: 1 },
+            
             // Апрель: Эстафета Ольха -> Береза
-            "04-01": { alder: 18, birch: 0, oak: 0, temp: "Н/Д", note: "Дождь", birch_2026: 5 }, 
+            "04-01": { alder: 18, birch: 0, oak: 0, temp: "Н/Д", note: "Дождь" }, 
             "04-02": { alder: 226, birch: 0, oak: 0, temp: "+18°C" },
             "04-03": { alder: 31, birch: 0, oak: 0, temp: "+12°C" },
             "04-06": { alder: 23, birch: 0, oak: 0, temp: "Н/Д", note: "Снег, Ветер", alder_2023: 38, hazel_2023: 47 },
@@ -1031,12 +1038,17 @@
                 data: {
                     labels: labelsArchive,
                     datasets: [
-                        { label: 'Ольха', data: archiveDates.map(d => ARCHIVE_2025[d].alder > 0 ? ARCHIVE_2025[d].alder : null), backgroundColor: '#FF9F0A', borderRadius: 4 },
+                        { label: 'Ольха (2025)', data: archiveDates.map(d => ARCHIVE_2025[d].alder > 0 ? ARCHIVE_2025[d].alder : null), backgroundColor: '#FF9F0A', borderRadius: 4 },
+                        { label: 'Орешник (2025)', data: archiveDates.map(d => ARCHIVE_2025[d].hazel > 0 ? ARCHIVE_2025[d].hazel : null), backgroundColor: '#E5C07B', borderRadius: 4 },
                         { label: 'Береза (2025)', data: archiveDates.map(d => ARCHIVE_2025[d].birch > 0 ? ARCHIVE_2025[d].birch : null), backgroundColor: '#FF453A', borderRadius: 4 },
-                        { label: 'Дуб', data: archiveDates.map(d => ARCHIVE_2025[d].oak > 0 ? ARCHIVE_2025[d].oak : null), backgroundColor: '#0A84FF', borderRadius: 4 },
+                        { label: 'Дуб (2025)', data: archiveDates.map(d => ARCHIVE_2025[d].oak > 0 ? ARCHIVE_2025[d].oak : null), backgroundColor: '#0A84FF', borderRadius: 4 },
+                        
                         { label: 'Ольха (2023)', data: archiveDates.map(d => ARCHIVE_2025[d].alder_2023 > 0 ? ARCHIVE_2025[d].alder_2023 : null), backgroundColor: '#FFD60A', borderRadius: 4, hidden: true },
                         { label: 'Орешник (2023)', data: archiveDates.map(d => ARCHIVE_2025[d].hazel_2023 > 0 ? ARCHIVE_2025[d].hazel_2023 : null), backgroundColor: '#EBEBF599', borderRadius: 4, hidden: true },
                         { label: 'Береза (2023)', data: archiveDates.map(d => ARCHIVE_2025[d].birch_2023 > 0 ? ARCHIVE_2025[d].birch_2023 : null), backgroundColor: '#32D74B', borderRadius: 4, hidden: true },
+                        
+                        { label: 'Ольха (2026)', data: archiveDates.map(d => ARCHIVE_2025[d].alder_2026 > 0 ? ARCHIVE_2025[d].alder_2026 : null), backgroundColor: '#64D2FF', borderRadius: 4 },
+                        { label: 'Орешник (2026)', data: archiveDates.map(d => ARCHIVE_2025[d].hazel_2026 > 0 ? ARCHIVE_2025[d].hazel_2026 : null), backgroundColor: '#FFD60A', borderRadius: 4 },
                         { label: 'Береза (2026)', data: archiveDates.map(d => ARCHIVE_2025[d].birch_2026 > 0 ? ARCHIVE_2025[d].birch_2026 : null), backgroundColor: '#BF5AF2', borderRadius: 4 }
                     ]
                 },
@@ -1048,12 +1060,12 @@
                         tooltip: {
                             callbacks: {
                                 afterBody: function(context) {
-                                    if (context[0].dataset.label.includes('2023') || context[0].dataset.label.includes('2026')) return ''; 
+                                    if (context[0].dataset.label.includes('2023')) return ''; 
                                     const dateKey = archiveDates[context[0].dataIndex];
                                     const temp = ARCHIVE_2025[dateKey].temp;
                                     const note = ARCHIVE_2025[dateKey].note;
-                                    let str = `Погода: ${temp}`;
-                                    if(note) str += `\n⚠️ ${note}`;
+                                    let str = temp ? `Погода: ${temp}` : '';
+                                    if(note) str += str ? `\n⚠️ ${note}` : `⚠️ ${note}`;
                                     return str;
                                 }
                             }
