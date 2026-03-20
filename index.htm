@@ -126,7 +126,7 @@
             overflow-x: auto;
             scroll-snap-type: x mandatory;
             scroll-behavior: smooth;
-            padding-bottom: 90px;
+            padding-bottom: 20px;
         }
 
         .view-pane {
@@ -264,30 +264,83 @@
             width: 100%;
         }
 
-        .floating-action {
-            position: fixed;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: var(--text-main);
-            color: var(--bg-color);
+        /* Кастомная легенда для архива */
+        .custom-legend-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(105px, 1fr));
+            column-gap: 15px;
+            row-gap: 20px;
+            margin-bottom: 20px;
+        }
+        .legend-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .legend-group-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 2px;
+            border-bottom: 1px solid var(--glass-border);
+            padding-bottom: 4px;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: opacity 0.2s, text-decoration 0.2s;
+        }
+        .legend-item:active {
+            opacity: 0.7;
+        }
+        .legend-item.hidden-dataset {
+            opacity: 0.35;
+            text-decoration: line-through;
+        }
+        .legend-color-box {
+            width: 12px;
+            height: 12px;
+            border-radius: 3px;
+            flex-shrink: 0;
+        }
+
+        /* Кнопка добавления данных */
+        .add-data-btn {
+            background: rgba(255, 255, 255, 0.1);
             border: none;
-            padding: 16px 30px;
-            border-radius: 30px;
-            font-size: 16px;
-            font-weight: 600;
+            color: var(--text-main);
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
             cursor: pointer;
-            z-index: 200;
-            transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+            transition: background 0.2s;
         }
 
-        .floating-action:active {
-            transform: translateX(-50%) scale(0.95);
+        .add-data-btn:active {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .data-input {
+            width: 100%;
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid var(--glass-border);
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            font-size: 16px;
+            margin-top: 5px;
+            outline: none;
+        }
+
+        .data-input:focus {
+            border-color: var(--accent);
         }
 
         .summary-table {
@@ -487,22 +540,6 @@
             .views-wrapper {
                 padding-bottom: 20px;
             }
-            .floating-action {
-                bottom: 15px;
-                right: max(15px, env(safe-area-inset-right));
-                left: auto;
-                transform: none;
-                width: 48px;
-                height: 48px;
-                padding: 0;
-                border-radius: 50%;
-            }
-            .floating-action span {
-                display: none;
-            }
-            .floating-action:active {
-                transform: scale(0.9);
-            }
         }
 
     </style>
@@ -519,6 +556,29 @@
             <div id="login-error" class="error-text">Извините, неверный пароль 😔</div>
             
             <button class="login-btn" onclick="checkPassword()">Войти</button>
+        </div>
+    </div>
+
+    <!-- Экран добавления данных -->
+    <div class="login-overlay hidden" id="add-data-overlay" style="display: none;">
+        <div class="login-card" style="padding: 20px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h3 style="margin: 0; font-size: 18px;">Внести данные</h3>
+                <i data-lucide="x" size="24" style="cursor: pointer; color: var(--text-secondary);" onclick="closeAddDataModal()"></i>
+            </div>
+            <div style="text-align: left; margin-bottom: 15px;">
+                <label style="font-size: 13px; color: var(--text-secondary);">Ольха (ед/м³)</label>
+                <input type="number" id="input-alder" class="data-input" placeholder="0" inputmode="numeric">
+            </div>
+            <div style="text-align: left; margin-bottom: 15px;">
+                <label style="font-size: 13px; color: var(--text-secondary);">Орешник (ед/м³)</label>
+                <input type="number" id="input-hazel" class="data-input" placeholder="0" inputmode="numeric">
+            </div>
+            <div style="text-align: left; margin-bottom: 25px;">
+                <label style="font-size: 13px; color: var(--text-secondary);">Береза (ед/м³)</label>
+                <input type="number" id="input-birch" class="data-input" placeholder="0" inputmode="numeric">
+            </div>
+            <button class="login-btn" onclick="saveNewData()">Сохранить данные</button>
         </div>
     </div>
 
@@ -550,6 +610,7 @@
                     Данных с ловушек за сегодня пока нет 🤷‍♂️
                 </div>
 
+                <!-- ВОССТАНОВЛЕННЫЙ БЛОК: Заголовок с бейджем и данные ловушек -->
                 <div class="card">
                     <div class="risk-header" style="margin-bottom: 15px; align-items: flex-start;">
                         <div>
@@ -566,7 +627,12 @@
                 </div>
 
                 <div class="card">
-                    <h3 class="section-title"><i data-lucide="trending-up" size="18"></i> Динамика ловушек</h3>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                        <h3 class="section-title" style="margin-bottom: 0;"><i data-lucide="trending-up" size="18"></i> Динамика ловушек</h3>
+                        <button class="add-data-btn" onclick="openAddDataModal()">
+                            <i data-lucide="plus" size="18"></i>
+                        </button>
+                    </div>
                     <div class="chart-container">
                         <canvas id="todayChart"></canvas>
                     </div>
@@ -596,6 +662,10 @@
                     <h3 class="section-title"><i data-lucide="bar-chart-2" size="18"></i> Сравнение сезонов (Весна)</h3>
                     <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 5px;">Эстафета аллергенов: Деревья</p>
                     <p style="font-size: 11px; color: var(--text-secondary); margin-bottom: 15px;">* Логарифмическая шкала. Нажмите на пункт в легенде, чтобы показать/скрыть график.</p>
+                    
+                    <!-- Кастомная сгруппированная легенда -->
+                    <div id="archive-custom-legend" class="custom-legend-container"></div>
+
                     <div class="chart-container">
                         <canvas id="archiveChart"></canvas>
                     </div>
@@ -620,10 +690,6 @@
 
             </div>
         </div>
-
-        <button class="floating-action" onclick="downloadApp()">
-            <i data-lucide="download" size="20" id="dl-icon"></i> <span id="dl-text">Сохранить 앱</span>
-        </button>
     </div>
 
     <script>
@@ -732,6 +798,12 @@
         const bgAlphaMap = { 'safe': 'rgba(50, 215, 75, 0.15)', 'warning': 'rgba(255, 214, 10, 0.15)', 'high': 'rgba(255, 159, 10, 0.15)', 'critical': 'rgba(255, 69, 58, 0.15)', 'burgundy': 'rgba(138, 3, 3, 0.15)' };
         const iconTrendMap = { 'up': '<i data-lucide="trending-up" size="14"></i> Рост', 'down': '<i data-lucide="trending-down" size="14"></i> Спад', 'flat': '<i data-lucide="minus" size="14"></i> Нет данных' };
 
+        // Глобальные переменные графиков для возможности их обновления
+        let chartTodayInst = null;
+        let forecastChartInst = null;
+        let archiveChartInst = null;
+        let summerChartInst = null;
+
         // --- 3. Инициализация UI ---
         document.addEventListener("DOMContentLoaded", () => {
             updateDate();
@@ -772,6 +844,8 @@
             const badge = document.getElementById('main-risk-badge');
             const riskLabels = { 'safe': 'БЕЗОПАСНО', 'warning': 'СРЕДНИЙ', 'high': 'ВЫСОКИЙ', 'critical': 'КРИТИЧЕСКИЙ', 'burgundy': 'ЭКСТРЕМАЛЬНЫЙ' };
 
+            if (!list || !noDataMsg || !badge) return; // Защита от ошибок
+
             if (!db.today.hasDataToday) {
                 noDataMsg.style.display = 'block';
                 list.innerHTML = '<div class="empty-state">Ожидаем обновления данных...</div>';
@@ -811,6 +885,8 @@
 
         function renderInsights() {
             const list = document.getElementById('insights-list');
+            if (!list) return;
+
             if(db.insights.length === 0) {
                 list.innerHTML = `<div class="empty-state">Нет новых данных за сегодня</div>`;
                 return;
@@ -833,6 +909,8 @@
 
         function renderSummaryTable() {
             const table = document.getElementById('summary-table');
+            if (!table) return;
+
             let html = `<tr><th>Год</th><th>Статус / Пик</th></tr>`;
             db.summary.forEach(row => {
                 html += `
@@ -850,11 +928,12 @@
 
         function switchTab(index) {
             const viewWidth = window.innerWidth;
-            wrapper.scrollTo({ left: index * viewWidth, behavior: 'smooth' });
+            if (wrapper) wrapper.scrollTo({ left: index * viewWidth, behavior: 'smooth' });
             updateTabsUI(index);
         }
 
         function handleScroll() {
+            if (!wrapper) return;
             const scrollLeft = wrapper.scrollLeft;
             const viewWidth = window.innerWidth;
             const index = Math.round(scrollLeft / viewWidth);
@@ -862,8 +941,8 @@
         }
 
         function updateTabsUI(index) {
-            btns.forEach((btn, i) => btn.classList.toggle('active', i === index));
-            indicator.style.transform = `translateX(${index * 100}%)`;
+            if (btns) btns.forEach((btn, i) => btn.classList.toggle('active', i === index));
+            if (indicator) indicator.style.transform = `translateX(${index * 100}%)`;
         }
 
         async function fetchWeather() {
@@ -877,9 +956,13 @@
                 const dirs = ['С', 'СВ', 'В', 'ЮВ', 'Ю', 'ЮЗ', 'З', 'СЗ'];
                 const dirStr = dirs[Math.round(windDir / 45) % 8];
                 
-                document.getElementById('w-temp').innerText = `${temp > 0 ? '+' : ''}${Math.round(temp)}°`;
-                document.getElementById('w-hum').innerText = `${Math.round(hum)}%`;
-                document.getElementById('w-wind').innerText = `${dirStr} ${Math.round(windSpeed)}`;
+                const wTemp = document.getElementById('w-temp');
+                const wHum = document.getElementById('w-hum');
+                const wWind = document.getElementById('w-wind');
+
+                if (wTemp) wTemp.innerText = `${temp > 0 ? '+' : ''}${Math.round(temp)}°`;
+                if (wHum) wHum.innerText = `${Math.round(hum)}%`;
+                if (wWind) wWind.innerText = `${dirStr} ${Math.round(windSpeed)}`;
             } catch (e) {
                 console.error('Ошибка получения погоды:', e);
             }
@@ -891,14 +974,18 @@
             let dateStr = today.toLocaleDateString('ru-RU', options).replace(' г.', '');
             let parts = dateStr.split(' ');
             if(parts.length >= 2) parts[1] = parts[1].charAt(0).toUpperCase() + parts[1].slice(1);
-            document.getElementById('current-date').innerText = parts.join(' ');
+            
+            const currentDateEl = document.getElementById('current-date');
+            if (currentDateEl) currentDateEl.innerText = parts.join(' ');
 
             let yesterday = new Date(today);
             yesterday.setDate(yesterday.getDate() - 1);
             let yDateStr = yesterday.toLocaleDateString('ru-RU', options).replace(' г.', '');
             let yParts = yDateStr.split(' ');
             if(yParts.length >= 2) yParts[1] = yParts[1].toLowerCase();
-            document.getElementById('measurement-date').innerText = 'Дата измерений: ' + yParts.join(' ');
+            
+            const measurementDateEl = document.getElementById('measurement-date');
+            if (measurementDateEl) measurementDateEl.innerText = 'Дата измерений: ' + yParts.join(' ');
         }
 
         // --- Интеграция прогноза SILAM / CAMS ---
@@ -940,8 +1027,12 @@
         }
 
         function renderForecastChart(labels, alderData, birchData) {
-            const ctx = document.getElementById('forecastChart').getContext('2d');
-            new Chart(ctx, {
+            const canvas = document.getElementById('forecastChart');
+            if (!canvas) return;
+
+            const ctx = canvas.getContext('2d');
+            if (forecastChartInst) forecastChartInst.destroy();
+            forecastChartInst = new Chart(ctx, {
                 type: 'line',
                 data: {
                     labels: labels,
@@ -993,166 +1084,282 @@
             Chart.defaults.color = 'rgba(235, 235, 245, 0.6)';
             Chart.defaults.font.family = '-apple-system, BlinkMacSystemFont, sans-serif';
 
-            const ctxToday = document.getElementById('todayChart').getContext('2d');
-            new Chart(ctxToday, {
-                type: 'line',
-                data: {
-                    labels: db.charts.today.labels,
-                    datasets: db.charts.today.datasets.map(ds => ({
-                        label: ds.label,
-                        data: ds.data,
-                        borderColor: ds.color,
-                        backgroundColor: ds.color + '33', 
-                        borderWidth: 3,
-                        tension: 0.4,
-                        fill: true,
-                        pointRadius: 3, 
-                        pointBackgroundColor: ds.color
-                    }))
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: {
-                        x: { grid: { display: false } },
-                        y: { grid: { color: 'rgba(255,255,255,0.05)' }, beginAtZero: true }
+            const canvasToday = document.getElementById('todayChart');
+            if (canvasToday) {
+                const ctxToday = canvasToday.getContext('2d');
+                if (chartTodayInst) chartTodayInst.destroy();
+                chartTodayInst = new Chart(ctxToday, {
+                    type: 'line',
+                    data: {
+                        labels: db.charts.today.labels,
+                        datasets: db.charts.today.datasets.map(ds => ({
+                            label: ds.label,
+                            data: ds.data,
+                            borderColor: ds.color,
+                            backgroundColor: ds.color + '33', 
+                            borderWidth: 3,
+                            tension: 0.4,
+                            fill: true,
+                            pointRadius: 3, 
+                            pointBackgroundColor: ds.color
+                        }))
                     },
-                    interaction: { mode: 'index', intersect: false }
-                }
-            });
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            x: { grid: { display: false } },
+                            y: { grid: { color: 'rgba(255,255,255,0.05)' }, beginAtZero: true }
+                        },
+                        interaction: { mode: 'index', intersect: false }
+                    }
+                });
+            }
 
-            const ctxArchive = document.getElementById('archiveChart').getContext('2d');
-            const archiveDates = Object.keys(ARCHIVE_2025);
-            
-            // Расширенное форматирование месяцев, включая лето и осень
-            const formatMonth = (m) => {
-                const months = {'03': 'Мар', '04': 'Апр', '05': 'Мая', '06': 'Июн', '07': 'Июл', '08': 'Авг', '09': 'Сен'};
-                return months[m] || m;
-            };
-            
-            const labelsArchive = archiveDates.map(d => `${parseInt(d.split('-')[1])} ${formatMonth(d.split('-')[0])}`);
+            const canvasArchive = document.getElementById('archiveChart');
+            if (canvasArchive) {
+                const ctxArchive = canvasArchive.getContext('2d');
+                const archiveDates = Object.keys(ARCHIVE_2025);
+                
+                // Расширенное форматирование месяцев, включая лето и осень
+                const formatMonth = (m) => {
+                    const months = {'03': 'Мар', '04': 'Апр', '05': 'Мая', '06': 'Июн', '07': 'Июл', '08': 'Авг', '09': 'Сен'};
+                    return months[m] || m;
+                };
+                
+                const labelsArchive = archiveDates.map(d => `${parseInt(d.split('-')[1])} ${formatMonth(d.split('-')[0])}`);
 
-            new Chart(ctxArchive, {
-                type: 'bar',
-                data: {
-                    labels: labelsArchive,
-                    datasets: [
-                        { label: 'Ольха (2025)', data: archiveDates.map(d => ARCHIVE_2025[d].alder > 0 ? ARCHIVE_2025[d].alder : null), backgroundColor: '#FF9F0A', borderRadius: 4 },
-                        { label: 'Орешник (2025)', data: archiveDates.map(d => ARCHIVE_2025[d].hazel > 0 ? ARCHIVE_2025[d].hazel : null), backgroundColor: '#E5C07B', borderRadius: 4 },
-                        { label: 'Береза (2025)', data: archiveDates.map(d => ARCHIVE_2025[d].birch > 0 ? ARCHIVE_2025[d].birch : null), backgroundColor: '#FF453A', borderRadius: 4 },
-                        { label: 'Дуб (2025)', data: archiveDates.map(d => ARCHIVE_2025[d].oak > 0 ? ARCHIVE_2025[d].oak : null), backgroundColor: '#0A84FF', borderRadius: 4 },
-                        
-                        { label: 'Ольха (2023)', data: archiveDates.map(d => ARCHIVE_2025[d].alder_2023 > 0 ? ARCHIVE_2025[d].alder_2023 : null), backgroundColor: '#FFD60A', borderRadius: 4, hidden: true },
-                        { label: 'Орешник (2023)', data: archiveDates.map(d => ARCHIVE_2025[d].hazel_2023 > 0 ? ARCHIVE_2025[d].hazel_2023 : null), backgroundColor: '#EBEBF599', borderRadius: 4, hidden: true },
-                        { label: 'Береза (2023)', data: archiveDates.map(d => ARCHIVE_2025[d].birch_2023 > 0 ? ARCHIVE_2025[d].birch_2023 : null), backgroundColor: '#32D74B', borderRadius: 4, hidden: true },
-                        
-                        { label: 'Ольха (2026)', data: archiveDates.map(d => ARCHIVE_2025[d].alder_2026 > 0 ? ARCHIVE_2025[d].alder_2026 : null), backgroundColor: '#64D2FF', borderRadius: 4 },
-                        { label: 'Орешник (2026)', data: archiveDates.map(d => ARCHIVE_2025[d].hazel_2026 > 0 ? ARCHIVE_2025[d].hazel_2026 : null), backgroundColor: '#FFD60A', borderRadius: 4 },
-                        { label: 'Береза (2026)', data: archiveDates.map(d => ARCHIVE_2025[d].birch_2026 > 0 ? ARCHIVE_2025[d].birch_2026 : null), backgroundColor: '#BF5AF2', borderRadius: 4 }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { 
-                        legend: { position: 'top', labels: { usePointStyle: true, boxWidth: 8 } },
-                        tooltip: {
-                            callbacks: {
-                                afterBody: function(context) {
-                                    if (context[0].dataset.label.includes('2023')) return ''; 
-                                    const dateKey = archiveDates[context[0].dataIndex];
-                                    const temp = ARCHIVE_2025[dateKey].temp;
-                                    const note = ARCHIVE_2025[dateKey].note;
-                                    let str = temp ? `Погода: ${temp}` : '';
-                                    if(note) str += str ? `\n⚠️ ${note}` : `⚠️ ${note}`;
-                                    return str;
+                if (archiveChartInst) archiveChartInst.destroy();
+                archiveChartInst = new Chart(ctxArchive, {
+                    type: 'bar',
+                    data: {
+                        labels: labelsArchive,
+                        datasets: [
+                            { label: 'Ольха (2025)', data: archiveDates.map(d => ARCHIVE_2025[d].alder > 0 ? ARCHIVE_2025[d].alder : null), backgroundColor: '#FF9F0A', borderRadius: 4 },
+                            { label: 'Орешник (2025)', data: archiveDates.map(d => ARCHIVE_2025[d].hazel > 0 ? ARCHIVE_2025[d].hazel : null), backgroundColor: '#E5C07B', borderRadius: 4 },
+                            { label: 'Береза (2025)', data: archiveDates.map(d => ARCHIVE_2025[d].birch > 0 ? ARCHIVE_2025[d].birch : null), backgroundColor: '#FF453A', borderRadius: 4 },
+                            { label: 'Дуб (2025)', data: archiveDates.map(d => ARCHIVE_2025[d].oak > 0 ? ARCHIVE_2025[d].oak : null), backgroundColor: '#0A84FF', borderRadius: 4 },
+                            
+                            { label: 'Ольха (2023)', data: archiveDates.map(d => ARCHIVE_2025[d].alder_2023 > 0 ? ARCHIVE_2025[d].alder_2023 : null), backgroundColor: '#FFD60A', borderRadius: 4, hidden: true },
+                            { label: 'Орешник (2023)', data: archiveDates.map(d => ARCHIVE_2025[d].hazel_2023 > 0 ? ARCHIVE_2025[d].hazel_2023 : null), backgroundColor: '#EBEBF599', borderRadius: 4, hidden: true },
+                            { label: 'Береза (2023)', data: archiveDates.map(d => ARCHIVE_2025[d].birch_2023 > 0 ? ARCHIVE_2025[d].birch_2023 : null), backgroundColor: '#32D74B', borderRadius: 4, hidden: true },
+                            
+                            { label: 'Ольха (2026)', data: archiveDates.map(d => ARCHIVE_2025[d].alder_2026 > 0 ? ARCHIVE_2025[d].alder_2026 : null), backgroundColor: '#64D2FF', borderRadius: 4 },
+                            { label: 'Орешник (2026)', data: archiveDates.map(d => ARCHIVE_2025[d].hazel_2026 > 0 ? ARCHIVE_2025[d].hazel_2026 : null), backgroundColor: '#FFD60A', borderRadius: 4 },
+                            { label: 'Береза (2026)', data: archiveDates.map(d => ARCHIVE_2025[d].birch_2026 > 0 ? ARCHIVE_2025[d].birch_2026 : null), backgroundColor: '#BF5AF2', borderRadius: 4 }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { 
+                            legend: { display: false }, // Отключаем стандартную, используем кастомную
+                            tooltip: {
+                                callbacks: {
+                                    afterBody: function(context) {
+                                        if (context[0].dataset.label.includes('2023')) return ''; 
+                                        const dateKey = archiveDates[context[0].dataIndex];
+                                        const temp = ARCHIVE_2025[dateKey].temp;
+                                        const note = ARCHIVE_2025[dateKey].note;
+                                        let str = temp ? `Погода: ${temp}` : '';
+                                        if(note) str += str ? `\n⚠️ ${note}` : `⚠️ ${note}`;
+                                        return str;
+                                    }
                                 }
                             }
-                        }
-                    },
-                    scales: {
-                        x: { grid: { display: false } },
-                        y: { 
-                            type: 'logarithmic',
-                            min: 0.5, 
-                            grid: { color: 'rgba(255,255,255,0.05)' },
-                            ticks: {
-                                callback: function(value) {
-                                    if (value === 1 || value === 10 || value === 100 || value === 1000 || value === 10000) return value;
-                                    return null;
+                        },
+                        scales: {
+                            x: { grid: { display: false } },
+                            y: { 
+                                type: 'logarithmic',
+                                min: 0.5, 
+                                grid: { color: 'rgba(255,255,255,0.05)' },
+                                ticks: {
+                                    callback: function(value) {
+                                        if (value === 1 || value === 10 || value === 100 || value === 1000 || value === 10000) return value;
+                                        return null;
+                                    }
                                 }
                             }
                         }
                     }
-                }
-            });
+                });
+            }
+
+            // Генерируем сгруппированную легенду после создания графика
+            generateArchiveLegend(archiveChartInst);
 
             // График Летне-осеннего сезона (2023)
-            const ctxSummer = document.getElementById('summerArchiveChart').getContext('2d');
-            const summerDates = Object.keys(ARCHIVE_SUMMER_2023);
-            const labelsSummer = summerDates.map(d => `${parseInt(d.split('-')[1])} ${formatMonth(d.split('-')[0])}`);
+            const canvasSummer = document.getElementById('summerArchiveChart');
+            if (canvasSummer) {
+                const ctxSummer = canvasSummer.getContext('2d');
+                const summerDates = Object.keys(ARCHIVE_SUMMER_2023);
+                
+                const formatMonth = (m) => {
+                    const months = {'03': 'Мар', '04': 'Апр', '05': 'Мая', '06': 'Июн', '07': 'Июл', '08': 'Авг', '09': 'Сен'};
+                    return months[m] || m;
+                };
 
-            new Chart(ctxSummer, {
-                type: 'bar',
-                data: {
-                    labels: labelsSummer,
-                    datasets: [
-                        { label: 'Злаки', data: summerDates.map(d => ARCHIVE_SUMMER_2023[d].grass > 0 ? ARCHIVE_SUMMER_2023[d].grass : null), backgroundColor: '#FFD60A', borderRadius: 4 },
-                        { label: 'Сорные (Полынь)', data: summerDates.map(d => ARCHIVE_SUMMER_2023[d].weed > 0 ? ARCHIVE_SUMMER_2023[d].weed : null), backgroundColor: '#32D74B', borderRadius: 4 },
-                        { label: 'Кладоспориум', data: summerDates.map(d => ARCHIVE_SUMMER_2023[d].clado > 0 ? ARCHIVE_SUMMER_2023[d].clado : null), backgroundColor: '#BF5AF2', borderRadius: 4 },
-                        { label: 'Альтернария', data: summerDates.map(d => ARCHIVE_SUMMER_2023[d].alt > 0 ? ARCHIVE_SUMMER_2023[d].alt : null), backgroundColor: '#FF453A', borderRadius: 4 }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { 
-                        legend: { position: 'top', labels: { usePointStyle: true, boxWidth: 8 } }
+                const labelsSummer = summerDates.map(d => `${parseInt(d.split('-')[1])} ${formatMonth(d.split('-')[0])}`);
+
+                if (summerChartInst) summerChartInst.destroy();
+                summerChartInst = new Chart(ctxSummer, {
+                    type: 'bar',
+                    data: {
+                        labels: labelsSummer,
+                        datasets: [
+                            { label: 'Злаки', data: summerDates.map(d => ARCHIVE_SUMMER_2023[d].grass > 0 ? ARCHIVE_SUMMER_2023[d].grass : null), backgroundColor: '#FFD60A', borderRadius: 4 },
+                            { label: 'Сорные (Полынь)', data: summerDates.map(d => ARCHIVE_SUMMER_2023[d].weed > 0 ? ARCHIVE_SUMMER_2023[d].weed : null), backgroundColor: '#32D74B', borderRadius: 4 },
+                            { label: 'Кладоспориум', data: summerDates.map(d => ARCHIVE_SUMMER_2023[d].clado > 0 ? ARCHIVE_SUMMER_2023[d].clado : null), backgroundColor: '#BF5AF2', borderRadius: 4 },
+                            { label: 'Альтернария', data: summerDates.map(d => ARCHIVE_SUMMER_2023[d].alt > 0 ? ARCHIVE_SUMMER_2023[d].alt : null), backgroundColor: '#FF453A', borderRadius: 4 }
+                        ]
                     },
-                    scales: {
-                        x: { grid: { display: false } },
-                        y: { 
-                            type: 'logarithmic',
-                            min: 0.5,
-                            grid: { color: 'rgba(255,255,255,0.05)' },
-                            ticks: {
-                                callback: function(value) {
-                                    if (value === 1 || value === 10 || value === 100 || value === 1000 || value === 10000) return value;
-                                    return null;
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { 
+                            legend: { position: 'top', labels: { usePointStyle: true, boxWidth: 8 } }
+                        },
+                        scales: {
+                            x: { grid: { display: false } },
+                            y: { 
+                                type: 'logarithmic',
+                                min: 0.5,
+                                grid: { color: 'rgba(255,255,255,0.05)' },
+                                ticks: {
+                                    callback: function(value) {
+                                        if (value === 1 || value === 10 || value === 100 || value === 1000 || value === 10000) return value;
+                                        return null;
+                                    }
                                 }
                             }
                         }
                     }
-                }
-            });
+                });
+            }
         }
 
-        // --- 6. Кнопка "Сохранить" ---
-        function downloadApp() {
-            const htmlContent = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
-            const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8' });
+        // --- Кастомная легенда для Архива ---
+        function generateArchiveLegend(chart) {
+            const container = document.getElementById('archive-custom-legend');
+            if (!container || !chart) return;
+            container.innerHTML = '';
             
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = `pollen_moscow_${new Date().getTime()}.html`;
+            // 1. Группируем датасеты по базовому названию (первое слово: Береза, Ольха и т.д.)
+            const groups = {};
+            chart.data.datasets.forEach((dataset, index) => {
+                let baseName = dataset.label.split(' ')[0];
+                if (!groups[baseName]) groups[baseName] = [];
+                groups[baseName].push({ dataset, index });
+            });
+
+            // 2. Желаемый порядок групп (Береза первая)
+            const order = ['Береза', 'Ольха', 'Орешник', 'Дуб'];
+            const sortedGroups = Object.entries(groups).sort((a, b) => {
+                let idxA = order.indexOf(a[0]);
+                let idxB = order.indexOf(b[0]);
+                if (idxA === -1) idxA = 99;
+                if (idxB === -1) idxB = 99;
+                return idxA - idxB;
+            });
+
+            // 3. Создаем HTML для каждой колонки (группы)
+            for (const [baseName, items] of sortedGroups) {
+                const groupDiv = document.createElement('div');
+                groupDiv.className = 'legend-group';
+                
+                const title = document.createElement('div');
+                title.className = 'legend-group-title';
+                title.innerText = baseName;
+                groupDiv.appendChild(title);
+                
+                // Внутри группы сортируем по алфавиту (годам)
+                items.sort((a, b) => a.dataset.label.localeCompare(b.dataset.label));
+
+                items.forEach(item => {
+                    const itemDiv = document.createElement('div');
+                    itemDiv.className = 'legend-item';
+                    
+                    // Если скрыт по умолчанию (hidden: true)
+                    if (!chart.isDatasetVisible(item.index)) {
+                        itemDiv.classList.add('hidden-dataset');
+                    }
+                    
+                    const colorBox = document.createElement('div');
+                    colorBox.className = 'legend-color-box';
+                    colorBox.style.backgroundColor = item.dataset.backgroundColor;
+                    
+                    const text = document.createElement('span');
+                    // Достаем год из названия (например, из "Береза (2025)" берем "2025")
+                    const match = item.dataset.label.match(/\((\d{4})\)/);
+                    text.innerText = match ? match[1] + ' год' : item.dataset.label;
+                    
+                    itemDiv.appendChild(colorBox);
+                    itemDiv.appendChild(text);
+                    
+                    // Обработчик клика для показа/скрытия
+                    itemDiv.onclick = () => {
+                        const isVisible = chart.isDatasetVisible(item.index);
+                        chart.setDatasetVisibility(item.index, !isVisible);
+                        chart.update();
+                        itemDiv.classList.toggle('hidden-dataset', isVisible);
+                    };
+                    
+                    groupDiv.appendChild(itemDiv);
+                });
+                
+                container.appendChild(groupDiv);
+            }
+        }
+
+        // --- 6. Логика добавления новых данных ---
+        function openAddDataModal() {
+            document.getElementById('input-alder').value = db.today.allergens.find(a => a.id === 'alder').value || 0;
+            document.getElementById('input-hazel').value = db.today.allergens.find(a => a.id === 'hazel').value || 0;
+            document.getElementById('input-birch').value = db.today.allergens.find(a => a.id === 'birch').value || 0;
             
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            
-            const btnText = document.getElementById('dl-text');
-            const btnIcon = document.getElementById('dl-icon');
-            
-            if (btnText) btnText.innerText = 'Сохранено';
-            if (btnIcon) btnIcon.setAttribute('data-lucide', 'check');
+            const overlay = document.getElementById('add-data-overlay');
+            overlay.style.display = 'flex';
+            setTimeout(() => overlay.classList.remove('hidden'), 10);
+        }
+
+        function closeAddDataModal() {
+            const overlay = document.getElementById('add-data-overlay');
+            overlay.classList.add('hidden');
+            setTimeout(() => overlay.style.display = 'none', 400);
+        }
+
+        function saveNewData() {
+            const alderVal = parseInt(document.getElementById('input-alder').value) || 0;
+            const hazelVal = parseInt(document.getElementById('input-hazel').value) || 0;
+            const birchVal = parseInt(document.getElementById('input-birch').value) || 0;
+
+            // Обновляем текущие значения
+            db.today.allergens.find(a => a.id === 'alder').value = alderVal;
+            db.today.allergens.find(a => a.id === 'hazel').value = hazelVal;
+            db.today.allergens.find(a => a.id === 'birch').value = birchVal;
+
+            // Обновляем общий риск
+            const maxVal = Math.max(alderVal, hazelVal, birchVal);
+            if (maxVal >= 100) db.today.overallRisk = 'critical';
+            else if (maxVal >= 50) db.today.overallRisk = 'high';
+            else if (maxVal >= 10) db.today.overallRisk = 'warning';
+            else db.today.overallRisk = 'safe';
+
+            // Обновляем последнюю точку на графике (Сегодня)
+            const datasets = db.charts.today.datasets;
+            const lastIdx = db.charts.today.labels.length - 1;
+            datasets.find(d => d.label === 'Ольха').data[lastIdx] = alderVal;
+            datasets.find(d => d.label === 'Орешник').data[lastIdx] = hazelVal;
+            datasets.find(d => d.label === 'Береза').data[lastIdx] = birchVal;
+
+            // Перерисовываем интерфейс
+            renderTodayData();
+            initCharts();
             lucide.createIcons();
             
-            setTimeout(() => {
-                if (btnText) btnText.innerText = 'Сохранить 앱';
-                if (btnIcon) btnIcon.setAttribute('data-lucide', 'download');
-                lucide.createIcons();
-            }, 2000);
+            closeAddDataModal();
         }
     </script>
 </body>
