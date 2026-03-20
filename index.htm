@@ -710,15 +710,36 @@
             <div class="view-pane" id="view-archive">
 
                 <div class="card">
-                    <h3 class="section-title"><i data-lucide="bar-chart-2" size="18"></i> Сравнение сезонов (Весна)</h3>
-                    <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 5px;">Эстафета аллергенов: Деревья</p>
-                    <p style="font-size: 11px; color: var(--text-secondary); margin-bottom: 15px;">* Логарифмическая шкала. Нажмите на пункт в легенде, чтобы показать/скрыть график.</p>
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
+                        <div style="flex: 1;">
+                            <h3 class="section-title" style="margin-bottom: 5px;"><i data-lucide="bar-chart-2" size="18"></i> Сравнение сезонов (Весна)</h3>
+                            <p style="font-size: 11px; color: var(--text-secondary); line-height: 1.3;">Эстафета аллергенов: Деревья</p>
+                        </div>
+                        
+                        <!-- Селектор диапазона -->
+                        <div class="segment-control" id="archive-range-control" style="width: 160px; padding: 2px; flex-shrink: 0; height: 26px;">
+                            <div class="segment-indicator" id="archive-range-indicator" style="width: calc(33.33% - 2px); background: #48484A;"></div>
+                            <button class="segment-btn active" onclick="setArchiveRange('season', 0)" style="font-size: 10px; padding: 0; line-height: 22px;">Сезон</button>
+                            <button class="segment-btn" onclick="setArchiveRange('month', 1)" style="font-size: 10px; padding: 0; line-height: 22px;">Месяц</button>
+                            <button class="segment-btn" onclick="setArchiveRange('week', 2)" style="font-size: 10px; padding: 0; line-height: 22px;">Неделя</button>
+                        </div>
+                    </div>
+                    
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; min-height: 16px;">
+                        <p style="font-size: 11px; color: var(--text-secondary); margin: 0;">* Логарифмическая шкала.</p>
+                        <div id="archive-current-range-label" style="font-size: 12px; color: var(--text-secondary); font-weight: 600;"></div>
+                    </div>
 
                     <!-- Кастомная сгруппированная легенда -->
                     <div id="archive-custom-legend" class="custom-legend-container"></div>
 
-                    <div class="chart-container">
-                        <canvas id="archiveChart"></canvas>
+                    <!-- Обертка графика со стрелками навигации -->
+                    <div style="display: flex; align-items: stretch; gap: 5px; margin-left: -15px; margin-right: -15px;">
+                        <button id="archive-prev-btn" onclick="navigateArchive(-1)" style="display:none; background:transparent; border:none; color:var(--text-secondary); cursor:pointer; padding: 10px;"><i data-lucide="chevron-left" size="24"></i></button>
+                        <div class="chart-container" style="flex:1;">
+                            <canvas id="archiveChart"></canvas>
+                        </div>
+                        <button id="archive-next-btn" onclick="navigateArchive(1)" style="display:none; background:transparent; border:none; color:var(--text-secondary); cursor:pointer; padding: 10px;"><i data-lucide="chevron-right" size="24"></i></button>
                     </div>
                 </div>
 
@@ -853,6 +874,10 @@
         let summerChartInst = null;
         
         let historicalTemps = {};
+        
+        // --- Новые переменные для диапазонов Архива ---
+        let archiveRange = 'season';
+        let currentArchiveViewDate = new Date();
 
         // Вспомогательные функции конвертации дат
         function labelToDateStr(label) {
@@ -975,7 +1000,7 @@
 
         const wrapper = document.getElementById('views-wrapper');
         const indicator = document.getElementById('segment-indicator');
-        const btns = document.querySelectorAll('.segment-btn');
+        const btns = document.querySelectorAll('.header .segment-btn');
 
         function switchTab(index) {
             const viewWidth = window.innerWidth;
@@ -997,25 +1022,70 @@
         }
 
         async function fetchWeather() {
-            try {
-                const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=55.7558&longitude=37.6173&current=temperature_2m,relative_humidity_2m,wind_speed_10m,wind_direction_10m&wind_speed_unit=ms');
-                const data = await res.json();
-                const temp = data.current.temperature_2m;
-                const hum = data.current.relative_humidity_2m;
-                const windSpeed = data.current.wind_speed_10m;
-                const windDir = data.current.wind_direction_10m;
-                const dirs = ['С', 'СВ', 'В', 'ЮВ', 'Ю', 'ЮЗ', 'З', 'СЗ'];
-                const dirStr = dirs[Math.round(windDir / 45) % 8];
-                
-                const wTemp = document.getElementById('w-temp');
-                const wHum = document.getElementById('w-hum');
-                const wWind = document.getElementById('w-wind');
+            const lat = 55.75;
+            const lon = 37.62;
+            const yandexApiKey = 'ВАШ_YANDEX_API_KEY'; // Укажите реальный ключ для работы Яндекс.Погоды
 
+            const wTemp = document.getElementById('w-temp');
+            const wHum = document.getElementById('w-hum');
+            const wWind = document.getElementById('w-wind');
+            const dropIcon = document.querySelector('.icon-drop');
+
+            const updateUI = (temp, hum, windSpeed, dirStr, isRaining) => {
                 if (wTemp) wTemp.innerText = `${temp > 0 ? '+' : ''}${Math.round(temp)}°`;
                 if (wHum) wHum.innerText = `${Math.round(hum)}%`;
                 if (wWind) wWind.innerText = `${dirStr} ${Math.round(windSpeed)}`;
+                
+                if (dropIcon) {
+                    if (isRaining) {
+                        dropIcon.style.color = '#0A84FF'; 
+                        dropIcon.style.filter = 'drop-shadow(0 0 8px rgba(10, 132, 255, 0.6))';
+                    } else {
+                        dropIcon.style.color = 'var(--text-secondary)'; 
+                        dropIcon.style.filter = 'none';
+                    }
+                }
+            };
+
+            try {
+                const yandexRes = await fetch(`https://api.weather.yandex.ru/v2/informers?lat=${lat}&lon=${lon}`, {
+                    headers: { 'X-Yandex-API-Key': yandexApiKey }
+                });
+
+                if (!yandexRes.ok) throw new Error('Yandex API Error');
+
+                const data = await yandexRes.json();
+                const temp = data.fact.feels_like; 
+                const hum = data.fact.humidity;
+                const windSpeed = data.fact.wind_speed;
+                const precipStrength = data.fact.precip_strength; 
+                
+                const yandexWindDirs = { 'nw': 'СЗ', 'n': 'С', 'ne': 'СВ', 'e': 'В', 'se': 'ЮВ', 's': 'Ю', 'sw': 'ЮЗ', 'w': 'З', 'c': 'Штиль' };
+                const dirStr = yandexWindDirs[data.fact.wind_dir] || '';
+
+                updateUI(temp, hum, windSpeed, dirStr, precipStrength > 0);
+
             } catch (e) {
-                console.error('Ошибка получения погоды:', e);
+                console.warn('Яндекс.Погода недоступна (ошибка сети или ключа), переключаемся на Open-Meteo...', e);
+                
+                try {
+                    const omRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=apparent_temperature,relative_humidity_2m,wind_speed_10m,wind_direction_10m,precipitation&wind_speed_unit=ms`);
+                    const omData = await omRes.json();
+                    
+                    const temp = omData.current.apparent_temperature; 
+                    const hum = omData.current.relative_humidity_2m;
+                    const windSpeed = omData.current.wind_speed_10m;
+                    const windDir = omData.current.wind_direction_10m;
+                    const precip = omData.current.precipitation;
+                    
+                    const dirs = ['С', 'ССВ', 'СВ', 'ВСВ', 'В', 'ВЮВ', 'ЮВ', 'ЮЮВ', 'Ю', 'ЮЮЗ', 'ЮЗ', 'ЗЮЗ', 'З', 'ЗСЗ', 'СЗ', 'ССЗ'];
+                    const dirStr = dirs[Math.round(windDir / 22.5) % 16]; 
+                    
+                    updateUI(temp, hum, windSpeed, dirStr, precip > 0);
+
+                } catch (fallbackError) {
+                    console.error('Ошибка получения погоды из обоих источников:', fallbackError);
+                }
             }
         }
 
@@ -1253,33 +1323,26 @@
             const canvasArchive = document.getElementById('archiveChart');
             if (canvasArchive) {
                 const ctxArchive = canvasArchive.getContext('2d');
-                const archiveDates = Object.keys(ARCHIVE_2025);
                 
-                const formatMonth = (m) => {
-                    const months = {'03': 'Мар', '04': 'Апр', '05': 'Мая', '06': 'Июн', '07': 'Июл', '08': 'Авг', '09': 'Сен'};
-                    return months[m] || m;
-                };
-                
-                const labelsArchive = archiveDates.map(d => `${parseInt(d.split('-')[1])} ${formatMonth(d.split('-')[0])}`);
-
-                if (archiveChartInst) archiveChartInst.destroy();
+                // Изначальная инициализация графика без данных. 
+                // Данные будут добавлены сразу после вызовом updateArchiveChart().
                 archiveChartInst = new Chart(ctxArchive, {
                     type: 'bar',
                     data: {
-                        labels: labelsArchive,
+                        labels: [],
                         datasets: [
-                            { label: 'Ольха (2025)', data: archiveDates.map(d => ARCHIVE_2025[d].alder > 0 ? ARCHIVE_2025[d].alder : null), backgroundColor: '#FF9F0A', borderRadius: 4 },
-                            { label: 'Орешник (2025)', data: archiveDates.map(d => ARCHIVE_2025[d].hazel > 0 ? ARCHIVE_2025[d].hazel : null), backgroundColor: '#E5C07B', borderRadius: 4 },
-                            { label: 'Береза (2025)', data: archiveDates.map(d => ARCHIVE_2025[d].birch > 0 ? ARCHIVE_2025[d].birch : null), backgroundColor: '#FF453A', borderRadius: 4 },
-                            { label: 'Дуб (2025)', data: archiveDates.map(d => ARCHIVE_2025[d].oak > 0 ? ARCHIVE_2025[d].oak : null), backgroundColor: '#0A84FF', borderRadius: 4 },
+                            { label: 'Ольха (2025)', data: [], backgroundColor: '#FF9F0A', borderRadius: 4 },
+                            { label: 'Орешник (2025)', data: [], backgroundColor: '#E5C07B', borderRadius: 4 },
+                            { label: 'Береза (2025)', data: [], backgroundColor: '#FF453A', borderRadius: 4 },
+                            { label: 'Дуб (2025)', data: [], backgroundColor: '#0A84FF', borderRadius: 4 },
                             
-                            { label: 'Ольха (2023)', data: archiveDates.map(d => ARCHIVE_2025[d].alder_2023 > 0 ? ARCHIVE_2025[d].alder_2023 : null), backgroundColor: '#FFD60A', borderRadius: 4, hidden: true },
-                            { label: 'Орешник (2023)', data: archiveDates.map(d => ARCHIVE_2025[d].hazel_2023 > 0 ? ARCHIVE_2025[d].hazel_2023 : null), backgroundColor: '#EBEBF599', borderRadius: 4, hidden: true },
-                            { label: 'Береза (2023)', data: archiveDates.map(d => ARCHIVE_2025[d].birch_2023 > 0 ? ARCHIVE_2025[d].birch_2023 : null), backgroundColor: '#32D74B', borderRadius: 4, hidden: true },
+                            { label: 'Ольха (2023)', data: [], backgroundColor: '#FFD60A', borderRadius: 4, hidden: true },
+                            { label: 'Орешник (2023)', data: [], backgroundColor: '#EBEBF599', borderRadius: 4, hidden: true },
+                            { label: 'Береза (2023)', data: [], backgroundColor: '#32D74B', borderRadius: 4, hidden: true },
                             
-                            { label: 'Ольха (2026)', data: archiveDates.map(d => ARCHIVE_2025[d].alder_2026 > 0 ? ARCHIVE_2025[d].alder_2026 : null), backgroundColor: '#64D2FF', borderRadius: 4 },
-                            { label: 'Орешник (2026)', data: archiveDates.map(d => ARCHIVE_2025[d].hazel_2026 > 0 ? ARCHIVE_2025[d].hazel_2026 : null), backgroundColor: '#FFD60A', borderRadius: 4 },
-                            { label: 'Береза (2026)', data: archiveDates.map(d => ARCHIVE_2025[d].birch_2026 > 0 ? ARCHIVE_2025[d].birch_2026 : null), backgroundColor: '#BF5AF2', borderRadius: 4 }
+                            { label: 'Ольха (2026)', data: [], backgroundColor: '#64D2FF', borderRadius: 4 },
+                            { label: 'Орешник (2026)', data: [], backgroundColor: '#FFD60A', borderRadius: 4 },
+                            { label: 'Береза (2026)', data: [], backgroundColor: '#BF5AF2', borderRadius: 4 }
                         ]
                     },
                     options: {
@@ -1291,7 +1354,15 @@
                                 callbacks: {
                                     afterBody: function(context) {
                                         if (context[0].dataset.label.includes('2023') || context[0].dataset.label.includes('2026')) return ''; 
-                                        const dateKey = archiveDates[context[0].dataIndex];
+                                        // Восстановление оригинальной даты из лейбла для получения тултипов
+                                        const reverseFormatMonth = {'Мар':'03', 'Апр':'04', 'Мая':'05', 'Июн':'06', 'Июл':'07', 'Авг':'08', 'Сен':'09'};
+                                        const parts = context[0].label.split(' ');
+                                        const d = parts[0].padStart(2, '0');
+                                        const m = reverseFormatMonth[parts[1]];
+                                        const dateKey = `${m}-${d}`;
+                                        
+                                        if(!ARCHIVE_2025[dateKey]) return '';
+                                        
                                         const temp = ARCHIVE_2025[dateKey].temp;
                                         const note = ARCHIVE_2025[dateKey].note;
                                         let str = temp ? `Погода: ${temp}` : '';
@@ -1317,6 +1388,9 @@
                         }
                     }
                 });
+                
+                // Первичное обновление данных (режим 'Сезон')
+                updateArchiveChart();
             }
 
             generateArchiveLegend(archiveChartInst);
@@ -1368,6 +1442,107 @@
                     }
                 });
             }
+        }
+
+        // --- Управление временными диапазонами Архива ---
+        function setArchiveRange(range, index) {
+            archiveRange = range;
+            currentArchiveViewDate = new Date(); // Сброс на "сегодня"
+            
+            const indicator = document.getElementById('archive-range-indicator');
+            const btns = document.querySelectorAll('#archive-range-control .segment-btn');
+            if (indicator && btns.length) {
+                btns.forEach((b, i) => b.classList.toggle('active', i === index));
+                indicator.style.transform = `translateX(${index * 100}%)`;
+            }
+            
+            updateArchiveChart();
+        }
+
+        function navigateArchive(direction) {
+            if (archiveRange === 'month') {
+                currentArchiveViewDate.setMonth(currentArchiveViewDate.getMonth() + direction);
+            } else if (archiveRange === 'week') {
+                currentArchiveViewDate.setDate(currentArchiveViewDate.getDate() + (direction * 7));
+            }
+            updateArchiveChart();
+        }
+
+        function updateArchiveChart() {
+            if (!archiveChartInst) return;
+
+            const prevBtn = document.getElementById('archive-prev-btn');
+            const nextBtn = document.getElementById('archive-next-btn');
+            const labelEl = document.getElementById('archive-current-range-label');
+
+            if (archiveRange === 'season') {
+                if(prevBtn) prevBtn.style.display = 'none';
+                if(nextBtn) nextBtn.style.display = 'none';
+                if(labelEl) labelEl.innerText = '';
+            } else {
+                if(prevBtn) prevBtn.style.display = 'block';
+                if(nextBtn) nextBtn.style.display = 'block';
+                
+                if (archiveRange === 'month') {
+                    const months = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'];
+                    if(labelEl) labelEl.innerText = `${months[currentArchiveViewDate.getMonth()]} ${currentArchiveViewDate.getFullYear()}`;
+                } else if (archiveRange === 'week') {
+                    const start = new Date(currentArchiveViewDate);
+                    start.setDate(start.getDate() - 3);
+                    const end = new Date(currentArchiveViewDate);
+                    end.setDate(end.getDate() + 3);
+                    const fm = (d) => String(d.getMonth()+1).padStart(2, '0');
+                    const fd = (d) => String(d.getDate()).padStart(2, '0');
+                    if(labelEl) labelEl.innerText = `${fd(start)}.${fm(start)} - ${fd(end)}.${fm(end)}`;
+                }
+            }
+
+            const allDates = Object.keys(ARCHIVE_2025);
+            let filteredDates = [];
+
+            if (archiveRange === 'season') {
+                filteredDates = allDates;
+            } else if (archiveRange === 'month') {
+                const targetMonth = String(currentArchiveViewDate.getMonth() + 1).padStart(2, '0');
+                filteredDates = allDates.filter(d => d.startsWith(targetMonth));
+            } else if (archiveRange === 'week') {
+                const start = new Date(currentArchiveViewDate);
+                start.setDate(start.getDate() - 3);
+                start.setHours(0,0,0,0);
+                const end = new Date(currentArchiveViewDate);
+                end.setDate(end.getDate() + 3);
+                end.setHours(23,59,59,999);
+
+                filteredDates = allDates.filter(d => {
+                    const [m, day] = d.split('-');
+                    // Так как в ключах нет года, соотносим с годом выбранной даты навигатора
+                    const dObj = new Date(currentArchiveViewDate.getFullYear(), parseInt(m)-1, parseInt(day));
+                    return dObj >= start && dObj <= end;
+                });
+            }
+
+            const formatMonth = (m) => {
+                const months = {'03': 'Мар', '04': 'Апр', '05': 'Мая', '06': 'Июн', '07': 'Июл', '08': 'Авг', '09': 'Сен'};
+                return months[m] || m;
+            };
+            const newLabels = filteredDates.map(d => `${parseInt(d.split('-')[1])} ${formatMonth(d.split('-')[0])}`);
+
+            // Маппинг данных из ARCHIVE_2025 в индексы датасетов
+            const keyMapping = [
+                'alder', 'hazel', 'birch', 'oak',
+                'alder_2023', 'hazel_2023', 'birch_2023',
+                'alder_2026', 'hazel_2026', 'birch_2026'
+            ];
+
+            archiveChartInst.data.labels = newLabels;
+            keyMapping.forEach((key, idx) => {
+                if (archiveChartInst.data.datasets[idx]) {
+                     archiveChartInst.data.datasets[idx].data = filteredDates.map(d => ARCHIVE_2025[d][key] > 0 ? ARCHIVE_2025[d][key] : null);
+                }
+            });
+
+            archiveChartInst.update();
+            lucide.createIcons(); // Для кнопок навигации
         }
 
         // Кастомная Flex-легенда для Архива
