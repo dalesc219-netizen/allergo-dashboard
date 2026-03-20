@@ -733,13 +733,9 @@
                     <!-- Кастомная сгруппированная легенда -->
                     <div id="archive-custom-legend" class="custom-legend-container"></div>
 
-                    <!-- Обертка графика со стрелками навигации -->
-                    <div style="display: flex; align-items: stretch; gap: 5px; margin-left: -15px; margin-right: -15px;">
-                        <button id="archive-prev-btn" onclick="navigateArchive(-1)" style="display:none; background:transparent; border:none; color:var(--text-secondary); cursor:pointer; padding: 10px;"><i data-lucide="chevron-left" size="24"></i></button>
-                        <div class="chart-container" style="flex:1;">
-                            <canvas id="archiveChart"></canvas>
-                        </div>
-                        <button id="archive-next-btn" onclick="navigateArchive(1)" style="display:none; background:transparent; border:none; color:var(--text-secondary); cursor:pointer; padding: 10px;"><i data-lucide="chevron-right" size="24"></i></button>
+                    <!-- Обертка графика с поддержкой свайпов -->
+                    <div class="chart-container" id="archive-chart-wrapper">
+                        <canvas id="archiveChart"></canvas>
                     </div>
                 </div>
 
