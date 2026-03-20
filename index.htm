@@ -3,20 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Пыльца Контроль 2.0</title>
-
-    <!-- Библиотеки -->
+    <title>Пыльца Контроль</title>
+    
+    <!-- Подключение библиотек -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
         :root {
-            /* 2026 Liquid Glass Theme */
-            --bg-color: #121212;
-            --surface-color: rgba(255, 255, 255, 0.03); /* Ультра-прозрачный фон */
+            /* Apple Dark Theme Colors */
+            --bg-color: #000000;
+            --surface-color: rgba(28, 28, 30, 0.65);
             --surface-solid: #1C1C1E;
             --text-main: #FFFFFF;
-            --text-secondary: rgba(235, 235, 245, 0.6);
+            --text-secondary: #EBEBF599;
             --accent: #0A84FF;
             
             /* Risk Colors */
@@ -27,12 +27,14 @@
             --burgundy: #8A0303;
 
             --glass-border: rgba(255, 255, 255, 0.1);
-            
-            /* Spring Animation Curve */
-            --spring-easing: cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
@@ -41,196 +43,565 @@
             overflow: hidden;
         }
 
-        ::-webkit-scrollbar { display: none; }
+        ::-webkit-scrollbar {
+            display: none;
+        }
 
         .app-container {
-            display: flex; flex-direction: column; height: 100vh; height: 100dvh;
-            /* Safe areas support (iPhone) */
-            padding-top: env(safe-area-inset-top);
-            padding-right: env(safe-area-inset-right);
-            padding-bottom: env(safe-area-inset-bottom);
-            padding-left: env(safe-area-inset-left);
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            height: 100dvh;
         }
 
         .header {
-            padding: 20px 20px 15px; background: rgba(18, 18, 18, 0.7);
-            backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
-            z-index: 100; border-bottom: 0.5px solid var(--glass-border);
+            padding: max(50px, env(safe-area-inset-top)) 20px 15px;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            z-index: 100;
+            border-bottom: 0.5px solid var(--glass-border);
         }
 
-        .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; gap: 5px; }
-        .app-title { font-size: clamp(18px, 5.5vw, 24px); font-weight: 700; margin: 0; display: flex; align-items: baseline; gap: 6px; }
-        .date-text { color: var(--text-secondary); font-size: clamp(10px, 3vw, 14px); font-weight: 500; }
-        
-        .header-weather { display: flex; align-items: center; gap: clamp(4px, 1.5vw, 10px); font-size: clamp(10px, 3vw, 13px); font-weight: 600; }
-        .weather-stat-mini { display: flex; align-items: center; gap: 3px; }
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            flex-wrap: nowrap;
+            gap: 5px;
+            white-space: nowrap;
+        }
 
-        .segment-control { display: flex; background: var(--surface-solid); border-radius: 9px; padding: 2px; position: relative; }
-        .segment-btn { flex: 1; padding: 8px 0; text-align: center; font-size: 14px; font-weight: 600; color: var(--text-secondary); border: none; background: transparent; z-index: 2; cursor: pointer; transition: color 0.3s; }
-        .segment-btn.active { color: var(--text-main); }
-        .segment-indicator { position: absolute; top: 2px; bottom: 2px; width: calc(33.33% - 2px); background: #636366; border-radius: 7px; z-index: 1; transition: transform 0.4s var(--spring-easing); }
+        .app-title {
+            font-size: clamp(18px, 5.5vw, 24px);
+            font-weight: 700;
+            margin: 0;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: baseline;
+            gap: 6px;
+        }
+
+        .segment-control {
+            display: flex;
+            background: var(--surface-solid);
+            border-radius: 9px;
+            padding: 2px;
+            position: relative;
+        }
+
+        .segment-btn {
+            flex: 1;
+            padding: 8px 0;
+            text-align: center;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            border: none;
+            background: transparent;
+            z-index: 2;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .segment-btn.active {
+            color: var(--text-main);
+        }
+
+        .segment-indicator {
+            position: absolute;
+            top: 2px;
+            bottom: 2px;
+            width: calc(50% - 2px);
+            background: #636366;
+            border-radius: 7px;
+            z-index: 1;
+            transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
 
         .views-wrapper {
-            flex: 1; display: flex; overflow-x: hidden; /* JS handle swipes */
-            scroll-behavior: smooth; padding-bottom: 20px;
+            flex: 1;
+            display: flex;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            scroll-behavior: smooth;
+            padding-bottom: 20px;
         }
-        .view-pane { min-width: 100vw; width: 100vw; flex-shrink: 0; padding: 20px; overflow-y: auto; transition: transform 0.4s var(--spring-easing); }
 
-        /* Liquid Glass Cards */
+        .view-pane {
+            min-width: 100vw;
+            width: 100vw;
+            scroll-snap-align: start;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
         .card {
             background: var(--surface-color);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border);
+            border: 0.5px solid var(--glass-border);
             border-radius: 20px;
             padding: 20px;
             margin-bottom: 15px;
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
         }
 
-        .section-title { font-size: 18px; font-weight: 600; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
-        
-        .risk-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .risk-badge { padding: 6px 12px; border-radius: 20px; font-size: 14px; font-weight: 700; text-transform: uppercase; }
-
-        /* Breathe Effect for High/Extreme Risks */
-        @keyframes breathe {
-            0%, 100% { box-shadow: 0 0 5px var(--breathe-color, rgba(0,0,0,0)); }
-            50% { box-shadow: 0 0 25px var(--breathe-color, rgba(0,0,0,0)); }
-        }
-        .breathe-effect { animation: breathe 2.5s infinite ease-in-out; }
-
-        .pollen-list { display: flex; flex-direction: column; gap: 12px; }
-        .pollen-item { display: flex; align-items: center; justify-content: space-between; padding: 15px; background: rgba(255, 255, 255, 0.03); border-radius: 16px; border: 1px solid rgba(255,255,255,0.05); }
-        .pollen-left { display: flex; align-items: center; gap: 12px; }
-        .pollen-icon-wrapper { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; }
-        .pollen-name { font-size: 16px; font-weight: 600; }
-        .pollen-value { font-size: 20px; font-weight: 700; text-align: right; }
-        .pollen-trend { font-size: 12px; color: var(--text-secondary); display: flex; align-items: center; gap: 4px; justify-content: flex-end; }
-
-        .chart-container { position: relative; height: 200px; width: 100%; }
-
-        /* Custom Legend */
-        .custom-legend-container { display: flex; flex-wrap: wrap; gap: 15px; margin-bottom: 20px; align-items: flex-start; }
-        .legend-group { display: flex; flex-direction: column; gap: 8px; flex: 1 1 80px; max-width: 140px; }
-        .legend-group-title { font-size: 13px; font-weight: 700; color: var(--text-main); margin-bottom: 2px; border-bottom: 1px solid var(--glass-border); padding-bottom: 4px; }
-        .legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-secondary); cursor: pointer; transition: opacity 0.2s; }
-        .legend-item.hidden-dataset { opacity: 0.35; text-decoration: line-through; }
-        .legend-color-box { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
-
-        /* UI Elements */
-        .add-data-btn {
-            background: rgba(255, 255, 255, 0.1); border: none; color: var(--text-main); width: 32px; height: 32px;
-            border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: background 0.2s;
-        }
-        .add-data-btn:active { background: rgba(255, 255, 255, 0.2); }
-
-        .login-btn {
-            background: var(--accent); color: white; border: none; padding: 16px; width: 100%;
-            border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer; transition: transform 0.2s;
-        }
-        .login-btn:active { transform: scale(0.95); }
-        .login-btn:disabled { background: #333; color: #888; cursor: not-allowed; transform: none; }
-
-        .data-input {
-            width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--glass-border);
-            background: rgba(0, 0, 0, 0.5); color: white; font-size: 16px; outline: none; transition: border-color 0.2s, color 0.2s;
-        }
-        .data-input:focus { border-color: var(--accent); }
-        .data-input:disabled { opacity: 0.3; background: rgba(0,0,0,0.3); border-color: transparent; color: transparent; }
-        
-        .data-input.amber-border { border-color: var(--high); color: var(--high); }
-        .warning-icon { position: absolute; right: 12px; top: 12px; color: var(--high); display: none; }
-        .data-input.amber-border + .warning-icon { display: block; }
-        .amber-alert-text { font-size: 11px; color: var(--high); margin-top: 6px; display: none; line-height: 1.3; }
-
-        /* Spring Modal Animations */
-        .login-overlay {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; height: 100dvh;
-            background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
-            z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center;
-            transition: opacity 0.4s ease; opacity: 1; pointer-events: auto;
-        }
-        .login-card {
-            background: var(--surface-color); border: 1px solid var(--glass-border); border-radius: 24px;
-            padding: 30px 20px; width: 85%; max-width: 340px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.5);
-            transition: transform 0.6s var(--spring-easing), opacity 0.4s ease;
-            transform: scale(1) translateY(0); opacity: 1;
+        .risk-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
         }
 
-        .password-input {
-            width: 100%; padding: 16px; border-radius: 12px; border: 1px solid var(--glass-border);
-            background: rgba(0, 0, 0, 0.5); color: white; font-size: 24px; text-align: center;
-            margin: 25px 0 5px; outline: none; letter-spacing: 10px;
+        .risk-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
         }
-        .error-text { color: var(--critical); font-size: 13px; min-height: 18px; margin-bottom: 20px; opacity: 0; }
-        .error-text.show { opacity: 1; }
 
-        .toggle-switch { position: relative; display: inline-block; width: 40px; height: 22px; }
+        .pollen-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .pollen-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+        }
+
+        .pollen-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .pollen-icon-wrapper {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .pollen-name {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .pollen-value {
+            font-size: 20px;
+            font-weight: 700;
+            text-align: right;
+        }
+
+        .pollen-trend {
+            font-size: 12px;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            justify-content: flex-end;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 200px;
+            width: 100%;
+        }
+
+        /* --- Кастомная легенда для архива (Надежная Flex-версия) --- */
+        .custom-legend-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 20px;
+            align-items: flex-start;
+        }
+        .legend-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            flex: 1 1 80px; /* Автоматические колонки с минимальной шириной */
+            max-width: 140px;
+        }
+        .legend-group-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 2px;
+            border-bottom: 1px solid var(--glass-border);
+            padding-bottom: 4px;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: opacity 0.2s, text-decoration 0.2s;
+        }
+        .legend-item:active {
+            opacity: 0.7;
+        }
+        .legend-item.hidden-dataset {
+            opacity: 0.35;
+            text-decoration: line-through;
+        }
+        .legend-color-box {
+            width: 10px;
+            height: 10px;
+            border-radius: 3px;
+            flex-shrink: 0;
+        }
+
+        /* --- НОВЫЙ UI МОДАЛЬНОГО ОКНА (ТЗ) --- */
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 40px;
+            height: 22px;
+        }
         .toggle-switch input { opacity: 0; width: 0; height: 0; }
-        .toggle-switch .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(255, 255, 255, 0.2); border-radius: 22px; transition: .3s; }
-        .toggle-switch .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 3px; bottom: 3px; background-color: white; border-radius: 50%; transition: .3s; }
+        .toggle-switch .slider {
+            position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
+            background-color: rgba(255, 255, 255, 0.2); border-radius: 22px; transition: .3s;
+        }
+        .toggle-switch .slider:before {
+            position: absolute; content: ""; height: 16px; width: 16px;
+            left: 3px; bottom: 3px; background-color: white; border-radius: 50%; transition: .3s;
+        }
         .toggle-switch input:checked + .slider { background-color: var(--safe); }
         .toggle-switch input:checked + .slider:before { transform: translateX(18px); }
 
-        .prev-value-badge { font-size: 12px; color: var(--accent); background: rgba(10, 132, 255, 0.15); padding: 4px 8px; border-radius: 6px; cursor: pointer; font-weight: 500; }
+        .allergen-input-group { margin-bottom: 20px; text-align: left; }
+        .allergen-input-header { display: flex; justify-content: space-between; margin-bottom: 8px; align-items: center; }
         
+        .prev-value-badge {
+            font-size: 12px;
+            color: var(--accent);
+            background: rgba(10, 132, 255, 0.15);
+            padding: 4px 8px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: 0.2s;
+            font-weight: 500;
+        }
+        .prev-value-badge:active { opacity: 0.7; }
+
+        .input-wrapper { position: relative; }
+        .data-input {
+            width: 100%;
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid var(--glass-border);
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.2s, color 0.2s;
+        }
+        .data-input:focus { border-color: var(--accent); }
+        .data-input::placeholder { color: var(--text-secondary); opacity: 0.7; }
+        .data-input:disabled { opacity: 0.3; background: rgba(0,0,0,0.3); border-color: transparent; cursor: not-allowed; color: transparent; }
+
+        /* Янтарные уведомления */
+        .data-input.amber-border { border-color: var(--high); color: var(--high); }
+        .warning-icon { position: absolute; right: 12px; top: 12px; color: var(--high); display: none; pointer-events: none; }
+        .data-input.amber-border + .warning-icon { display: block; }
+        .amber-alert-text { font-size: 11px; color: var(--high); margin-top: 6px; display: none; line-height: 1.3; }
+
+        /* Аккордеон "Остальные" */
         .season-accordion { margin-top: 25px; border-top: 1px solid var(--glass-border); padding-top: 15px; }
         .season-header { display: flex; justify-content: space-between; font-size: 14px; color: var(--text-secondary); cursor: pointer; align-items: center; padding: 5px 0; }
         .season-content { display: none; margin-top: 15px; }
         .season-content.open { display: block; }
 
-        /* Symptom Journal */
-        .journal-textarea {
-            width: 100%; height: 100px; padding: 12px; border-radius: 12px; border: 1px solid var(--glass-border);
-            background: rgba(0,0,0,0.3); color: white; resize: none; margin-bottom: 10px; font-family: inherit;
-        }
-        .journal-entry { background: rgba(255,255,255,0.05); padding: 12px; border-radius: 12px; margin-bottom: 10px; border-left: 3px solid var(--accent); text-align: left; }
-        .journal-date { font-size: 11px; color: var(--text-secondary); margin-bottom: 4px; }
+        .login-btn:disabled { background: #333333; color: #888888; cursor: not-allowed; transform: none; }
         
-        /* Custom Chart Tooltip */
+        /* Стили для кастомного тултипа на графике */
         #custom-chart-tooltip {
-            position: absolute; background: rgba(28, 28, 30, 0.95); backdrop-filter: blur(10px);
-            border: 1px solid var(--glass-border); border-radius: 12px; padding: 12px; color: white;
-            pointer-events: auto; transition: opacity 0.2s ease; z-index: 1000; box-shadow: 0 10px 25px rgba(0,0,0,0.6);
+            position: absolute;
+            background: rgba(28, 28, 30, 0.95);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 12px;
+            padding: 12px;
+            color: white;
+            pointer-events: auto; /* Позволяет кликать на кнопку внутри */
+            transition: opacity 0.2s ease;
+            z-index: 1000;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.6);
+            min-width: 145px;
         }
 
-        .shake { animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both; }
+        /* Кнопка добавления данных */
+        .add-data-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: var(--text-main);
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .add-data-btn:active {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .summary-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        .summary-table th {
+            text-align: left;
+            padding-bottom: 10px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .summary-table td {
+            padding: 12px 0;
+            border-top: 0.5px solid var(--glass-border);
+        }
+        
+        .status-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 6px;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 30px 10px;
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .date-text {
+            color: var(--text-secondary);
+            font-size: clamp(10px, 3vw, 14px);
+            font-weight: 500;
+        }
+
+        .header-weather {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: clamp(4px, 1.5vw, 10px);
+            font-size: clamp(10px, 3vw, 13px);
+            font-weight: 600;
+            white-space: nowrap;
+            margin-left: auto;
+        }
+
+        .weather-stat-mini {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+        }
+
+        @keyframes anim-temp {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+        }
+        @keyframes anim-wind {
+            0%, 100% { transform: translateX(0); }
+            50% { transform: translateX(2px) rotate(5deg); }
+        }
+        @keyframes anim-drop {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-2px) scale(0.95); }
+        }
+
+        .icon-temp { animation: anim-temp 3s infinite ease-in-out; color: var(--critical); }
+        .icon-wind { animation: anim-wind 2.5s infinite ease-in-out; color: var(--safe); }
+        .icon-drop { animation: anim-drop 2s infinite ease-in-out; color: var(--accent); }
+
+        .pollen-anim-icon {
+            animation: pollen-sway 3s infinite ease-in-out;
+            transform-origin: bottom center;
+        }
+        @keyframes pollen-sway {
+            0%, 100% { transform: rotate(0deg) scale(1); }
+            50% { transform: rotate(8deg) scale(1.05); }
+        }
+
+        .login-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            height: 100dvh;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.4s ease;
+        }
+
+        .login-overlay.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .login-card {
+            background: var(--surface-color);
+            border: 0.5px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 30px 20px;
+            width: 85%;
+            max-width: 320px;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .password-input {
+            width: 100%;
+            padding: 16px;
+            border-radius: 12px;
+            border: 1px solid var(--glass-border);
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            font-size: 24px;
+            text-align: center;
+            margin: 25px 0 5px;
+            outline: none;
+            letter-spacing: 10px;
+            transition: border-color 0.2s;
+        }
+
+        .password-input:focus {
+            border-color: var(--accent);
+        }
+
+        .login-btn {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 16px;
+            width: 100%;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, background 0.2s;
+        }
+
+        .login-btn:active {
+            transform: scale(0.95);
+            background: #0071e3;
+        }
+
+        .error-text {
+            color: var(--critical);
+            font-size: 13px;
+            min-height: 18px;
+            margin-bottom: 20px;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .error-text.show {
+            opacity: 1;
+        }
+
+        .shake {
+            animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both;
+        }
+
         @keyframes shake {
             10%, 90% { transform: translate3d(-2px, 0, 0); }
             20%, 80% { transform: translate3d(4px, 0, 0); }
             30%, 50%, 70% { transform: translate3d(-6px, 0, 0); }
             40%, 60% { transform: translate3d(6px, 0, 0); }
         }
+
+        @media (orientation: landscape) and (max-height: 600px) {
+            .header {
+                padding: max(15px, env(safe-area-inset-top)) 20px 10px;
+            }
+            .header-top {
+                margin-bottom: 10px;
+            }
+            .app-title {
+                font-size: 18px;
+            }
+            .card {
+                padding: 15px;
+                margin-bottom: 10px;
+            }
+            .chart-container {
+                height: 160px;
+            }
+            .views-wrapper {
+                padding-bottom: 20px;
+            }
+        }
+
     </style>
 </head>
 <body>
 
-    <!-- Экран безопасности (Прямая проверка ПИН-кода) -->
     <div class="login-overlay" id="login-overlay">
         <div class="login-card" id="login-card">
             <i data-lucide="shield-check" size="56" style="color: var(--accent); margin-bottom: 15px;"></i>
-            <h2 style="font-size: 24px; margin-bottom: 8px;">Secure Access</h2>
-            <p style="font-size: 14px; color: var(--text-secondary);">Введите PIN-код (DEV: 885522)</p>
+            <h2 style="font-size: 24px; margin-bottom: 8px;">Доступ закрыт</h2>
+            <p style="font-size: 14px; color: var(--text-secondary);">Введите пароль для просмотра данных</p>
             
             <input type="password" id="pwd-input" class="password-input" placeholder="••••••" inputmode="numeric" maxlength="6">
-            <div id="login-error" class="error-text">Неверный PIN-код 😔</div>
+            <div id="login-error" class="error-text">Извините, неверный пароль 😔</div>
             
             <button class="login-btn" onclick="checkPassword()">Войти</button>
         </div>
     </div>
 
-    <!-- Модальное окно "Внести данные" -->
-    <div class="login-overlay" id="add-data-overlay" style="opacity: 0; pointer-events: none;">
-        <div class="login-card" id="add-data-card" style="padding: 20px; max-height: 90vh; overflow-y: auto; transform: scale(0.9) translateY(20px); opacity: 0;">
+    <!-- Экран добавления данных (Обновленный по ТЗ) -->
+    <div class="login-overlay hidden" id="add-data-overlay" style="display: none;">
+        <div class="login-card" style="padding: 20px; max-height: 90vh; overflow-y: auto;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                 <h3 style="margin: 0; font-size: 18px;">Внести данные</h3>
                 <i data-lucide="x" size="24" style="cursor: pointer; color: var(--text-secondary);" onclick="closeAddDataModal()"></i>
             </div>
 
+            <!-- Блок даты, погоды и глобальный переключатель -->
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid var(--glass-border); flex-wrap: wrap; gap: 15px;">
                 <div style="width: 100%; display: flex; justify-content: space-between; align-items: center;">
-                    <span style="font-size: 14px; font-weight: 600; color: var(--text-secondary);">Дата сбора:</span>
+                    <span style="font-size: 14px; font-weight: 600; color: var(--text-secondary);">Дата сбора (ловушка):</span>
                     <input type="date" id="input-date" class="data-input" style="width: auto; padding: 6px 12px; margin: 0; min-height: 35px;" onchange="handleDateChange()">
                 </div>
                 <div style="width: 100%; display: flex; justify-content: space-between; align-items: center;">
@@ -246,6 +617,7 @@
                 </div>
             </div>
 
+            <!-- Контейнеры для смарт-сезонности -->
             <div id="active-allergens-container"></div>
             
             <div class="season-accordion">
@@ -256,22 +628,23 @@
                 <div class="season-content" id="archive-allergens-container"></div>
             </div>
 
+            <!-- Кнопки управления -->
             <div style="display: flex; gap: 10px; margin-top: 20px;">
-                <button class="login-btn" id="delete-data-btn" style="background: rgba(255,69,58,0.15); color: var(--critical); display: none;" onclick="deleteManualData()">Удалить</button>
-                <button class="login-btn" id="save-data-btn" style="flex: 2;" onclick="commitSave()" disabled>Сохранить</button>
+                <button class="login-btn" id="delete-data-btn" style="background: rgba(255,69,58,0.15); color: var(--critical); display: none;" onclick="deleteData()">Удалить</button>
+                <button class="login-btn" id="save-data-btn" style="flex: 2;" onclick="commitSave()" disabled>Сохранить данные</button>
             </div>
         </div>
     </div>
 
-    <!-- Основной интерфейс -->
     <div class="app-container">
         <header class="header">
             <div class="header-top">
-                <h1 class="app-title"><span id="loc-name">Москва</span> <span class="date-text" id="current-date"></span></h1>
+                <h1 class="app-title">Москва <span class="date-text" id="current-date"></span></h1>
+                
                 <div class="header-weather" id="live-weather">
-                    <div class="weather-stat-mini"><i data-lucide="thermometer" size="16" style="color:var(--critical)"></i><span id="w-temp">--</span></div>
-                    <div class="weather-stat-mini"><i data-lucide="wind" size="16" style="color:var(--safe)"></i><span id="w-wind">--</span></div>
-                    <div class="weather-stat-mini"><i data-lucide="droplet" size="16" style="color:var(--accent)"></i><span id="w-hum">--</span></div>
+                    <div class="weather-stat-mini"><i data-lucide="thermometer" size="16" class="icon-temp"></i><span id="w-temp">--</span></div>
+                    <div class="weather-stat-mini"><i data-lucide="wind" size="16" class="icon-wind"></i><span id="w-wind">--</span></div>
+                    <div class="weather-stat-mini"><i data-lucide="droplet" size="16" class="icon-drop"></i><span id="w-hum">--</span></div>
                 </div>
             </div>
             
@@ -279,27 +652,32 @@
                 <div class="segment-indicator" id="segment-indicator"></div>
                 <button class="segment-btn active" onclick="switchTab(0)">СЕГОДНЯ</button>
                 <button class="segment-btn" onclick="switchTab(1)">АРХИВ</button>
-                <button class="segment-btn" onclick="switchTab(2)">ЖУРНАЛ</button>
             </div>
         </header>
 
-        <div class="views-wrapper" id="views-wrapper">
+        <div class="views-wrapper" id="views-wrapper" onscroll="handleScroll()">
             
-            <!-- Вкладка 1: СЕГОДНЯ -->
+            <!-- VIEW 1: TODAY -->
             <div class="view-pane" id="view-today">
-                <div id="no-data-msg" style="display: none; text-align: center; color: var(--text-secondary); margin: 10px 0 30px;">
+                
+                <div id="no-data-msg" style="display: none; text-align: center; color: var(--text-secondary); margin-top: 10px; margin-bottom: 40px; font-size: 16px;">
                     Данных с ловушек за сегодня пока нет 🤷‍♂️
                 </div>
 
-                <div class="card" id="risk-card">
-                    <div class="risk-header" style="align-items: flex-start;">
+                <!-- ВОССТАНОВЛЕННЫЙ БЛОК: Заголовок с бейджем и данные ловушек -->
+                <div class="card">
+                    <div class="risk-header" style="margin-bottom: 15px; align-items: flex-start;">
                         <div>
                             <h3 class="section-title" style="margin-bottom: 2px;"><i data-lucide="microscope" size="18"></i> Данные ловушек</h3>
                             <div style="font-size: 11px; color: var(--text-secondary); margin-left: 26px;" id="measurement-date">Дата измерений: --</div>
                         </div>
-                        <div class="risk-badge" id="main-risk-badge">ОЦЕНКА...</div>
+                        <div class="risk-badge" id="main-risk-badge" style="background: rgba(255, 159, 10, 0.2); color: var(--high);">
+                            ВЫСОКИЙ
+                        </div>
                     </div>
-                    <div class="pollen-list" id="pollen-list"></div>
+                    <div class="pollen-list" id="pollen-list">
+                        <!-- Populated by JS -->
+                    </div>
                 </div>
 
                 <div class="card">
@@ -314,331 +692,945 @@
                     </div>
                 </div>
 
+                <!-- НОВЫЙ БЛОК: ПРОГНОЗ CAMS/SILAM -->
                 <div class="card">
                     <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
                         <div style="flex: 1;">
-                            <h3 class="section-title" style="margin-bottom: 2px;"><i data-lucide="radar" size="18"></i> CAMS / SILAM</h3>
-                            <p style="font-size: 11px; color: var(--text-secondary); line-height: 1.3;">Почасовой прогноз с наложением погоды.</p>
-                        </div>
-                        <div class="segment-control" style="width: 90px; padding: 2px; flex-shrink: 0; height: 26px;">
-                            <div class="segment-indicator" id="forecast-scale-indicator" style="width: calc(50% - 2px); background: #48484A;"></div>
-                            <button class="segment-btn active" id="btn-scale-lin" onclick="toggleForecastScale('linear')" style="font-size: 10px; padding: 0; line-height: 22px;">LIN</button>
-                            <button class="segment-btn" id="btn-scale-log" onclick="toggleForecastScale('logarithmic')" style="font-size: 10px; padding: 0; line-height: 22px;">LOG</button>
+                            <h3 class="section-title" style="margin-bottom: 2px;"><i data-lucide="radar" size="18"></i> FMI SILAM / Copernicus</h3>
+                            <p style="font-size: 11px; color: var(--text-secondary); line-height: 1.3;">Дневные максимумы на 5 дней вперед на основе атмосферных моделей.</p>
                         </div>
                     </div>
-                    <div class="chart-container" style="height: 250px; margin-top: 10px;">
+                    <div class="chart-container">
                         <canvas id="forecastChart"></canvas>
                     </div>
                 </div>
             </div>
 
-            <!-- Вкладка 2: АРХИВ -->
+            <!-- VIEW 2: ARCHIVE -->
             <div class="view-pane" id="view-archive">
+
                 <div class="card">
                     <h3 class="section-title"><i data-lucide="bar-chart-2" size="18"></i> Сравнение сезонов (Весна)</h3>
+                    <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 5px;">Эстафета аллергенов: Деревья</p>
+                    <p style="font-size: 11px; color: var(--text-secondary); margin-bottom: 15px;">* Логарифмическая шкала. Нажмите на пункт в легенде, чтобы показать/скрыть график.</p>
+
+                    <!-- Кастомная сгруппированная легенда -->
                     <div id="archive-custom-legend" class="custom-legend-container"></div>
-                    <div class="chart-container"><canvas id="archiveChart"></canvas></div>
-                </div>
-                <div class="card">
-                    <h3 class="section-title"><i data-lucide="sun" size="18"></i> Летний сезон (Архив)</h3>
-                    <div class="chart-container"><canvas id="summerArchiveChart"></canvas></div>
-                </div>
-            </div>
 
-            <!-- Вкладка 3: ЖУРНАЛ СИМПТОМОВ -->
-            <div class="view-pane" id="view-journal">
-                <div class="card">
-                    <h3 class="section-title"><i data-lucide="book-open" size="18"></i> Журнал симптомов</h3>
-                    <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 15px;">Ваши записи хранятся на устройстве.</p>
-                    <textarea id="journal-input" class="journal-textarea" placeholder="Как вы себя чувствуете сегодня?"></textarea>
-                    <button class="login-btn" onclick="saveJournalEntry()" style="padding: 10px; font-size: 14px;">Сохранить запись</button>
+                    <div class="chart-container">
+                        <canvas id="archiveChart"></canvas>
+                    </div>
                 </div>
-                <div id="journal-entries-container"></div>
-            </div>
 
+                <!-- НОВЫЙ БЛОК: Летне-осенний сезон 2023 -->
+                <div class="card">
+                    <h3 class="section-title"><i data-lucide="sun" size="18"></i> Летне-осенний сезон (2023)</h3>
+                    <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 5px;">Злаки, сорные травы и плесневые грибы.</p>
+                    <p style="font-size: 11px; color: var(--text-secondary); margin-bottom: 15px;">* Кладоспориум достигает 10 000+ ед., используется логарифмическая шкала.</p>
+                    <div class="chart-container">
+                        <canvas id="summerArchiveChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3 class="section-title"><i data-lucide="calendar" size="18"></i> Сводка 2023-2026</h3>
+                    <table class="summary-table" id="summary-table">
+                        <!-- Populated by JS -->
+                    </table>
+                </div>
+
+            </div>
         </div>
     </div>
 
     <script>
-        // ==========================================
-        // БАЗА ДАННЫХ И СОСТОЯНИЕ (Flat Architecture)
-        // ==========================================
-        const db = {
-            lat: 55.75, lon: 37.62, forecastScale: 'linear',
-            VALIDATION_LIMITS: { birch: 15000, alder: 500, oak: 1000, hazel: 500, grass: 150, mugwort: 150 },
-            SEASONALITY: { alder: [3, 4], hazel: [3, 4], birch: [4, 5], oak: [5, 6], grass: [6, 7, 8], mugwort: [7, 8, 9] },
-            historicalTemps: {},
-            measurements: {
-                labels: ["15 Мар", "16 Мар", "17 Мар", "18 Мар", "19 Мар"],
-                datasets: [
-                    { id: 'alder', name: 'Ольха', icon: 'leaf', color: '#FF9F0A', data: [null, 4, 4, 1, 1] },
-                    { id: 'hazel', name: 'Орешник', icon: 'tree-deciduous', color: '#FFD60A', data: [null, 7, 13, 3, 3] },
-                    { id: 'birch', name: 'Береза', icon: 'tree-pine', color: '#FF453A', data: [null, 0, 3, 0, 0] },
-                    { id: 'grass', name: 'Злаки', icon: 'wind', color: '#64D2FF', data: [null, null, null, null, null] },
-                    { id: 'oak', name: 'Дуб', icon: 'tree-deciduous', color: '#0A84FF', data: [null, null, null, null, null] }
-                ]
-            }
+        // --- 1. Внутренняя База Данных (Hardcoded JSON) ---
+        const ARCHIVE_2025 = {
+            // Март: Данные текущего 2026 года (интеграция свежих ловушек)
+            "03-16": { alder: 0, birch: 0, oak: 0, alder_2026: 4, hazel_2026: 7, temp: "Н/Д" },
+            "03-17": { alder: 0, birch: 0, oak: 0, alder_2026: 4, hazel_2026: 13, birch_2026: 3, temp: "Н/Д" },
+            "03-18": { alder: 0, birch: 0, oak: 0, alder_2026: 1, hazel_2026: 3, temp: "+1°C" },
+            "03-19": { alder: 0, birch: 0, oak: 0, alder_2026: 1, hazel_2026: 3, temp: "+1°C" },
+            "03-20": { alder: 0, birch: 0, oak: 0, alder_2026: 20, hazel_2026: 78, birch_2026: 1, temp: "Н/Д" },
+            
+            // Март: Ранний старт 2023 года
+            "03-24": { alder: 0, birch: 0, oak: 0, alder_2023: 122, hazel_2023: 33 },
+            "03-28": { alder: 0, birch: 0, oak: 0, alder_2023: 323, hazel_2023: 1 },
+            
+            // Апрель: Эстафета Ольха -> Береза
+            "04-01": { alder: 18, birch: 0, oak: 0, temp: "Н/Д", note: "Дождь" }, 
+            "04-02": { alder: 226, birch: 0, oak: 0, temp: "+18°C" },
+            "04-03": { alder: 31, birch: 0, oak: 0, temp: "+12°C" },
+            "04-06": { alder: 23, birch: 0, oak: 0, temp: "Н/Д", note: "Снег, Ветер", alder_2023: 38, hazel_2023: 47 },
+            "04-08": { alder: 6, birch: 0, oak: 0, temp: "Н/Д", note: "Снег" },
+            "04-09": { alder: 28, birch: 1, oak: 0, temp: "+8°C", note: "Снег" },
+            "04-10": { alder: 2, birch: 1, oak: 0, temp: "Н/Д", note: "Снег" },
+            "04-13": { alder: 2, birch: 0, oak: 0, temp: "Н/Д", note: "Потеплело" },
+            "04-14": { alder: 13, birch: 114, oak: 0, temp: "+14°C", alder_2023: 17, hazel_2023: 21, birch_2023: 289 },
+            "04-15": { alder: 1, birch: 11, oak: 0, temp: "Н/Д" },
+            "04-16": { alder: 0, birch: 33, oak: 0, temp: "+21.8°C", note: "Старт ранних (берёза)" },
+            "04-17": { alder: 4, birch: 172, oak: 0, temp: "+19°C" },
+            "04-19": { alder: 0, birch: 0, oak: 0, alder_2023: 4, hazel_2023: 24, birch_2023: 732 },
+            "04-20": { alder: 1, birch: 14403, oak: 0, temp: "+25.8°C", note: "ПИК БЕРЁЗЫ", birch_2023: 4186 },
+            "04-21": { alder: 0, birch: 8310, oak: 0, temp: "+25.9°C", alder_2023: 6, hazel_2023: 11, birch_2023: 11206 },
+            "04-22": { alder: 1, birch: 1203, oak: 0, temp: "+23.3°C", birch_2023: 6000 },
+            "04-23": { alder: 1, birch: 3968, oak: 0, temp: "+25.8°C", birch_2023: 5000 },
+            "04-24": { alder: 0, birch: 1700, oak: 0, temp: "+18°C", alder_2023: 1, hazel_2023: 2, birch_2023: 9092 },
+            "04-27": { alder: 4, birch: 389, oak: 0, temp: "+10°C", birch_2023: 935 },
+            "04-28": { alder: 0, birch: 150, oak: 0, temp: "+10°C", alder_2023: 1, hazel_2023: 1, birch_2023: 848 },
+            "04-29": { alder: 1, birch: 130, oak: 0, temp: "+10°C" },
+            
+            // Май: Вторая волна березы
+            "05-05": { alder: 0, birch: 113, oak: 0, temp: "+18°C" },
+            "05-06": { alder: 0, birch: 40, oak: 0, temp: "+19°C" },
+            "05-09": { alder: 0, birch: 37, oak: 0, temp: "+15°C" },
+            "05-13": { alder: 0, birch: 13, oak: 0, temp: "+15°C" },
+            "05-14": { alder: 0, birch: 29, oak: 0, temp: "+18°C" },
+            "05-15": { alder: 0, birch: 30, oak: 0, temp: "+22°C" },
+            "05-18": { alder: 0, birch: 40, oak: 0, temp: "+20°C" },
+            "05-19": { alder: 0, birch: 4, oak: 0, temp: "Н/Д" },
+            "05-20": { alder: 0, birch: 100, oak: 0, temp: "+24°C" },
+            "05-21": { alder: 0, birch: 80, oak: 0, temp: "+21°C" },
+            "05-22": { alder: 0, birch: 140, oak: 0, temp: "+24°C", note: "Вторая волна березы" },
+            "05-25": { alder: 0, birch: 5, oak: 0, temp: "+20°C" },
+            "05-27": { alder: 0, birch: 9, oak: 0, temp: "Н/Д" },
+            "05-28": { alder: 0, birch: 3, oak: 0, temp: "Н/Д" }
         };
 
-        let currentTab = 0;
-        let todayChartInst = null;
-        let forecastChartInst = null;
+        const ARCHIVE_SUMMER_2023 = {
+            "06-20": { grass: 5, weed: 0, clado: 1830, alt: 130 },
+            "07-04": { grass: 27, weed: 0, clado: 6190, alt: 310 },
+            "07-06": { grass: 12, weed: 21, clado: 10250, alt: 1220 },
+            "08-07": { grass: 7, weed: 130, clado: 7035, alt: 552 },
+            "08-15": { grass: 11, weed: 72, clado: 8453, alt: 2 },
+            "09-01": { grass: 0, weed: 22, clado: 8902, alt: 600 },
+            "09-04": { grass: 0, weed: 11, clado: 5051, alt: 71 },
+            "09-11": { grass: 0, weed: 0, clado: 4051, alt: 41 },
+            "09-13": { grass: 0, weed: 0, clado: 4008, alt: 0 }
+        };
 
-        // ==========================================
-        // АВТОРИЗАЦИЯ & ИНИЦИАЛИЗАЦИЯ
-        // ==========================================
+        const db = {
+            metadata: {
+                location: "Москва",
+                lastUpdated: "20 Марта 2026"
+            },
+            today: {
+                hasDataToday: true, 
+                overallRisk: "high", 
+                allergens: [
+                    { id: "alder", name: "Ольха", value: 20, level: "warning", trend: "up", icon: "leaf" },
+                    { id: "hazel", name: "Орешник", value: 78, level: "high", trend: "up", icon: "tree-deciduous" },
+                    { id: "birch", name: "Береза", value: 1, level: "safe", trend: "up", icon: "tree-pine" },
+                    { id: "oak", name: "Дуб", value: null, level: "safe", trend: "flat", icon: "tree-deciduous" } 
+                ]
+            },
+            charts: {
+                today: {
+                    labels: ["15 Мар", "16 Мар", "17 Мар", "18 Мар", "19 Мар", "20 Мар"],
+                    datasets: [
+                        { label: 'Ольха', data: [null, 4, 4, 1, 1, 20], color: '#32D74B' },
+                        { label: 'Орешник', data: [null, 7, 13, 3, 3, 78], color: '#FFD60A' },
+                        { label: 'Береза', data: [null, 0, 3, 0, 0, 1], color: '#FF453A' }
+                    ]
+                }
+            },
+            summary: [
+                { year: 2026, status: "Март: Ольха активна (220)", level: "high" },
+                { year: 2025, status: "Пик березы 20 апр (14403)", level: "critical" },
+                { year: 2024, status: "Умеренный фон", level: "warning" },
+                { year: 2023, status: "Пик березы 21 апр (11206)", level: "critical" }
+            ]
+        };
+
+        const colorMap = { 'safe': 'var(--safe)', 'warning': 'var(--warning)', 'high': 'var(--high)', 'critical': 'var(--critical)', 'burgundy': 'var(--burgundy)' };
+        const bgAlphaMap = { 'safe': 'rgba(50, 215, 75, 0.15)', 'warning': 'rgba(255, 214, 10, 0.15)', 'high': 'rgba(255, 159, 10, 0.15)', 'critical': 'rgba(255, 69, 58, 0.15)', 'burgundy': 'rgba(138, 3, 3, 0.15)' };
+        const iconTrendMap = { 'up': '<i data-lucide="trending-up" size="14"></i> Рост', 'down': '<i data-lucide="trending-down" size="14"></i> Спад', 'flat': '<i data-lucide="minus" size="14"></i> Нет данных' };
+
+        // Глобальные переменные
+        let chartTodayInst = null;
+        let forecastChartInst = null;
+        let archiveChartInst = null;
+        let summerChartInst = null;
+        
+        let historicalTemps = {};
+
+        // Вспомогательные функции конвертации дат
+        function labelToDateStr(label) {
+            if (!label) return '';
+            const months = {'Янв':'01', 'Фев':'02', 'Мар':'03', 'Апр':'04', 'Мая':'05', 'Июн':'06', 'Июл':'07', 'Авг':'08', 'Сен':'09', 'Окт':'10', 'Ноя':'11', 'Дек':'12'};
+            const parts = label.split(' ');
+            const day = parts[0].padStart(2, '0');
+            const month = months[parts[1]] || '01';
+            const year = new Date().getFullYear();
+            return `${year}-${month}-${day}`;
+        }
+
+        function dateToLabel(dateStr) {
+            if (!dateStr) return '';
+            const d = new Date(dateStr);
+            const months = ['Янв', 'Фев', 'Мар', 'Апр', 'Мая', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек'];
+            return `${d.getDate()} ${months[d.getMonth()]}`;
+        }
+
+        // --- Инициализация ---
         document.addEventListener("DOMContentLoaded", () => {
-            Chart.defaults.color = 'rgba(235, 235, 245, 0.6)';
-            Chart.defaults.font.family = '-apple-system, BlinkMacSystemFont, sans-serif';
-            lucide.createIcons();
+            updateDate();
+            fetchWeather();
+            fetchHistoricalWeather();
             
-            document.getElementById('pwd-input').addEventListener('keypress', e => { if (e.key === 'Enter') checkPassword(); });
-            initGestures();
+            renderTodayData();
+            renderSummaryTable();
+            
+            initCharts();
+            fetchForecastData();
+            lucide.createIcons();
+
+            document.getElementById('pwd-input').addEventListener('keypress', function (e) {
+                if (e.key === 'Enter') checkPassword();
+            });
         });
 
         function checkPassword() {
             const input = document.getElementById('pwd-input').value;
+            const errorText = document.getElementById('login-error');
             const card = document.getElementById('login-card');
-            const overlay = document.getElementById('login-overlay');
-            const err = document.getElementById('login-error');
             
             if (input === '885522') {
-                // Spring animation on dismiss
-                card.style.transform = 'scale(0.9) translateY(20px)';
-                card.style.opacity = '0';
-                overlay.style.opacity = '0';
-                overlay.style.pointerEvents = 'none';
-                setTimeout(() => overlay.style.display = 'none', 400);
-                
-                loadDashboard(); 
+                document.getElementById('login-overlay').classList.add('hidden');
+                setTimeout(() => document.getElementById('login-overlay').style.display = 'none', 400);
             } else {
-                err.classList.add('show'); 
+                errorText.classList.add('show');
                 card.classList.add('shake');
                 document.getElementById('pwd-input').value = '';
                 setTimeout(() => card.classList.remove('shake'), 400);
             }
         }
 
-        async function loadDashboard() {
-            updateDateHeader();
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(
-                    pos => { db.lat = pos.coords.latitude; db.lon = pos.coords.longitude; document.getElementById('loc-name').innerText = "Локация GPS"; fetchOpenMeteo(); },
-                    () => { fetchOpenMeteo(); }
-                );
-            } else {
-                fetchOpenMeteo();
-            }
-            
-            renderTodayData();
-            renderTodayChart();
-            renderArchive();
-            loadJournalEntries();
-        }
-
-        // ==========================================
-        // ЖУРНАЛ СИМПТОМОВ (localStorage)
-        // ==========================================
-        function saveJournalEntry() {
-            const input = document.getElementById('journal-input');
-            if (!input.value.trim()) return;
-            const entries = JSON.parse(localStorage.getItem('pollen_journal') || '[]');
-            entries.push({ text: input.value.trim(), date: new Date().toISOString() });
-            localStorage.setItem('pollen_journal', JSON.stringify(entries));
-            input.value = '';
-            loadJournalEntries();
-        }
-
-        function loadJournalEntries() {
-            const entries = JSON.parse(localStorage.getItem('pollen_journal') || '[]');
-            entries.sort((a,b) => new Date(b.date) - new Date(a.date));
-            const container = document.getElementById('journal-entries-container');
-            container.innerHTML = entries.map(e => `
-                <div class="journal-entry card">
-                    <div class="journal-date">${new Date(e.date).toLocaleString('ru-RU')}</div>
-                    <div>${e.text}</div>
-                </div>
-            `).join('');
-        }
-
-        // ==========================================
-        // UI & НАВИГАЦИЯ (Свайпы)
-        // ==========================================
-        function updateDateHeader() {
-            document.getElementById('current-date').innerText = new Date().toLocaleDateString('ru-RU', { day: 'numeric', month: 'long' });
-            let y = new Date(); y.setDate(y.getDate() - 1);
-            document.getElementById('measurement-date').innerText = 'Дата измерений: ' + y.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long' }).toLowerCase();
-        }
-
-        function switchTab(index) {
-            currentTab = index;
-            document.querySelectorAll('.segment-btn').forEach((btn, i) => btn.classList.toggle('active', i === index));
-            document.getElementById('segment-indicator').style.transform = `translateX(${index * 100}%)`;
-            document.querySelectorAll('.view-pane').forEach(pane => { pane.style.transform = `translateX(-${index * 100}%)`; });
-        }
-
-        function initGestures() {
-            const wrapper = document.getElementById('views-wrapper');
-            let touchstartX = 0;
-            wrapper.addEventListener('touchstart', e => { touchstartX = e.changedTouches[0].screenX; }, {passive: true});
-            wrapper.addEventListener('touchend', e => {
-                let touchendX = e.changedTouches[0].screenX;
-                if (touchstartX - touchendX > 50 && currentTab < 2) switchTab(currentTab + 1);
-                if (touchendX - touchstartX > 50 && currentTab > 0) switchTab(currentTab - 1);
-            }, {passive: true});
-        }
-
-        // ==========================================
-        // РЕНДЕР ДАННЫХ & МОДАЛЬНОЕ ОКНО
-        // ==========================================
-        function getRiskLevel(val) {
-            if (val === null) return 'safe';
-            if (val >= 1000) return 'burgundy';
-            if (val >= 100) return 'critical';
-            if (val >= 50) return 'high';
-            if (val >= 10) return 'warning';
-            return 'safe';
-        }
-
         function renderTodayData() {
             const list = document.getElementById('pollen-list');
+            const noDataMsg = document.getElementById('no-data-msg');
             const badge = document.getElementById('main-risk-badge');
-            const riskCard = document.getElementById('risk-card');
-            const lastIdx = db.measurements.labels.length - 1;
-            
-            let maxVal = -1;
+            const riskLabels = { 'safe': 'БЕЗОПАСНО', 'warning': 'СРЕДНИЙ', 'high': 'ВЫСОКИЙ', 'critical': 'КРИТИЧЕСКИЙ', 'burgundy': 'ЭКСТРЕМАЛЬНЫЙ' };
+
+            if (!list || !noDataMsg || !badge) return;
+
+            if (!db.today.hasDataToday) {
+                noDataMsg.style.display = 'block';
+                list.innerHTML = '<div class="empty-state">Ожидаем обновления данных...</div>';
+                badge.innerText = 'НЕТ ДАННЫХ';
+                badge.style.background = 'rgba(255, 255, 255, 0.1)';
+                badge.style.color = 'var(--text-secondary)';
+                return;
+            }
+
+            noDataMsg.style.display = 'none';
+            badge.innerText = riskLabels[db.today.overallRisk] || 'ВЫСОКИЙ';
+            badge.style.background = bgAlphaMap[db.today.overallRisk] || 'rgba(255, 159, 10, 0.2)';
+            badge.style.color = colorMap[db.today.overallRisk] || 'var(--high)';
+
             let html = '';
+            db.today.allergens.forEach((item, index) => {
+                const isNull = item.value === null;
+                const color = isNull ? 'var(--text-secondary)' : colorMap[item.level];
+                const bg = isNull ? 'rgba(255, 255, 255, 0.05)' : bgAlphaMap[item.level];
+                const delay = index * 0.4; 
+                
+                const valHTML = isNull 
+                    ? `<span style="color: var(--text-secondary);">—</span>` 
+                    : `${item.value} <span style="font-size:12px; color:var(--text-secondary); font-weight:normal;">ед/м³</span>`;
 
-            db.measurements.datasets.forEach(ds => {
-                const val = lastIdx >= 0 ? ds.data[lastIdx] : null;
-                const level = getRiskLevel(val);
-                if (val !== null && val > maxVal) maxVal = val;
-
-                const isNull = val === null;
-                const color = isNull ? 'var(--text-secondary)' : `var(--${level})`;
-                const bg = isNull ? 'rgba(255,255,255,0.05)' : `var(--${level})`; 
+                const trendHTML = isNull ? '<i data-lucide="minus" size="14"></i> Нет данных' : iconTrendMap[item.trend];
                 
                 html += `
-                <div class="pollen-item" style="opacity: ${isNull ? 0.7 : 1};">
+                <div class="pollen-item" ${isNull ? 'style="opacity: 0.7;"' : ''}>
                     <div class="pollen-left">
-                        <div class="pollen-icon-wrapper" style="background: ${bg}; color: ${isNull ? 'inherit' : '#000'};">
-                            <i data-lucide="${ds.icon}" size="20"></i>
+                        <div class="pollen-icon-wrapper" style="background: ${bg}; color: ${color};">
+                            <i data-lucide="${item.icon}" size="20" class="pollen-anim-icon" style="animation-delay: ${delay}s"></i>
                         </div>
-                        <div class="pollen-name">${ds.name}</div>
+                        <div class="pollen-name">${item.name}</div>
                     </div>
                     <div>
-                        <div class="pollen-value" style="color: ${color};">${isNull ? '—' : val} <span style="font-size:12px; font-weight:normal;">ед/м³</span></div>
+                        <div class="pollen-value" style="color: ${color};">${valHTML}</div>
+                        <div class="pollen-trend">${trendHTML}</div>
                     </div>
                 </div>`;
             });
-
-            list.innerHTML = html || '<div class="error-text">Нет данных</div>';
-            
-            if (maxVal === -1) {
-                badge.innerText = 'НЕТ ДАННЫХ';
-                badge.style.color = 'var(--text-secondary)';
-                riskCard.classList.remove('breathe-effect');
-            } else {
-                const overallLevel = getRiskLevel(maxVal);
-                const labels = {safe:'БЕЗОПАСНО', warning:'СРЕДНИЙ', high:'ВЫСОКИЙ', critical:'КРИТИЧЕСКИЙ', burgundy:'ЭКСТРЕМАЛЬНЫЙ'};
-                badge.innerText = labels[overallLevel];
-                badge.style.color = `var(--${overallLevel})`;
-                
-                if (['high', 'critical', 'burgundy'].includes(overallLevel)) {
-                    riskCard.style.setProperty('--breathe-color', `var(--${overallLevel})`);
-                    riskCard.classList.add('breathe-effect');
-                } else {
-                    riskCard.classList.remove('breathe-effect');
-                }
-            }
-            lucide.createIcons();
+            list.innerHTML = html;
         }
 
-        // Логика Модалки
+        function renderSummaryTable() {
+            const table = document.getElementById('summary-table');
+            if (!table) return;
+
+            let html = `<tr><th>Год</th><th>Статус / Пик</th></tr>`;
+            db.summary.forEach(row => {
+                html += `
+                <tr>
+                    <td style="font-weight: 600;">${row.year}</td>
+                    <td><span class="status-dot" style="background-color: ${colorMap[row.level]};"></span>${row.status}</td>
+                </tr>`;
+            });
+            table.innerHTML = html;
+        }
+
+        const wrapper = document.getElementById('views-wrapper');
+        const indicator = document.getElementById('segment-indicator');
+        const btns = document.querySelectorAll('.segment-btn');
+
+        function switchTab(index) {
+            const viewWidth = window.innerWidth;
+            if (wrapper) wrapper.scrollTo({ left: index * viewWidth, behavior: 'smooth' });
+            updateTabsUI(index);
+        }
+
+        function handleScroll() {
+            if (!wrapper) return;
+            const scrollLeft = wrapper.scrollLeft;
+            const viewWidth = window.innerWidth;
+            const index = Math.round(scrollLeft / viewWidth);
+            updateTabsUI(index);
+        }
+
+        function updateTabsUI(index) {
+            if (btns) btns.forEach((btn, i) => btn.classList.toggle('active', i === index));
+            if (indicator) indicator.style.transform = `translateX(${index * 100}%)`;
+        }
+
+        async function fetchWeather() {
+            try {
+                const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=55.7558&longitude=37.6173&current=temperature_2m,relative_humidity_2m,wind_speed_10m,wind_direction_10m&wind_speed_unit=ms');
+                const data = await res.json();
+                const temp = data.current.temperature_2m;
+                const hum = data.current.relative_humidity_2m;
+                const windSpeed = data.current.wind_speed_10m;
+                const windDir = data.current.wind_direction_10m;
+                const dirs = ['С', 'СВ', 'В', 'ЮВ', 'Ю', 'ЮЗ', 'З', 'СЗ'];
+                const dirStr = dirs[Math.round(windDir / 45) % 8];
+                
+                const wTemp = document.getElementById('w-temp');
+                const wHum = document.getElementById('w-hum');
+                const wWind = document.getElementById('w-wind');
+
+                if (wTemp) wTemp.innerText = `${temp > 0 ? '+' : ''}${Math.round(temp)}°`;
+                if (wHum) wHum.innerText = `${Math.round(hum)}%`;
+                if (wWind) wWind.innerText = `${dirStr} ${Math.round(windSpeed)}`;
+            } catch (e) {
+                console.error('Ошибка получения погоды:', e);
+            }
+        }
+
+        async function fetchHistoricalWeather() {
+            try {
+                const url = 'https://api.open-meteo.com/v1/forecast?latitude=55.7558&longitude=37.6173&past_days=14&daily=temperature_2m_max&timezone=Europe%2FMoscow';
+                const res = await fetch(url);
+                const data = await res.json();
+                data.daily.time.forEach((dateStr, i) => {
+                    const temp = data.daily.temperature_2m_max[i];
+                    historicalTemps[dateStr] = `${temp > 0 ? '+' : ''}${Math.round(temp)}°C`;
+                });
+                
+                if (document.getElementById('input-date')) {
+                    const tempEl = document.getElementById('modal-temp');
+                    const dateInput = document.getElementById('input-date').value;
+                    if (tempEl && dateInput && historicalTemps[dateInput]) {
+                        tempEl.innerText = historicalTemps[dateInput];
+                    }
+                }
+            } catch (e) {
+                console.error('Ошибка получения исторической погоды:', e);
+            }
+        }
+
+        function updateDate() {
+            const options = { day: 'numeric', month: 'long', year: 'numeric' };
+            let today = new Date();
+            let dateStr = today.toLocaleDateString('ru-RU', options).replace(' г.', '');
+            let parts = dateStr.split(' ');
+            if(parts.length >= 2) parts[1] = parts[1].charAt(0).toUpperCase() + parts[1].slice(1);
+            
+            const currentDateEl = document.getElementById('current-date');
+            if (currentDateEl) currentDateEl.innerText = parts.join(' ');
+
+            let yesterday = new Date(today);
+            yesterday.setDate(yesterday.getDate() - 1);
+            let yDateStr = yesterday.toLocaleDateString('ru-RU', options).replace(' г.', '');
+            let yParts = yDateStr.split(' ');
+            if(yParts.length >= 2) yParts[1] = yParts[1].toLowerCase();
+            
+            const measurementDateEl = document.getElementById('measurement-date');
+            if (measurementDateEl) measurementDateEl.innerText = 'Дата измерений: ' + yParts.join(' ');
+        }
+
+        // Прогноз SILAM / CAMS
+        async function fetchForecastData() {
+            try {
+                const url = `https://air-quality-api.open-meteo.com/v1/air-quality?latitude=55.7558&longitude=37.6173&hourly=alder_pollen,birch_pollen&timezone=Europe%2FMoscow&forecast_days=5`;
+                const res = await fetch(url);
+                const data = await res.json();
+
+                const times = data.hourly.time;
+                const alderHourly = data.hourly.alder_pollen;
+                const birchHourly = data.hourly.birch_pollen;
+
+                const dailyData = {};
+                times.forEach((timeStr, index) => {
+                    const dateObj = new Date(timeStr);
+                    const dayKey = dateObj.toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' });
+                    
+                    if (!dailyData[dayKey]) {
+                        dailyData[dayKey] = { alder: 0, birch: 0 };
+                    }
+                    dailyData[dayKey].alder = Math.max(dailyData[dayKey].alder, alderHourly[index] || 0);
+                    dailyData[dayKey].birch = Math.max(dailyData[dayKey].birch, birchHourly[index] || 0);
+                });
+
+                const labels = Object.keys(dailyData);
+                const alderData = labels.map(l => dailyData[l].alder);
+                const birchData = labels.map(l => dailyData[l].birch);
+
+                renderForecastChart(labels, alderData, birchData);
+
+            } catch(e) {
+                console.error("Ошибка загрузки прогноза SILAM:", e);
+            }
+        }
+
+        function renderForecastChart(labels, alderData, birchData) {
+            const canvas = document.getElementById('forecastChart');
+            if (!canvas) return;
+
+            const ctx = canvas.getContext('2d');
+            if (forecastChartInst) forecastChartInst.destroy();
+            forecastChartInst = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Ольха (прогноз)',
+                            data: alderData,
+                            borderColor: '#FF9F0A',
+                            borderDash: [5, 5],
+                            backgroundColor: 'transparent',
+                            borderWidth: 2,
+                            tension: 0.4,
+                            pointRadius: 4,
+                            pointBackgroundColor: '#FF9F0A'
+                        },
+                        {
+                            label: 'Береза (прогноз)',
+                            data: birchData,
+                            borderColor: '#32D74B',
+                            borderDash: [5, 5],
+                            backgroundColor: 'transparent',
+                            borderWidth: 2,
+                            tension: 0.4,
+                            pointRadius: 4,
+                            pointBackgroundColor: '#32D74B'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { 
+                        legend: { 
+                            position: 'top',
+                            labels: { usePointStyle: true, boxWidth: 8, color: 'rgba(235, 235, 245, 0.6)' }
+                        } 
+                    },
+                    scales: {
+                        x: { grid: { display: false } },
+                        y: { grid: { color: 'rgba(255,255,255,0.05)' }, beginAtZero: true }
+                    },
+                    interaction: { mode: 'index', intersect: false }
+                }
+            });
+        }
+
+        // Интерактивный тултип с кнопкой "Изменить"
+        const customTooltip = (context) => {
+            let tooltipEl = document.getElementById('custom-chart-tooltip');
+            if (!tooltipEl) {
+                tooltipEl = document.createElement('div');
+                tooltipEl.id = 'custom-chart-tooltip';
+                document.body.appendChild(tooltipEl);
+                
+                document.addEventListener('click', (e) => {
+                    if (!tooltipEl.contains(e.target) && e.target.tagName !== 'CANVAS') {
+                        tooltipEl.style.opacity = 0;
+                        setTimeout(() => { if(tooltipEl.style.opacity == '0') tooltipEl.style.left = '-9999px'; }, 200);
+                    }
+                });
+            }
+
+            const tooltipModel = context.tooltip;
+            if (tooltipModel.opacity === 0) return;
+
+            if (tooltipModel.body) {
+                const titleLines = tooltipModel.title || [];
+                const bodyLines = tooltipModel.body.map(b => b.lines);
+                const label = titleLines[0]; 
+
+                let innerHtml = `<div style="font-weight: 600; font-size: 14px; margin-bottom: 8px;">${label}</div>`;
+                
+                bodyLines.forEach((body, i) => {
+                    const colors = tooltipModel.labelColors[i];
+                    innerHtml += `<div style="font-size: 13px; margin-bottom: 4px; display:flex; align-items:center;">
+                        <span style="background:${colors.backgroundColor}; width:10px; height:10px; border-radius:2px; display:inline-block; margin-right:6px;"></span>
+                        ${body}
+                    </div>`;
+                });
+
+                const dateStr = labelToDateStr(label);
+                const temp = historicalTemps[dateStr];
+                if (temp) {
+                    innerHtml += `<div style="font-size: 11px; color: var(--text-secondary); margin-top: 6px;">Погода (сбор): <span style="color: var(--safe); font-weight: 600;">${temp}</span></div>`;
+                }
+
+                innerHtml += `<button onclick="openAddDataModal('${label}'); document.getElementById('custom-chart-tooltip').style.opacity=0;" style="background:var(--accent); color:white; border:none; padding:8px 12px; border-radius:8px; font-size:13px; width:100%; margin-top:12px; cursor:pointer; font-weight:600; display:flex; align-items:center; justify-content:center; gap:6px;"><i data-lucide="edit-2" size="14"></i> Изменить</button>`;
+
+                tooltipEl.innerHTML = innerHtml;
+                lucide.createIcons();
+            }
+
+            const position = context.chart.canvas.getBoundingClientRect();
+            tooltipEl.style.opacity = 1;
+            tooltipEl.style.left = position.left + window.scrollX + tooltipModel.caretX + 'px';
+            
+            let topPos = position.top + window.scrollY + tooltipModel.caretY + 10;
+            if (topPos > window.innerHeight + window.scrollY - 150) {
+                topPos -= 140; 
+            }
+            tooltipEl.style.top = topPos + 'px';
+            tooltipEl.style.transform = 'translateX(-50%)';
+        };
+
+        // Графики (Chart.js)
+        function initCharts() {
+            Chart.defaults.color = 'rgba(235, 235, 245, 0.6)';
+            Chart.defaults.font.family = '-apple-system, BlinkMacSystemFont, sans-serif';
+
+            const canvasToday = document.getElementById('todayChart');
+            if (canvasToday) {
+                const ctxToday = canvasToday.getContext('2d');
+                if (chartTodayInst) chartTodayInst.destroy();
+                chartTodayInst = new Chart(ctxToday, {
+                    type: 'line',
+                    data: {
+                        labels: db.charts.today.labels,
+                        datasets: db.charts.today.datasets.map(ds => ({
+                            label: ds.label,
+                            data: ds.data,
+                            borderColor: ds.color,
+                            backgroundColor: ds.color + '33', 
+                            borderWidth: 3,
+                            tension: 0.4,
+                            fill: true,
+                            pointRadius: 3, 
+                            pointBackgroundColor: ds.color
+                        }))
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { 
+                            legend: { display: false },
+                            tooltip: {
+                                enabled: false,
+                                external: customTooltip
+                            }
+                        },
+                        scales: {
+                            x: { grid: { display: false } },
+                            y: { grid: { color: 'rgba(255,255,255,0.05)' }, beginAtZero: true }
+                        },
+                        interaction: { mode: 'index', intersect: false }
+                    }
+                });
+            }
+
+            const canvasArchive = document.getElementById('archiveChart');
+            if (canvasArchive) {
+                const ctxArchive = canvasArchive.getContext('2d');
+                const archiveDates = Object.keys(ARCHIVE_2025);
+                
+                const formatMonth = (m) => {
+                    const months = {'03': 'Мар', '04': 'Апр', '05': 'Мая', '06': 'Июн', '07': 'Июл', '08': 'Авг', '09': 'Сен'};
+                    return months[m] || m;
+                };
+                
+                const labelsArchive = archiveDates.map(d => `${parseInt(d.split('-')[1])} ${formatMonth(d.split('-')[0])}`);
+
+                if (archiveChartInst) archiveChartInst.destroy();
+                archiveChartInst = new Chart(ctxArchive, {
+                    type: 'bar',
+                    data: {
+                        labels: labelsArchive,
+                        datasets: [
+                            { label: 'Ольха (2025)', data: archiveDates.map(d => ARCHIVE_2025[d].alder > 0 ? ARCHIVE_2025[d].alder : null), backgroundColor: '#FF9F0A', borderRadius: 4 },
+                            { label: 'Орешник (2025)', data: archiveDates.map(d => ARCHIVE_2025[d].hazel > 0 ? ARCHIVE_2025[d].hazel : null), backgroundColor: '#E5C07B', borderRadius: 4 },
+                            { label: 'Береза (2025)', data: archiveDates.map(d => ARCHIVE_2025[d].birch > 0 ? ARCHIVE_2025[d].birch : null), backgroundColor: '#FF453A', borderRadius: 4 },
+                            { label: 'Дуб (2025)', data: archiveDates.map(d => ARCHIVE_2025[d].oak > 0 ? ARCHIVE_2025[d].oak : null), backgroundColor: '#0A84FF', borderRadius: 4 },
+                            
+                            { label: 'Ольха (2023)', data: archiveDates.map(d => ARCHIVE_2025[d].alder_2023 > 0 ? ARCHIVE_2025[d].alder_2023 : null), backgroundColor: '#FFD60A', borderRadius: 4, hidden: true },
+                            { label: 'Орешник (2023)', data: archiveDates.map(d => ARCHIVE_2025[d].hazel_2023 > 0 ? ARCHIVE_2025[d].hazel_2023 : null), backgroundColor: '#EBEBF599', borderRadius: 4, hidden: true },
+                            { label: 'Береза (2023)', data: archiveDates.map(d => ARCHIVE_2025[d].birch_2023 > 0 ? ARCHIVE_2025[d].birch_2023 : null), backgroundColor: '#32D74B', borderRadius: 4, hidden: true },
+                            
+                            { label: 'Ольха (2026)', data: archiveDates.map(d => ARCHIVE_2025[d].alder_2026 > 0 ? ARCHIVE_2025[d].alder_2026 : null), backgroundColor: '#64D2FF', borderRadius: 4 },
+                            { label: 'Орешник (2026)', data: archiveDates.map(d => ARCHIVE_2025[d].hazel_2026 > 0 ? ARCHIVE_2025[d].hazel_2026 : null), backgroundColor: '#FFD60A', borderRadius: 4 },
+                            { label: 'Береза (2026)', data: archiveDates.map(d => ARCHIVE_2025[d].birch_2026 > 0 ? ARCHIVE_2025[d].birch_2026 : null), backgroundColor: '#BF5AF2', borderRadius: 4 }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { 
+                            legend: { display: false }, 
+                            tooltip: {
+                                callbacks: {
+                                    afterBody: function(context) {
+                                        if (context[0].dataset.label.includes('2023') || context[0].dataset.label.includes('2026')) return ''; 
+                                        const dateKey = archiveDates[context[0].dataIndex];
+                                        const temp = ARCHIVE_2025[dateKey].temp;
+                                        const note = ARCHIVE_2025[dateKey].note;
+                                        let str = temp ? `Погода: ${temp}` : '';
+                                        if(note) str += str ? `\n⚠️ ${note}` : `⚠️ ${note}`;
+                                        return str;
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: { grid: { display: false } },
+                            y: { 
+                                type: 'logarithmic',
+                                min: 0.5, 
+                                grid: { color: 'rgba(255,255,255,0.05)' },
+                                ticks: {
+                                    callback: function(value) {
+                                        if (value === 1 || value === 10 || value === 100 || value === 1000 || value === 10000) return value;
+                                        return null;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            generateArchiveLegend(archiveChartInst);
+
+            const canvasSummer = document.getElementById('summerArchiveChart');
+            if (canvasSummer) {
+                const ctxSummer = canvasSummer.getContext('2d');
+                const summerDates = Object.keys(ARCHIVE_SUMMER_2023);
+                
+                const formatMonth = (m) => {
+                    const months = {'03': 'Мар', '04': 'Апр', '05': 'Мая', '06': 'Июн', '07': 'Июл', '08': 'Авг', '09': 'Сен'};
+                    return months[m] || m;
+                };
+
+                const labelsSummer = summerDates.map(d => `${parseInt(d.split('-')[1])} ${formatMonth(d.split('-')[0])}`);
+
+                if (summerChartInst) summerChartInst.destroy();
+                summerChartInst = new Chart(ctxSummer, {
+                    type: 'bar',
+                    data: {
+                        labels: labelsSummer,
+                        datasets: [
+                            { label: 'Злаки', data: summerDates.map(d => ARCHIVE_SUMMER_2023[d].grass > 0 ? ARCHIVE_SUMMER_2023[d].grass : null), backgroundColor: '#FFD60A', borderRadius: 4 },
+                            { label: 'Сорные (Полынь)', data: summerDates.map(d => ARCHIVE_SUMMER_2023[d].weed > 0 ? ARCHIVE_SUMMER_2023[d].weed : null), backgroundColor: '#32D74B', borderRadius: 4 },
+                            { label: 'Кладоспориум', data: summerDates.map(d => ARCHIVE_SUMMER_2023[d].clado > 0 ? ARCHIVE_SUMMER_2023[d].clado : null), backgroundColor: '#BF5AF2', borderRadius: 4 },
+                            { label: 'Альтернария', data: summerDates.map(d => ARCHIVE_SUMMER_2023[d].alt > 0 ? ARCHIVE_SUMMER_2023[d].alt : null), backgroundColor: '#FF453A', borderRadius: 4 }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { 
+                            legend: { position: 'top', labels: { usePointStyle: true, boxWidth: 8 } }
+                        },
+                        scales: {
+                            x: { grid: { display: false } },
+                            y: { 
+                                type: 'logarithmic',
+                                min: 0.5,
+                                grid: { color: 'rgba(255,255,255,0.05)' },
+                                ticks: {
+                                    callback: function(value) {
+                                        if (value === 1 || value === 10 || value === 100 || value === 1000 || value === 10000) return value;
+                                        return null;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        // Кастомная Flex-легенда для Архива
+        function generateArchiveLegend(chart) {
+            const container = document.getElementById('archive-custom-legend');
+            if (!container || !chart) return;
+            container.innerHTML = '';
+            
+            const groups = {};
+            chart.data.datasets.forEach((dataset, index) => {
+                let baseName = dataset.label.split(' ')[0];
+                if (!groups[baseName]) groups[baseName] = [];
+                groups[baseName].push({ dataset, index });
+            });
+
+            const order = ['Береза', 'Ольха', 'Орешник', 'Дуб'];
+            const sortedGroups = Object.entries(groups).sort((a, b) => {
+                let idxA = order.indexOf(a[0]);
+                let idxB = order.indexOf(b[0]);
+                if (idxA === -1) idxA = 99;
+                if (idxB === -1) idxB = 99;
+                return idxA - idxB;
+            });
+
+            for (const [baseName, items] of sortedGroups) {
+                const groupDiv = document.createElement('div');
+                groupDiv.className = 'legend-group';
+                
+                const title = document.createElement('div');
+                title.className = 'legend-group-title';
+                title.innerText = baseName;
+                groupDiv.appendChild(title);
+                
+                items.sort((a, b) => a.dataset.label.localeCompare(b.dataset.label));
+
+                items.forEach(item => {
+                    const itemDiv = document.createElement('div');
+                    itemDiv.className = 'legend-item';
+                    
+                    if (!chart.isDatasetVisible(item.index)) {
+                        itemDiv.classList.add('hidden-dataset');
+                    }
+                    
+                    const colorBox = document.createElement('div');
+                    colorBox.className = 'legend-color-box';
+                    colorBox.style.backgroundColor = item.dataset.backgroundColor;
+                    
+                    const text = document.createElement('span');
+                    const match = item.dataset.label.match(/\((\d{4})\)/);
+                    text.innerText = match ? match[1] + ' год' : item.dataset.label;
+                    
+                    itemDiv.appendChild(colorBox);
+                    itemDiv.appendChild(text);
+                    
+                    itemDiv.onclick = () => {
+                        const isVisible = chart.isDatasetVisible(item.index);
+                        chart.setDatasetVisibility(item.index, !isVisible);
+                        chart.update();
+                        itemDiv.classList.toggle('hidden-dataset', isVisible);
+                    };
+                    
+                    groupDiv.appendChild(itemDiv);
+                });
+                
+                container.appendChild(groupDiv);
+            }
+        }
+
+        // Логика добавления новых данных
+        const VALIDATION_LIMITS = {
+            "birch": { "amber": 15000 },
+            "alder": { "amber": 500 },
+            "oak":   { "amber": 1000 },
+            "hazel": { "amber": 500 }
+        };
+
+        const SEASONALITY = {
+            "alder": [3, 4],     
+            "hazel": [3, 4],     
+            "birch": [4, 5],     
+            "oak":   [5, 6]      
+        };
+
+        function generateInputGroupHTML(item) {
+            const prevValText = item.value !== null ? item.value : '—';
+            const nameStr = `'${item.id}'`; 
+            
+            return `
+            <div class="allergen-input-group" id="group-${item.id}">
+                <div class="allergen-input-header">
+                    <span style="font-size: 14px; color: var(--text-secondary);">${item.name} (ед/м³)</span>
+                    <span class="prev-value-badge" onclick="usePrevValue(${nameStr}, ${item.value !== null ? item.value : null})">Было: ${prevValText}</span>
+                </div>
+                <div class="input-wrapper">
+                    <input type="number" id="input-${item.id}" class="data-input" placeholder="—" inputmode="numeric" oninput="validateInput(${nameStr}, ${item.value})">
+                    <i data-lucide="alert-triangle" class="warning-icon"></i>
+                </div>
+                <div class="amber-alert-text" id="alert-text-${item.id}">Значение значительно выше нормы или в 10 раз превышает прошлый замер. Проверьте опечатку.</div>
+            </div>`;
+        }
+
+        function handleDateChange() {
+            const dateInput = document.getElementById('input-date').value; 
+            if (!dateInput) return;
+
+            const tempEl = document.getElementById('modal-temp');
+            if (historicalTemps[dateInput]) {
+                tempEl.innerText = historicalTemps[dateInput];
+            } else {
+                tempEl.innerText = "Нет данных";
+            }
+
+            const targetLabel = dateToLabel(dateInput); 
+            const labelIdx = db.charts.today.labels.indexOf(targetLabel);
+            const deleteBtn = document.getElementById('delete-data-btn');
+
+            if (labelIdx !== -1) {
+                let allNull = true;
+                db.today.allergens.forEach(item => {
+                    const dataset = db.charts.today.datasets.find(d => d.label === item.name);
+                    if (dataset) {
+                        const val = dataset.data[labelIdx];
+                        const input = document.getElementById(`input-${item.id}`);
+                        if (input) {
+                            if (val !== null && val !== undefined) {
+                                input.value = val;
+                                allNull = false;
+                            } else {
+                                input.value = '';
+                            }
+                            input.disabled = false;
+                            input.classList.remove('amber-border');
+                            const alertText = document.getElementById(`alert-text-${item.id}`);
+                            if (alertText) alertText.style.display = 'none';
+                        }
+                    }
+                });
+                deleteBtn.style.display = 'block';
+                
+                const globalToggle = document.getElementById('global-no-data-toggle');
+                if (globalToggle) {
+                    globalToggle.checked = allNull;
+                    if (allNull) toggleAllMeasurements(true);
+                }
+            } else {
+                db.today.allergens.forEach(item => {
+                    const input = document.getElementById(`input-${item.id}`);
+                    if (input) {
+                        input.disabled = false;
+                        input.value = '';
+                        input.classList.remove('amber-border');
+                        const alertText = document.getElementById(`alert-text-${item.id}`);
+                        if (alertText) alertText.style.display = 'none';
+                    }
+                });
+                const globalToggle = document.getElementById('global-no-data-toggle');
+                if (globalToggle) globalToggle.checked = false;
+                deleteBtn.style.display = 'none';
+            }
+            
+            checkSaveBtnState();
+        }
+
         function openAddDataModal(label = null) {
             const activeContainer = document.getElementById('active-allergens-container');
             const archiveContainer = document.getElementById('archive-allergens-container');
-            activeContainer.innerHTML = ''; archiveContainer.innerHTML = '';
-            const currentMonth = new Date().getMonth() + 1; 
+            activeContainer.innerHTML = '';
+            archiveContainer.innerHTML = '';
 
-            db.measurements.datasets.forEach(item => {
-                const isActive = db.SEASONALITY[item.id]?.includes(currentMonth);
-                const html = `
-                <div class="allergen-input-group">
-                    <div class="allergen-input-header">
-                        <span style="font-size:14px; color:var(--text-secondary);">${item.name}</span>
-                        <span class="prev-value-badge" onclick="usePrevValue('${item.id}')">Вставить прошлое</span>
-                    </div>
-                    <div class="input-wrapper">
-                        <input type="number" id="input-${item.id}" class="data-input" placeholder="—" inputmode="numeric" oninput="validateInput('${item.id}')">
-                        <i data-lucide="alert-triangle" class="warning-icon"></i>
-                    </div>
-                    <div class="amber-alert-text" id="alert-text-${item.id}">Аномальное значение. Проверьте опечатку.</div>
-                </div>`;
-                if (isActive) activeContainer.innerHTML += html;
-                else archiveContainer.innerHTML += html;
+            const currentMonth = new Date().getMonth() + 1; 
+            
+            db.today.allergens.forEach(item => {
+                const isActiveSeason = SEASONALITY[item.id] && SEASONALITY[item.id].includes(currentMonth);
+                const isRecentlyActive = item.value > 0; 
+                
+                const html = generateInputGroupHTML(item);
+                if (isActiveSeason || isRecentlyActive) {
+                    activeContainer.innerHTML += html;
+                } else {
+                    archiveContainer.innerHTML += html;
+                }
             });
 
             lucide.createIcons();
+            
             const dateInput = document.getElementById('input-date');
-            if (label) dateInput.value = labelToDateStr(label);
-            else {
-                let y = new Date(); y.setDate(y.getDate() - 1);
-                dateInput.value = y.toISOString().split('T')[0];
+            if (label && typeof label === 'string') {
+                dateInput.value = labelToDateStr(label);
+            } else {
+                let yesterday = new Date();
+                yesterday.setDate(yesterday.getDate() - 1);
+                dateInput.value = yesterday.toISOString().split('T')[0];
             }
+
             handleDateChange();
             
             const overlay = document.getElementById('add-data-overlay');
-            const card = document.getElementById('add-data-card');
-            overlay.style.opacity = '1'; overlay.style.pointerEvents = 'auto';
-            card.style.transform = 'scale(1) translateY(0)'; card.style.opacity = '1';
+            overlay.style.display = 'flex';
+            setTimeout(() => overlay.classList.remove('hidden'), 10);
         }
 
         function closeAddDataModal() {
             const overlay = document.getElementById('add-data-overlay');
-            const card = document.getElementById('add-data-card');
-            card.style.transform = 'scale(0.9) translateY(20px)'; card.style.opacity = '0';
-            overlay.style.opacity = '0'; overlay.style.pointerEvents = 'none';
+            overlay.classList.add('hidden');
+            setTimeout(() => overlay.style.display = 'none', 400);
         }
 
-        function handleDateChange() {
-            const dateInput = document.getElementById('input-date').value;
-            document.getElementById('modal-temp').innerText = db.historicalTemps[dateInput] || "Нет данных";
-            const targetLabel = dateToLabel(dateInput);
-            const labelIdx = db.measurements.labels.indexOf(targetLabel);
+        function toggleAccordion() {
+            const content = document.getElementById('archive-allergens-container');
+            const icon = document.getElementById('accordion-icon');
+            content.classList.toggle('open');
             
-            let allNull = true;
-            db.measurements.datasets.forEach(ds => {
-                const input = document.getElementById(`input-${ds.id}`);
-                if(input) {
-                    if (labelIdx !== -1 && ds.data[labelIdx] !== null) { input.value = ds.data[labelIdx]; allNull = false; }
-                    else input.value = '';
-                    input.disabled = false;
-                    validateInput(ds.id);
-                }
-            });
-
-            document.getElementById('delete-data-btn').style.display = labelIdx !== -1 ? 'block' : 'none';
-            document.getElementById('global-no-data-toggle').checked = (labelIdx !== -1 && allNull);
-            if (labelIdx !== -1 && allNull) toggleAllMeasurements(true);
-            checkSaveBtnState();
+            if (content.classList.contains('open')) {
+                icon.style.transform = 'rotate(180deg)';
+            } else {
+                icon.style.transform = 'rotate(0deg)';
+            }
         }
 
-        function validateInput(id) {
+        function usePrevValue(id, val) {
             const input = document.getElementById(`input-${id}`);
-            const alert = document.getElementById(`alert-text-${id}`);
-            const val = input.value ? parseInt(input.value) : null;
-            const limit = db.VALIDATION_LIMITS[id] || 5000;
+            if (input.disabled) return;
+            input.value = val !== null ? val : '';
+            validateInput(id, val);
+        }
+
+        function validateInput(id, prevValue) {
+            const input = document.getElementById(`input-${id}`);
+            const alertText = document.getElementById(`alert-text-${id}`);
+            const val = input.value !== '' ? parseInt(input.value) : null;
             
-            if (val !== null && val >= limit) { input.classList.add('amber-border'); alert.style.display = 'block'; } 
-            else { input.classList.remove('amber-border'); alert.style.display = 'none'; }
+            let isAmber = false;
+            if (val !== null) {
+                const limit = VALIDATION_LIMITS[id] ? VALIDATION_LIMITS[id].amber : 5000;
+                
+                if (val >= limit) isAmber = true;
+                
+                if (prevValue > 0 && val >= prevValue * 10 && val > 20) isAmber = true;
+            }
+
+            if (isAmber) {
+                input.classList.add('amber-border');
+                alertText.style.display = 'block';
+            } else {
+                input.classList.remove('amber-border');
+                alertText.style.display = 'none';
+            }
+            
             checkSaveBtnState();
         }
 
         function toggleAllMeasurements(isNoData) {
-            db.measurements.datasets.forEach(ds => {
-                const input = document.getElementById(`input-${ds.id}`);
-                if(input) { input.disabled = isNoData; if(isNoData) input.value = ''; validateInput(ds.id); }
+            db.today.allergens.forEach(item => {
+                const input = document.getElementById(`input-${item.id}`);
+                if (input) {
+                    input.disabled = isNoData;
+                    if (isNoData) {
+                        input.value = '';
+                        input.classList.remove('amber-border');
+                        const alertText = document.getElementById(`alert-text-${item.id}`);
+                        if (alertText) alertText.style.display = 'none';
+                    }
+                }
             });
             checkSaveBtnState();
         }
@@ -646,23 +1638,56 @@
         function checkSaveBtnState() {
             const btn = document.getElementById('save-data-btn');
             const isGlobalNoData = document.getElementById('global-no-data-toggle').checked;
-            let hasVal = db.measurements.datasets.some(ds => { const i = document.getElementById(`input-${ds.id}`); return i && i.value !== ''; });
-            btn.disabled = !(hasVal || isGlobalNoData);
+            
+            let hasAnyValue = false;
+            db.today.allergens.forEach(item => {
+                const input = document.getElementById(`input-${item.id}`);
+                if (input && input.value !== '') hasAnyValue = true;
+            });
+
+            btn.disabled = !(hasAnyValue || isGlobalNoData);
         }
 
-        function toggleAccordion() {
-            const c = document.getElementById('archive-allergens-container');
-            c.classList.toggle('open');
-            document.getElementById('accordion-icon').style.transform = c.classList.contains('open') ? 'rotate(180deg)' : '';
-        }
-
-        function usePrevValue(id) {
-            const ds = db.measurements.datasets.find(d => d.id === id);
-            const lastVal = [...ds.data].reverse().find(v => v !== null);
-            if(lastVal !== undefined && !document.getElementById(`input-${id}`).disabled) {
-                document.getElementById(`input-${id}`).value = lastVal;
-                validateInput(id);
+        function deleteData() {
+            const dateInput = document.getElementById('input-date').value;
+            const targetLabel = dateToLabel(dateInput);
+            const labelIdx = db.charts.today.labels.indexOf(targetLabel);
+            
+            if (labelIdx !== -1) {
+                db.charts.today.labels.splice(labelIdx, 1);
+                db.charts.today.datasets.forEach(d => {
+                    d.data.splice(labelIdx, 1);
+                });
+                
+                const newLatestIdx = db.charts.today.labels.length - 1;
+                if (newLatestIdx >= 0) {
+                    let maxVal = -1;
+                    db.today.allergens.forEach(item => {
+                        const dataset = db.charts.today.datasets.find(d => d.label === item.name);
+                        const val = dataset ? dataset.data[newLatestIdx] : null;
+                        item.value = val;
+                        if (val !== null) {
+                            if (val >= 100) item.level = 'critical';
+                            else if (val >= 50) item.level = 'high';
+                            else if (val >= 10) item.level = 'warning';
+                            else item.level = 'safe';
+                            if (val > maxVal) maxVal = val;
+                        }
+                    });
+                    
+                    db.today.hasDataToday = maxVal !== -1;
+                    if (maxVal >= 100) db.today.overallRisk = 'critical';
+                    else if (maxVal >= 50) db.today.overallRisk = 'high';
+                    else if (maxVal >= 10) db.today.overallRisk = 'warning';
+                    else db.today.overallRisk = 'safe';
+                } else {
+                    db.today.hasDataToday = false;
+                }
+                
+                renderTodayData();
+                initCharts();
             }
+            closeAddDataModal();
         }
 
         function commitSave() {
@@ -670,189 +1695,74 @@
             const dateInput = document.getElementById('input-date').value;
             const targetLabel = dateToLabel(dateInput);
             
-            let labelIdx = db.measurements.labels.indexOf(targetLabel);
-            if (labelIdx === -1) {
-                db.measurements.labels.push(targetLabel);
-                db.measurements.datasets.forEach(d => d.data.push(null));
-                const indices = db.measurements.labels.map((l, i) => i);
-                indices.sort((a, b) => new Date(labelToDateStr(db.measurements.labels[a])) - new Date(labelToDateStr(db.measurements.labels[b])));
-                db.measurements.labels = indices.map(i => db.measurements.labels[i]);
-                db.measurements.datasets.forEach(d => d.data = indices.map(i => d.data[i]));
-                labelIdx = db.measurements.labels.indexOf(targetLabel);
+            let labelIdx = db.charts.today.labels.indexOf(targetLabel);
+            const isNewDate = labelIdx === -1;
+
+            if (isNewDate) {
+                db.charts.today.labels.push(targetLabel);
+                db.charts.today.datasets.forEach(d => d.data.push(null));
+                
+                const indices = db.charts.today.labels.map((l, i) => i);
+                indices.sort((a, b) => new Date(labelToDateStr(db.charts.today.labels[a])) - new Date(labelToDateStr(db.charts.today.labels[b])));
+                
+                db.charts.today.labels = indices.map(i => db.charts.today.labels[i]);
+                db.charts.today.datasets.forEach(d => {
+                    d.data = indices.map(i => d.data[i]);
+                });
+                
+                labelIdx = db.charts.today.labels.indexOf(targetLabel);
             }
 
-            db.measurements.datasets.forEach(ds => {
-                const input = document.getElementById(`input-${ds.id}`);
-                if (input) ds.data[labelIdx] = (!isGlobalNoData && input.value !== '') ? parseInt(input.value) : null;
-            });
+            let maxVal = -1; 
+            const isLatestDate = labelIdx === db.charts.today.labels.length - 1;
 
-            renderTodayData(); renderTodayChart(); closeAddDataModal();
-        }
+            db.today.allergens.forEach(item => {
+                const input = document.getElementById(`input-${item.id}`);
+                if (!input) return;
 
-        function deleteManualData() {
-            const targetLabel = dateToLabel(document.getElementById('input-date').value);
-            const labelIdx = db.measurements.labels.indexOf(targetLabel);
-            if (labelIdx !== -1) {
-                db.measurements.labels.splice(labelIdx, 1);
-                db.measurements.datasets.forEach(d => d.data.splice(labelIdx, 1));
-                renderTodayData(); renderTodayChart();
-            }
-            closeAddDataModal();
-        }
+                let finalVal = null;
+                if (!isGlobalNoData && input.value !== '') {
+                    finalVal = parseInt(input.value);
+                }
 
-        // Вспомогательные функции дат
-        function labelToDateStr(l) { const m={'Янв':'01','Фев':'02','Мар':'03','Апр':'04','Мая':'05','Июн':'06','Июл':'07','Авг':'08','Сен':'09','Окт':'10','Ноя':'11','Дек':'12'}; const p = l.split(' '); return `${new Date().getFullYear()}-${m[p[1]]||'01'}-${p[0].padStart(2,'0')}`; }
-        function dateToLabel(d) { const dt=new Date(d); const m=['Янв','Фев','Мар','Апр','Мая','Июн','Июл','Авг','Сен','Окт','Ноя','Дек']; return `${dt.getDate()} ${m[dt.getMonth()]}`; }
+                const dataset = db.charts.today.datasets.find(d => d.label === item.name);
+                if (dataset) {
+                    dataset.data[labelIdx] = finalVal;
+                }
 
-        // ==========================================
-        // ГРАФИКИ & ПРОГНОЗ
-        // ==========================================
-        function renderTodayChart() {
-            const ctx = document.getElementById('todayChart');
-            if(!ctx) return;
-            if(todayChartInst) todayChartInst.destroy();
-            
-            const isMobile = window.innerWidth < 768;
-            todayChartInst = new Chart(ctx.getContext('2d'), {
-                type: 'line',
-                data: {
-                    labels: db.measurements.labels,
-                    datasets: db.measurements.datasets.map(ds => ({
-                        label: ds.name, data: ds.data, borderColor: ds.color, backgroundColor: ds.color+'33',
-                        borderWidth: 3, tension: 0.4, fill: true, pointRadius: 3, pointBackgroundColor: ds.color, spanGaps: true
-                    }))
-                },
-                options: {
-                    responsive: true, maintainAspectRatio: false, animation: isMobile ? false : { duration: 800, easing: 'easeOutQuart' },
-                    interaction: { mode: 'index', intersect: false },
-                    plugins: { decimation: { enabled: true }, legend: {display: false}, tooltip: { enabled: false, external: customTooltip } },
-                    scales: { x:{grid:{display:false}}, y:{grid:{color:'rgba(255,255,255,0.05)'}, beginAtZero:true} }
+                if (isLatestDate) {
+                    let finalLevel = 'safe';
+                    if (finalVal !== null) {
+                        if (finalVal >= 100) finalLevel = 'critical';
+                        else if (finalVal >= 50) finalLevel = 'high';
+                        else if (finalVal >= 10) finalLevel = 'warning';
+                        else finalLevel = 'safe';
+                        
+                        if (finalVal > maxVal) maxVal = finalVal;
+                    }
+                    item.value = finalVal;
+                    if (finalVal !== null) item.level = finalLevel;
                 }
             });
-        }
 
-        function customTooltip(context) {
-            let tooltipEl = document.getElementById('custom-chart-tooltip');
-            if (!tooltipEl) {
-                tooltipEl = document.createElement('div'); tooltipEl.id = 'custom-chart-tooltip'; document.body.appendChild(tooltipEl);
-                document.addEventListener('click', e => { if (!tooltipEl.contains(e.target) && e.target.tagName!=='CANVAS') tooltipEl.style.opacity = 0; });
+            if (isLatestDate) {
+                if (maxVal === -1) {
+                    db.today.hasDataToday = false;
+                    db.today.overallRisk = 'safe';
+                } else {
+                    db.today.hasDataToday = true;
+                    if (maxVal >= 100) db.today.overallRisk = 'critical';
+                    else if (maxVal >= 50) db.today.overallRisk = 'high';
+                    else if (maxVal >= 10) db.today.overallRisk = 'warning';
+                    else db.today.overallRisk = 'safe';
+                }
+                renderTodayData();
             }
-            const model = context.tooltip; if(model.opacity === 0) return;
-            const label = model.title[0];
-            let innerHtml = `<div style="font-weight:600;font-size:14px;margin-bottom:8px;">${label}</div>`;
-            model.body.forEach((b,i) => {
-                const c = model.labelColors[i];
-                innerHtml += `<div style="font-size:13px;margin-bottom:4px;display:flex;align-items:center;"><span style="background:${c.backgroundColor};width:10px;height:10px;border-radius:2px;margin-right:6px;"></span>${b.lines}</div>`;
-            });
-            const temp = db.historicalTemps[labelToDateStr(label)];
-            if(temp) innerHtml += `<div style="font-size:11px;color:var(--text-secondary);margin-top:6px;">Погода: <span style="color:var(--safe);">${temp}</span></div>`;
-            innerHtml += `<button onclick="openAddDataModal('${label}'); document.getElementById('custom-chart-tooltip').style.opacity=0;" style="background:var(--accent);color:white;border:none;padding:8px;border-radius:8px;font-size:13px;width:100%;margin-top:12px;cursor:pointer;"><i data-lucide="edit-2" size="14"></i> Изменить</button>`;
-            tooltipEl.innerHTML = innerHtml; lucide.createIcons();
+
+            initCharts();
+            lucide.createIcons();
             
-            const pos = context.chart.canvas.getBoundingClientRect();
-            tooltipEl.style.opacity = 1;
-            tooltipEl.style.left = pos.left + window.scrollX + model.caretX + 'px';
-            tooltipEl.style.top = pos.top + window.scrollY + model.caretY + 10 + 'px';
-            tooltipEl.style.transform = 'translateX(-50%)';
-        }
-
-        function renderArchive() {
-            const ctx = document.getElementById('archiveChart');
-            if(!ctx) return;
-            new Chart(ctx.getContext('2d'), {
-                type:'bar', 
-                data:{ labels: ["1 Апр", "10 Апр", "20 Апр", "30 Апр"], datasets: [{label:'Береза 2025', data:[10, 50, 14000, 100], backgroundColor:'#FF453A'}] }, 
-                options:{ responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{x:{grid:{display:false}}, y:{type:'logarithmic', min:0.5, grid:{color:'rgba(255,255,255,0.05)'}}} }
-            });
-            document.getElementById('archive-custom-legend').innerHTML = `<div class="legend-group"><div class="legend-group-title">Береза</div><div class="legend-item"><div class="legend-color-box" style="background:#FF453A"></div><span>2025 год</span></div></div>`;
-        }
-
-        function toggleForecastScale(type) {
-            db.forecastScale = type;
-            if(forecastChartInst) {
-                forecastChartInst.options.scales.y.type = type;
-                forecastChartInst.options.scales.y.min = type === 'logarithmic' ? 0.5 : 0;
-                forecastChartInst.update();
-            }
-            document.getElementById('btn-scale-lin').classList.toggle('active', type === 'linear');
-            document.getElementById('btn-scale-log').classList.toggle('active', type === 'logarithmic');
-            document.getElementById('forecast-scale-indicator').style.transform = type === 'linear' ? 'translateX(0)' : 'translateX(100%)';
-        }
-
-        async function fetchOpenMeteo() {
-            try {
-                const wUrl = `https://api.open-meteo.com/v1/forecast?latitude=${db.lat}&longitude=${db.lon}&current=temperature_2m,relative_humidity_2m,wind_speed_10m&hourly=temperature_2m,precipitation,wind_direction_10m,wind_speed_10m&past_days=5&timezone=Europe%2FMoscow`;
-                const pUrl = `https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${db.lat}&longitude=${db.lon}&hourly=alder_pollen,birch_pollen,grass_pollen&timezone=Europe%2FMoscow&past_days=5`;
-
-                const [wRes, pRes] = await Promise.all([fetch(wUrl), fetch(pUrl)]);
-                const wData = await wRes.json(); const pData = await pRes.json();
-
-                document.getElementById('w-temp').innerText = `${Math.round(wData.current.temperature_2m)}°`;
-                document.getElementById('w-hum').innerText = `${Math.round(wData.current.relative_humidity_2m)}%`;
-                document.getElementById('w-wind').innerText = `${Math.round(wData.current.wind_speed_10m)}`;
-
-                wData.hourly.time.forEach((t, i) => { const d = t.split('T')[0]; if(!db.historicalTemps[d]) db.historicalTemps[d] = `${Math.round(wData.hourly.temperature_2m[i])}°C`; });
-
-                const labels = pData.hourly.time.map(t => {
-                    const d = new Date(t);
-                    return d.getHours() === 0 ? `${d.getDate()} ${['Янв','Фев','Мар','Апр','Мая','Июн','Июл','Авг','Сен','Окт','Ноя','Дек'][d.getMonth()]}` : `${d.getHours().toString().padStart(2,'0')}:00`;
-                });
-
-                renderForecastChart(labels, pData.hourly, wData.hourly);
-            } catch(e) { console.error("API Error", e); }
-        }
-
-        function renderForecastChart(labels, pollen, weather) {
-            const ctx = document.getElementById('forecastChart');
-            if(!ctx) return;
-            if(forecastChartInst) forecastChartInst.destroy();
-
-            const ds = []; let maxPollen = 0;
-            if (pollen.birch_pollen && Math.max(...pollen.birch_pollen) > 0) {
-                maxPollen = Math.max(maxPollen, ...pollen.birch_pollen);
-                ds.push({ label:'Береза', data: pollen.birch_pollen, borderColor: '#FF453A', backgroundColor: 'rgba(255,69,58,0.4)', fill: true, tension: 0.4, pointRadius: 0, spanGaps:true });
-            }
-            if (pollen.alder_pollen && Math.max(...pollen.alder_pollen) > 0) {
-                maxPollen = Math.max(maxPollen, ...pollen.alder_pollen);
-                ds.push({ label:'Ольха', data: pollen.alder_pollen, borderColor: '#FF9F0A', backgroundColor: 'rgba(255,159,10,0.4)', fill: true, tension: 0.4, pointRadius: 0, spanGaps:true });
-            }
-            if (pollen.grass_pollen && Math.max(...pollen.grass_pollen) > 0) {
-                maxPollen = Math.max(maxPollen, ...pollen.grass_pollen);
-                ds.push({ label:'Злаки', data: pollen.grass_pollen, borderColor: '#64D2FF', backgroundColor: 'rgba(100,210,255,0.4)', fill: true, tension: 0.4, pointRadius: 0, spanGaps:true });
-            }
-            ds.push({ label:'Температура', data: weather.temperature_2m, borderColor: 'rgba(255,255,255,0.3)', borderDash:[4,4], borderWidth:1, tension:0.4, pointRadius:0, fill:false, yAxisID:'yTemp' });
-
-            if (maxPollen > 1000) setTimeout(() => toggleForecastScale('logarithmic'), 50);
-
-            const isMobile = window.innerWidth < 768;
-            forecastChartInst = new Chart(ctx.getContext('2d'), {
-                type:'line', data:{labels, datasets:ds},
-                options: {
-                    responsive: true, maintainAspectRatio: false, animation: isMobile ? false : { duration: 800, easing: 'easeOutQuart' },
-                    layout: { padding: {top: 20} },
-                    plugins: {
-                        decimation: { enabled: true },
-                        tooltip: { mode: 'index', intersect: false, callbacks: { afterBody: ctx => { const i = ctx[0].dataIndex; return [`\n🌡️ ${weather.temperature_2m[i]}°C`, weather.precipitation[i]>0?`💧 ${weather.precipitation[i]}мм`:'', `💨 ${weather.wind_speed_10m[i]}км/ч`].filter(Boolean); } } }
-                    },
-                    scales: {
-                        x: { grid:{color: c=> c.tick?.label?.length > 5 ? 'rgba(255,255,255,0.2)' : 'transparent', drawTicks:false}, ticks:{autoSkip:true, maxTicksLimit:14} },
-                        y: { type: db.forecastScale, min: db.forecastScale === 'logarithmic' ? 0.5 : 0, grid:{color:'rgba(255,255,255,0.05)'} },
-                        yTemp: { type: 'linear', position: 'right', display: false }
-                    },
-                    interaction: { mode: 'index', intersect: false }
-                },
-                plugins: [
-                    { id: 'riskZones', beforeDraw: (c) => {
-                        const {ctx, chartArea:{top,bottom,left,right}, scales:{y}} = c;
-                        const draw = (min,max,col) => { let ys = y.getPixelForValue(max), ye = y.getPixelForValue(min); if(ys<top) ys=top; if(ye>bottom) ye=bottom; if(ys>bottom||ye<top) return; ctx.fillStyle = col; ctx.fillRect(left,ys,right-left,ye-ys); };
-                        draw(0,10,'rgba(50,215,75,0.05)'); draw(10,100,'rgba(255,214,10,0.05)'); draw(100,1000,'rgba(255,159,10,0.05)'); draw(1000,100000,'rgba(138,3,3,0.05)');
-                    }},
-                    { id: 'weatherIcons', afterDraw: (c) => {
-                        const {ctx, chartArea:{top}, scales:{x}} = c; ctx.font = '12px Arial'; ctx.textAlign='center';
-                        c.data.labels.forEach((_,i) => { if(weather.precipitation[i] > 0.5) { const xp = x.getPixelForValue(i); if(xp >= c.chartArea.left && xp <= c.chartArea.right) ctx.fillText('💧', xp, top+12); } });
-                    }}
-                ]
-            });
+            closeAddDataModal();
         }
     </script>
 </body>
