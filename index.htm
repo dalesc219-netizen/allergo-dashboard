@@ -694,9 +694,18 @@
 
                 <!-- НОВЫЙ БЛОК: ПРОГНОЗ CAMS/SILAM -->
                 <div class="card">
-                    <h3 class="section-title"><i data-lucide="radar" size="18"></i> Прогноз CAMS / SILAM</h3>
-                    <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 10px;">Ежедневные максимумы на 5 дней вперед на основе атмосферных моделей (FMI/Copernicus).</p>
-                    <div class="chart-container">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
+                        <div style="flex: 1;">
+                            <h3 class="section-title" style="margin-bottom: 2px;"><i data-lucide="radar" size="18"></i> FMI SILAM / Copernicus</h3>
+                            <p style="font-size: 11px; color: var(--text-secondary); line-height: 1.3;">Почасовой прогноз на 5 дней с наложением погоды.</p>
+                        </div>
+                        <div class="segment-control" style="width: 90px; padding: 2px; flex-shrink: 0; height: 26px;">
+                            <div class="segment-indicator" id="forecast-scale-indicator" style="width: calc(50% - 2px); background: #48484A;"></div>
+                            <button class="segment-btn active" id="btn-scale-lin" onclick="toggleForecastScale('linear')" style="font-size: 10px; padding: 0; line-height: 22px;">LIN</button>
+                            <button class="segment-btn" id="btn-scale-log" onclick="toggleForecastScale('logarithmic')" style="font-size: 10px; padding: 0; line-height: 22px;">LOG</button>
+                        </div>
+                    </div>
+                    <div class="chart-container" style="height: 250px; margin-top: 10px;">
                         <canvas id="forecastChart"></canvas>
                     </div>
                 </div>
@@ -1058,94 +1067,270 @@
             if (measurementDateEl) measurementDateEl.innerText = 'Дата измерений: ' + yParts.join(' ');
         }
 
-        // --- Интеграция прогноза SILAM / CAMS ---
+        // --- Интеграция прогноза SILAM / CAMS (Почасовая с погодой) ---
         async function fetchForecastData() {
             try {
-                // Запрашиваем почасовой прогноз на 5 дней вперед
-                const res = await fetch(`https://air-quality-api.open-meteo.com/v1/air-quality?latitude=55.7558&longitude=37.6173&hourly=alder_pollen,birch_pollen&timezone=Europe%2FMoscow&forecast_days=5`);
-                const data = await res.json();
+                // Запрашиваем почасовой прогноз: Пыльца
+                const pollenUrl = `https://air-quality-api.open-meteo.com/v1/air-quality?latitude=55.7558&longitude=37.6173&hourly=alder_pollen,birch_pollen&timezone=Europe%2FMoscow&forecast_days=5`;
+                // Запрашиваем почасовой прогноз: Погода
+                const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=55.7558&longitude=37.6173&hourly=temperature_2m,precipitation,wind_direction_10m,wind_speed_10m&timezone=Europe%2FMoscow&forecast_days=5`;
 
-                const times = data.hourly.time;
-                const alderHourly = data.hourly.alder_pollen;
-                const birchHourly = data.hourly.birch_pollen;
+                const [pollenRes, weatherRes] = await Promise.all([fetch(pollenUrl), fetch(weatherUrl)]);
+                const pollenData = await pollenRes.json();
+                const weatherData = await weatherRes.json();
 
-                // Группируем почасовые данные по дням и ищем дневной максимум (обычная практика для пыльцы)
-                const dailyData = {};
+                const times = pollenData.hourly.time;
                 
-                times.forEach((timeStr, index) => {
-                    const dateObj = new Date(timeStr);
-                    const dayKey = dateObj.toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' });
-                    
-                    if (!dailyData[dayKey]) {
-                        dailyData[dayKey] = { alder: 0, birch: 0 };
+                // Форматируем метки (Часы, а для полуночи - дату)
+                const formatLabels = times.map(t => {
+                    const d = new Date(t);
+                    if (d.getHours() === 0) {
+                        const months = ['Янв', 'Фев', 'Мар', 'Апр', 'Мая', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек'];
+                        return `${d.getDate()} ${months[d.getMonth()]}`;
                     }
-                    
-                    // Берем максимальное значение за день
-                    dailyData[dayKey].alder = Math.max(dailyData[dayKey].alder, alderHourly[index] || 0);
-                    dailyData[dayKey].birch = Math.max(dailyData[dayKey].birch, birchHourly[index] || 0);
+                    return `${d.getHours().toString().padStart(2, '0')}:00`;
                 });
 
-                const labels = Object.keys(dailyData);
-                const alderData = labels.map(l => dailyData[l].alder);
-                const birchData = labels.map(l => dailyData[l].birch);
-
-                renderForecastChart(labels, alderData, birchData);
+                renderForecastChart(
+                    formatLabels, 
+                    { alder: pollenData.hourly.alder_pollen, birch: pollenData.hourly.birch_pollen }, 
+                    { 
+                        temp: weatherData.hourly.temperature_2m, 
+                        precip: weatherData.hourly.precipitation, 
+                        windDir: weatherData.hourly.wind_direction_10m, 
+                        windSpeed: weatherData.hourly.wind_speed_10m 
+                    }
+                );
 
             } catch(e) {
                 console.error("Ошибка загрузки прогноза SILAM:", e);
             }
         }
 
-        function renderForecastChart(labels, alderData, birchData) {
+        let forecastScaleType = 'linear';
+
+        window.toggleForecastScale = function(type) {
+            forecastScaleType = type;
+            if (forecastChartInst) {
+                forecastChartInst.options.scales.y.type = type;
+                forecastChartInst.options.scales.y.min = type === 'logarithmic' ? 0.5 : 0;
+                forecastChartInst.update();
+            }
+            
+            const btnLin = document.getElementById('btn-scale-lin');
+            const btnLog = document.getElementById('btn-scale-log');
+            const indicator = document.getElementById('forecast-scale-indicator');
+            if (btnLin && btnLog && indicator) {
+                if (type === 'linear') {
+                    btnLin.classList.add('active');
+                    btnLog.classList.remove('active');
+                    indicator.style.transform = 'translateX(0)';
+                } else {
+                    btnLog.classList.add('active');
+                    btnLin.classList.remove('active');
+                    indicator.style.transform = 'translateX(100%)';
+                }
+            }
+        }
+
+        function renderForecastChart(labels, pollen, weather) {
             const canvas = document.getElementById('forecastChart');
             if (!canvas) return;
 
             const ctx = canvas.getContext('2d');
             if (forecastChartInst) forecastChartInst.destroy();
+
+            const currentMonth = new Date().getMonth() + 1;
+            const datasets = [];
+            let maxVal = 0;
+
+            // Проверка сезонности и сбор слоев (с использованием глобального SEASONALITY)
+            const maxAlder = Math.max(...pollen.alder.filter(v => v !== null));
+            if ((typeof SEASONALITY !== 'undefined' && SEASONALITY.alder.includes(currentMonth)) || maxAlder > 0) {
+                maxVal = Math.max(maxVal, maxAlder);
+                datasets.push({
+                    label: 'Ольха',
+                    data: pollen.alder,
+                    borderColor: '#FF9F0A',
+                    backgroundColor: 'rgba(255, 159, 10, 0.4)',
+                    fill: true,
+                    tension: 0.4,
+                    pointRadius: 0,
+                    pointHoverRadius: 5
+                });
+            }
+
+            const maxBirch = Math.max(...pollen.birch.filter(v => v !== null));
+            if ((typeof SEASONALITY !== 'undefined' && SEASONALITY.birch.includes(currentMonth)) || maxBirch > 0) {
+                maxVal = Math.max(maxVal, maxBirch);
+                datasets.push({
+                    label: 'Береза',
+                    data: pollen.birch,
+                    borderColor: '#32D74B',
+                    backgroundColor: 'rgba(50, 215, 75, 0.4)',
+                    fill: true,
+                    tension: 0.4,
+                    pointRadius: 0,
+                    pointHoverRadius: 5
+                });
+            }
+
+            // Температурный оверлей
+            datasets.push({
+                label: 'Температура (°C)',
+                data: weather.temp,
+                borderColor: 'rgba(255, 255, 255, 0.3)',
+                borderWidth: 1,
+                borderDash: [4, 4],
+                tension: 0.4,
+                pointRadius: 0,
+                fill: false,
+                yAxisID: 'yTemp'
+            });
+
+            // Авто-переключение на LOG если пик экстремальный
+            if (maxVal > 1000) {
+                forecastScaleType = 'logarithmic';
+                setTimeout(() => toggleForecastScale('logarithmic'), 50);
+            }
+
+            // Кастомный плагин 1: Фоновые риск-зоны (Y-axis)
+            const riskZonesPlugin = {
+                id: 'riskZones',
+                beforeDraw: (chart) => {
+                    const { ctx, chartArea: { top, bottom, left, right }, scales: { y } } = chart;
+                    ctx.save();
+                    
+                    const drawZone = (minVal, maxVal, color) => {
+                        let yStart = y.getPixelForValue(maxVal);
+                        let yEnd = y.getPixelForValue(minVal);
+                        
+                        if (yStart < top) yStart = top;
+                        if (yEnd > bottom) yEnd = bottom;
+                        if (yStart > bottom || yEnd < top) return;
+                        
+                        ctx.fillStyle = color;
+                        ctx.fillRect(left, yStart, right - left, yEnd - yStart);
+                    };
+                    
+                    drawZone(0, 10, 'rgba(50, 215, 75, 0.05)');    // Зеленая (Safe)
+                    drawZone(10, 100, 'rgba(255, 214, 10, 0.05)'); // Желтая (Warning)
+                    drawZone(100, 1000, 'rgba(255, 159, 10, 0.05)');// Оранжевая (High)
+                    drawZone(1000, 100000, 'rgba(138, 3, 3, 0.05)');// Бордовая (Critical)
+                    
+                    ctx.restore();
+                }
+            };
+
+            // Кастомный плагин 2: Иконки осадков (X-axis)
+            const weatherIconsPlugin = {
+                id: 'weatherIcons',
+                afterDraw: (chart) => {
+                    const { ctx, chartArea: { top }, scales: { x } } = chart;
+                    ctx.save();
+                    ctx.font = '12px Arial';
+                    ctx.textAlign = 'center';
+                    
+                    chart.data.labels.forEach((_, i) => {
+                        if (weather.precip[i] > 0.5) {
+                            const xPosVal = x.getPixelForValue(i);
+                            if (xPosVal >= chart.chartArea.left && xPosVal <= chart.chartArea.right) {
+                                ctx.fillText('💧', xPosVal, top + 12);
+                            }
+                        }
+                    });
+                    ctx.restore();
+                }
+            };
+
             forecastChartInst = new Chart(ctx, {
                 type: 'line',
                 data: {
                     labels: labels,
-                    datasets: [
-                        {
-                            label: 'Ольха (прогноз)',
-                            data: alderData,
-                            borderColor: '#FF9F0A',
-                            borderDash: [5, 5], // Пунктирная линия для прогноза
-                            backgroundColor: 'transparent',
-                            borderWidth: 2,
-                            tension: 0.4,
-                            pointRadius: 4,
-                            pointBackgroundColor: '#FF9F0A'
-                        },
-                        {
-                            label: 'Береза (прогноз)',
-                            data: birchData,
-                            borderColor: '#32D74B',
-                            borderDash: [5, 5],
-                            backgroundColor: 'transparent',
-                            borderWidth: 2,
-                            tension: 0.4,
-                            pointRadius: 4,
-                            pointBackgroundColor: '#32D74B'
-                        }
-                    ]
+                    datasets: datasets
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
+                    layout: { padding: { top: 20 } }, // Отступ для капель дождя
                     plugins: { 
                         legend: { 
                             position: 'top',
-                            labels: { usePointStyle: true, boxWidth: 8, color: 'rgba(235, 235, 245, 0.6)' }
-                        } 
+                            labels: { usePointStyle: true, boxWidth: 8, color: 'rgba(235, 235, 245, 0.6)' },
+                            onClick: function(e, legendItem, legend) {
+                                const index = legendItem.datasetIndex;
+                                const ci = legend.chart;
+                                if (ci.isDatasetVisible(index)) {
+                                    ci.hide(index);
+                                    legendItem.hidden = true;
+                                } else {
+                                    ci.show(index);
+                                    legendItem.hidden = false;
+                                }
+                            }
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false,
+                            callbacks: {
+                                title: function(context) { return context[0].label; },
+                                afterBody: function(context) {
+                                    const idx = context[0].dataIndex;
+                                    const lines = [];
+                                    lines.push(`\n🌡️ Температура: ${weather.temp[idx] > 0 ? '+' : ''}${Math.round(weather.temp[idx])}°C`);
+                                    if (weather.precip[idx] > 0) lines.push(`💧 Осадки: ${weather.precip[idx]} мм`);
+                                    
+                                    const dirs = ['С', 'СВ', 'В', 'ЮВ', 'Ю', 'ЮЗ', 'З', 'СЗ'];
+                                    const dirStr = dirs[Math.round(weather.windDir[idx] / 45) % 8];
+                                    lines.push(`💨 Ветер: ${dirStr} ${Math.round(weather.windSpeed[idx])} м/с`);
+                                    return lines;
+                                }
+                            }
+                        }
                     },
                     scales: {
-                        x: { grid: { display: false } },
-                        y: { grid: { color: 'rgba(255,255,255,0.05)' }, beginAtZero: true }
+                        x: { 
+                            grid: { 
+                                color: function(context) {
+                                    // Вертикальные разделители (только при смене суток)
+                                    if (context.tick && context.tick.label && context.tick.label.length > 5) {
+                                        return 'rgba(255, 255, 255, 0.2)'; 
+                                    }
+                                    return 'transparent';
+                                },
+                                drawTicks: false
+                            },
+                            ticks: {
+                                autoSkip: true,
+                                maxTicksLimit: 14,
+                                color: 'rgba(235, 235, 245, 0.6)'
+                            }
+                        },
+                        y: { 
+                            type: forecastScaleType,
+                            min: forecastScaleType === 'logarithmic' ? 0.5 : 0,
+                            grid: { color: 'rgba(255,255,255,0.05)' },
+                            ticks: {
+                                callback: function(value) {
+                                    if (forecastScaleType === 'logarithmic') {
+                                        if (value === 1 || value === 10 || value === 100 || value === 1000 || value === 10000) return value;
+                                        return null;
+                                    }
+                                    return value;
+                                }
+                            }
+                        },
+                        yTemp: {
+                            type: 'linear',
+                            position: 'right',
+                            grid: { display: false },
+                            ticks: { display: false },
+                            border: { display: false }
+                        }
                     },
                     interaction: { mode: 'index', intersect: false }
-                }
+                },
+                plugins: [riskZonesPlugin, weatherIconsPlugin]
             });
         }
 
