@@ -213,42 +213,6 @@
             justify-content: flex-end;
         }
 
-        .insight-item {
-            border-bottom: 0.5px solid var(--glass-border);
-            padding: 15px 0;
-        }
-        
-        .insight-item:last-child {
-            border-bottom: none;
-            padding-bottom: 0;
-        }
-
-        .insight-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 8px;
-        }
-
-        .insight-author {
-            font-weight: 600;
-            font-size: 14px;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .insight-date {
-            font-size: 12px;
-            color: var(--text-secondary);
-        }
-
-        .insight-text {
-            font-size: 14px;
-            line-height: 1.4;
-            color: var(--text-secondary);
-        }
-
         .section-title {
             font-size: 18px;
             font-weight: 600;
@@ -264,7 +228,53 @@
             width: 100%;
         }
 
-        /* Переключатели и новые элементы ввода */
+        /* --- Кастомная легенда для архива (Надежная Flex-версия) --- */
+        .custom-legend-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 20px;
+            align-items: flex-start;
+        }
+        .legend-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            flex: 1 1 80px; /* Автоматические колонки с минимальной шириной */
+            max-width: 140px;
+        }
+        .legend-group-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 2px;
+            border-bottom: 1px solid var(--glass-border);
+            padding-bottom: 4px;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: opacity 0.2s, text-decoration 0.2s;
+        }
+        .legend-item:active {
+            opacity: 0.7;
+        }
+        .legend-item.hidden-dataset {
+            opacity: 0.35;
+            text-decoration: line-through;
+        }
+        .legend-color-box {
+            width: 10px;
+            height: 10px;
+            border-radius: 3px;
+            flex-shrink: 0;
+        }
+
+        /* --- НОВЫЙ UI МОДАЛЬНОГО ОКНА (ТЗ) --- */
         .toggle-switch {
             position: relative;
             display: inline-block;
@@ -285,15 +295,65 @@
 
         .allergen-input-group { margin-bottom: 20px; text-align: left; }
         .allergen-input-header { display: flex; justify-content: space-between; margin-bottom: 8px; align-items: center; }
-
-        .quick-zero-btn {
-            background: rgba(50, 215, 75, 0.15); color: var(--safe);
-            border: 1px solid rgba(50, 215, 75, 0.4); border-radius: 10px;
-            padding: 0 12px; height: 43px; font-size: 13px; font-weight: 600;
-            cursor: pointer; white-space: nowrap; transition: 0.2s;
-            margin-top: 5px;
+        
+        .prev-value-badge {
+            font-size: 12px;
+            color: var(--accent);
+            background: rgba(10, 132, 255, 0.15);
+            padding: 4px 8px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: 0.2s;
+            font-weight: 500;
         }
-        .quick-zero-btn:active { background: rgba(50, 215, 75, 0.3); }
+        .prev-value-badge:active { opacity: 0.7; }
+
+        .input-wrapper { position: relative; }
+        .data-input {
+            width: 100%;
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid var(--glass-border);
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.2s, color 0.2s;
+        }
+        .data-input:focus { border-color: var(--accent); }
+        .data-input::placeholder { color: var(--text-secondary); opacity: 0.7; }
+        .data-input:disabled { opacity: 0.3; background: rgba(0,0,0,0.3); border-color: transparent; cursor: not-allowed; color: transparent; }
+
+        /* Янтарные уведомления */
+        .data-input.amber-border { border-color: var(--high); color: var(--high); }
+        .warning-icon { position: absolute; right: 12px; top: 12px; color: var(--high); display: none; pointer-events: none; }
+        .data-input.amber-border + .warning-icon { display: block; }
+        .amber-alert-text { font-size: 11px; color: var(--high); margin-top: 6px; display: none; line-height: 1.3; }
+
+        /* Аккордеон "Остальные" */
+        .season-accordion { margin-top: 25px; border-top: 1px solid var(--glass-border); padding-top: 15px; }
+        .season-header { display: flex; justify-content: space-between; font-size: 14px; color: var(--text-secondary); cursor: pointer; align-items: center; padding: 5px 0; }
+        .season-content { display: none; margin-top: 15px; }
+        .season-content.open { display: block; }
+
+        .login-btn:disabled { background: #333333; color: #888888; cursor: not-allowed; transform: none; }
+        
+        /* Стили для кастомного тултипа на графике */
+        #custom-chart-tooltip {
+            position: absolute;
+            background: rgba(28, 28, 30, 0.95);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 12px;
+            padding: 12px;
+            color: white;
+            pointer-events: auto; /* Позволяет кликать на кнопку внутри */
+            transition: opacity 0.2s ease;
+            z-index: 1000;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.6);
+            min-width: 145px;
+        }
 
         /* Кнопка добавления данных */
         .add-data-btn {
@@ -313,32 +373,6 @@
         .add-data-btn:active {
             background: rgba(255, 255, 255, 0.2);
         }
-
-        .data-input {
-            width: 100%;
-            padding: 12px;
-            border-radius: 10px;
-            border: 1px solid var(--glass-border);
-            background: rgba(0, 0, 0, 0.5);
-            color: white;
-            font-size: 16px;
-            margin-top: 5px;
-            outline: none;
-            transition: border-color 0.2s, opacity 0.2s;
-        }
-
-        .data-input:focus {
-            border-color: var(--accent);
-        }
-
-        .data-input:disabled { 
-            opacity: 0.3; 
-            background: rgba(0,0,0,0.3); 
-            border-color: transparent; 
-            cursor: not-allowed; 
-            color: transparent; 
-        }
-        .data-input:disabled::placeholder { color: var(--text-secondary); }
 
         .summary-table {
             width: 100%;
@@ -556,7 +590,7 @@
         </div>
     </div>
 
-    <!-- Экран добавления данных -->
+    <!-- Экран добавления данных (Обновленный по ТЗ) -->
     <div class="login-overlay hidden" id="add-data-overlay" style="display: none;">
         <div class="login-card" style="padding: 20px; max-height: 90vh; overflow-y: auto;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
@@ -564,70 +598,41 @@
                 <i data-lucide="x" size="24" style="cursor: pointer; color: var(--text-secondary);" onclick="closeAddDataModal()"></i>
             </div>
 
-            <!-- Глобальный переключатель -->
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid var(--glass-border);">
-                <span style="font-size: 14px; font-weight: 600; color: var(--text-secondary);">Нет замеров (выходной)</span>
-                <label class="toggle-switch">
-                    <input type="checkbox" id="global-no-data-toggle" onchange="toggleAllMeasurements(this.checked)">
-                    <span class="slider"></span>
-                </label>
-            </div>
-
-            <!-- Блок с предупреждением -->
-            <div id="validation-warning" style="display: none; color: #000; font-size: 13px; margin-bottom: 15px; text-align: left; background: var(--warning); padding: 12px; border-radius: 10px;">
-                <strong>Пустые поля!</strong><br>
-                Поля активированы, но значения не введены.<br>Записать их как "Нет данных" (пропуск на графике)?
-                <div style="margin-top: 10px; display: flex; gap: 8px;">
-                    <button onclick="commitSave(true)" style="background: rgba(0,0,0,0.1); border: 1px solid rgba(0,0,0,0.2); color: #000; padding: 6px 12px; border-radius: 8px; font-size: 12px; cursor:pointer; flex: 1;">Нет данных</button>
-                    <button onclick="cancelSave()" style="background: #000; border: none; color: var(--warning); padding: 6px 12px; border-radius: 8px; font-size: 12px; cursor:pointer; font-weight:bold; flex: 1;">Дозаполнить</button>
+            <!-- Блок даты, погоды и глобальный переключатель -->
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid var(--glass-border); flex-wrap: wrap; gap: 15px;">
+                <div style="width: 100%; display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-size: 14px; font-weight: 600; color: var(--text-secondary);">Дата сбора (ловушка):</span>
+                    <input type="date" id="input-date" class="data-input" style="width: auto; padding: 6px 12px; margin: 0; min-height: 35px;" onchange="handleDateChange()">
                 </div>
-            </div>
-
-            <!-- Ольха -->
-            <div class="allergen-input-group">
-                <div class="allergen-input-header">
-                    <span style="font-size: 14px; color: var(--text-secondary);">Ольха (ед/м³)</span>
+                <div style="width: 100%; display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-size: 13px; color: var(--text-secondary);">Погода (сбор):</span>
+                    <span id="modal-temp" style="font-size: 13px; font-weight: 600; color: var(--safe);">Загрузка...</span>
+                </div>
+                <div style="width: 100%; display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-size: 14px; font-weight: 600; color: var(--text-secondary);">Нет замеров (выходной)</span>
                     <label class="toggle-switch">
-                        <input type="checkbox" id="toggle-alder" onchange="toggleAllergen('alder', this.checked)">
+                        <input type="checkbox" id="global-no-data-toggle" onchange="toggleAllMeasurements(this.checked)">
                         <span class="slider"></span>
                     </label>
                 </div>
-                <div style="display: flex; gap: 10px; align-items: center;">
-                    <input type="number" id="input-alder" class="data-input" placeholder="—" inputmode="numeric">
-                    <button class="quick-zero-btn" onclick="setQuickZero('alder')">Чисто (0)</button>
-                </div>
             </div>
 
-            <!-- Орешник -->
-            <div class="allergen-input-group">
-                <div class="allergen-input-header">
-                    <span style="font-size: 14px; color: var(--text-secondary);">Орешник (ед/м³)</span>
-                    <label class="toggle-switch">
-                        <input type="checkbox" id="toggle-hazel" onchange="toggleAllergen('hazel', this.checked)">
-                        <span class="slider"></span>
-                    </label>
+            <!-- Контейнеры для смарт-сезонности -->
+            <div id="active-allergens-container"></div>
+            
+            <div class="season-accordion">
+                <div class="season-header" onclick="toggleAccordion()">
+                    <span>Остальные (вне сезона)</span>
+                    <i data-lucide="chevron-down" id="accordion-icon" size="18"></i>
                 </div>
-                <div style="display: flex; gap: 10px; align-items: center;">
-                    <input type="number" id="input-hazel" class="data-input" placeholder="—" inputmode="numeric">
-                    <button class="quick-zero-btn" onclick="setQuickZero('hazel')">Чисто (0)</button>
-                </div>
+                <div class="season-content" id="archive-allergens-container"></div>
             </div>
 
-            <!-- Береза -->
-            <div class="allergen-input-group" style="margin-bottom: 25px;">
-                <div class="allergen-input-header">
-                    <span style="font-size: 14px; color: var(--text-secondary);">Береза (ед/м³)</span>
-                    <label class="toggle-switch">
-                        <input type="checkbox" id="toggle-birch" onchange="toggleAllergen('birch', this.checked)">
-                        <span class="slider"></span>
-                    </label>
-                </div>
-                <div style="display: flex; gap: 10px; align-items: center;">
-                    <input type="number" id="input-birch" class="data-input" placeholder="—" inputmode="numeric">
-                    <button class="quick-zero-btn" onclick="setQuickZero('birch')">Чисто (0)</button>
-                </div>
+            <!-- Кнопки управления -->
+            <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <button class="login-btn" id="delete-data-btn" style="background: rgba(255,69,58,0.15); color: var(--critical); display: none;" onclick="deleteData()">Удалить</button>
+                <button class="login-btn" id="save-data-btn" style="flex: 2;" onclick="commitSave()" disabled>Сохранить данные</button>
             </div>
-            <button class="login-btn" onclick="attemptSaveData()">Сохранить данные</button>
         </div>
     </div>
 
@@ -695,13 +700,6 @@
                         <canvas id="forecastChart"></canvas>
                     </div>
                 </div>
-
-                <div class="card">
-                    <h3 class="section-title"><i data-lucide="message-circle" size="18"></i> Инсайты аллергиков</h3>
-                    <div id="insights-list">
-                        <!-- Populated by JS -->
-                    </div>
-                </div>
             </div>
 
             <!-- VIEW 2: ARCHIVE -->
@@ -711,7 +709,7 @@
                     <h3 class="section-title"><i data-lucide="bar-chart-2" size="18"></i> Сравнение сезонов (Весна)</h3>
                     <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 5px;">Эстафета аллергенов: Деревья</p>
                     <p style="font-size: 11px; color: var(--text-secondary); margin-bottom: 15px;">* Логарифмическая шкала. Нажмите на пункт в легенде, чтобы показать/скрыть график.</p>
-                    
+
                     <!-- Кастомная сгруппированная легенда -->
                     <div id="archive-custom-legend" class="custom-legend-container"></div>
 
@@ -817,14 +815,10 @@
                 allergens: [
                     { id: "alder", name: "Ольха", value: 1, level: "safe", trend: "flat", icon: "leaf" },
                     { id: "hazel", name: "Орешник", value: 3, level: "safe", trend: "flat", icon: "tree-deciduous" },
-                    { id: "birch", name: "Береза", value: 0, level: "safe", trend: "flat", icon: "tree-pine" }
+                    { id: "birch", name: "Береза", value: 0, level: "safe", trend: "flat", icon: "tree-pine" },
+                    { id: "oak", name: "Дуб", value: null, level: "safe", trend: "flat", icon: "tree-deciduous" } // Добавлен дуб для теста внесезонья
                 ]
             },
-            insights: [
-                { author: "Иван, ВАО", text: "Показатели стабильно держатся на минимуме (ольха 1, орешник 3). Отличное время для занятий спортом на улице!", time: "Сегодня, 09:30", verified: true },
-                { author: "Анна, ЮЗАО", text: "Орешник и ольха резко пошли на спад. Отличный день для прогулок, наслаждаемся, пока нет березы!", time: "Вчера, 10:15", verified: true },
-                { author: "Дмитрий, СЗАО", text: "Ольха упала до 4 единиц, наконец-то можно нормально дышать на улице!", time: "17 Марта", verified: true }
-            ],
             charts: {
                 today: {
                     labels: ["15 Мар", "16 Мар", "17 Мар", "18 Мар", "19 Мар"],
@@ -847,19 +841,39 @@
         const bgAlphaMap = { 'safe': 'rgba(50, 215, 75, 0.15)', 'warning': 'rgba(255, 214, 10, 0.15)', 'high': 'rgba(255, 159, 10, 0.15)', 'critical': 'rgba(255, 69, 58, 0.15)', 'burgundy': 'rgba(138, 3, 3, 0.15)' };
         const iconTrendMap = { 'up': '<i data-lucide="trending-up" size="14"></i> Рост', 'down': '<i data-lucide="trending-down" size="14"></i> Спад', 'flat': '<i data-lucide="minus" size="14"></i> Нет данных' };
 
-        // Глобальные переменные графиков для возможности их обновления
+        // Глобальные переменные графиков и данных
         let chartTodayInst = null;
         let forecastChartInst = null;
         let archiveChartInst = null;
         let summerChartInst = null;
+        
+        let historicalTemps = {}; // Кэш исторических температур
+
+        // --- Вспомогательные функции конвертации дат ---
+        function labelToDateStr(label) {
+            if (!label) return '';
+            const months = {'Янв':'01', 'Фев':'02', 'Мар':'03', 'Апр':'04', 'Мая':'05', 'Июн':'06', 'Июл':'07', 'Авг':'08', 'Сен':'09', 'Окт':'10', 'Ноя':'11', 'Дек':'12'};
+            const parts = label.split(' ');
+            const day = parts[0].padStart(2, '0');
+            const month = months[parts[1]] || '01';
+            const year = new Date().getFullYear();
+            return `${year}-${month}-${day}`;
+        }
+
+        function dateToLabel(dateStr) {
+            if (!dateStr) return '';
+            const d = new Date(dateStr);
+            const months = ['Янв', 'Фев', 'Мар', 'Апр', 'Мая', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек'];
+            return `${d.getDate()} ${months[d.getMonth()]}`;
+        }
 
         // --- 3. Инициализация UI ---
         document.addEventListener("DOMContentLoaded", () => {
             updateDate();
             fetchWeather();
+            fetchHistoricalWeather(); // Загружаем температуры прошлых дней
             
             renderTodayData();
-            renderInsights();
             renderSummaryTable();
             
             initCharts();
@@ -939,30 +953,6 @@
             list.innerHTML = html;
         }
 
-        function renderInsights() {
-            const list = document.getElementById('insights-list');
-            if (!list) return;
-
-            if(db.insights.length === 0) {
-                list.innerHTML = `<div class="empty-state">Нет новых данных за сегодня</div>`;
-                return;
-            }
-
-            let html = '';
-            db.insights.forEach(item => {
-                const verifiedIcon = item.verified ? '<i data-lucide="badge-check" size="14" style="color: var(--accent);"></i>' : '';
-                html += `
-                <div class="insight-item">
-                    <div class="insight-header">
-                        <div class="insight-author">${item.author} ${verifiedIcon}</div>
-                        <div class="insight-date">${item.time}</div>
-                    </div>
-                    <div class="insight-text">${item.text}</div>
-                </div>`;
-            });
-            list.innerHTML = html;
-        }
-
         function renderSummaryTable() {
             const table = document.getElementById('summary-table');
             if (!table) return;
@@ -1021,6 +1011,30 @@
                 if (wWind) wWind.innerText = `${dirStr} ${Math.round(windSpeed)}`;
             } catch (e) {
                 console.error('Ошибка получения погоды:', e);
+            }
+        }
+
+        // Загрузка температуры для истории и формы ввода
+        async function fetchHistoricalWeather() {
+            try {
+                const url = 'https://api.open-meteo.com/v1/forecast?latitude=55.7558&longitude=37.6173&past_days=14&daily=temperature_2m_max&timezone=Europe%2FMoscow';
+                const res = await fetch(url);
+                const data = await res.json();
+                data.daily.time.forEach((dateStr, i) => {
+                    const temp = data.daily.temperature_2m_max[i];
+                    historicalTemps[dateStr] = `${temp > 0 ? '+' : ''}${Math.round(temp)}°C`;
+                });
+                
+                // Если модальное окно открыто, обновляем температуру
+                if (document.getElementById('input-date')) {
+                    const tempEl = document.getElementById('modal-temp');
+                    const dateInput = document.getElementById('input-date').value;
+                    if (tempEl && dateInput && historicalTemps[dateInput]) {
+                        tempEl.innerText = historicalTemps[dateInput];
+                    }
+                }
+            } catch (e) {
+                console.error('Ошибка получения исторической погоды:', e);
             }
         }
 
@@ -1135,6 +1149,68 @@
             });
         }
 
+        // Интерактивный тултип с кнопкой "Изменить"
+        const customTooltip = (context) => {
+            let tooltipEl = document.getElementById('custom-chart-tooltip');
+            if (!tooltipEl) {
+                tooltipEl = document.createElement('div');
+                tooltipEl.id = 'custom-chart-tooltip';
+                document.body.appendChild(tooltipEl);
+                
+                // Скрываем по клику вне тултипа
+                document.addEventListener('click', (e) => {
+                    if (!tooltipEl.contains(e.target) && e.target.tagName !== 'CANVAS') {
+                        tooltipEl.style.opacity = 0;
+                        setTimeout(() => { if(tooltipEl.style.opacity == '0') tooltipEl.style.left = '-9999px'; }, 200);
+                    }
+                });
+            }
+
+            const tooltipModel = context.tooltip;
+            if (tooltipModel.opacity === 0) return;
+
+            if (tooltipModel.body) {
+                const titleLines = tooltipModel.title || [];
+                const bodyLines = tooltipModel.body.map(b => b.lines);
+                const label = titleLines[0]; // Например "16 Мар"
+
+                let innerHtml = `<div style="font-weight: 600; font-size: 14px; margin-bottom: 8px;">${label}</div>`;
+                
+                bodyLines.forEach((body, i) => {
+                    const colors = tooltipModel.labelColors[i];
+                    innerHtml += `<div style="font-size: 13px; margin-bottom: 4px; display:flex; align-items:center;">
+                        <span style="background:${colors.backgroundColor}; width:10px; height:10px; border-radius:2px; display:inline-block; margin-right:6px;"></span>
+                        ${body}
+                    </div>`;
+                });
+
+                // Добавляем температуру
+                const dateStr = labelToDateStr(label);
+                const temp = historicalTemps[dateStr];
+                if (temp) {
+                    innerHtml += `<div style="font-size: 11px; color: var(--text-secondary); margin-top: 6px;">Погода (сбор): <span style="color: var(--safe); font-weight: 600;">${temp}</span></div>`;
+                }
+
+                // Кнопка Изменить
+                innerHtml += `<button onclick="openAddDataModal('${label}'); document.getElementById('custom-chart-tooltip').style.opacity=0;" style="background:var(--accent); color:white; border:none; padding:8px 12px; border-radius:8px; font-size:13px; width:100%; margin-top:12px; cursor:pointer; font-weight:600; display:flex; align-items:center; justify-content:center; gap:6px;"><i data-lucide="edit-2" size="14"></i> Изменить</button>`;
+
+                tooltipEl.innerHTML = innerHtml;
+                lucide.createIcons();
+            }
+
+            const position = context.chart.canvas.getBoundingClientRect();
+            tooltipEl.style.opacity = 1;
+            tooltipEl.style.left = position.left + window.scrollX + tooltipModel.caretX + 'px';
+            
+            // Проверка на выход за экран снизу
+            let topPos = position.top + window.scrollY + tooltipModel.caretY + 10;
+            if (topPos > window.innerHeight + window.scrollY - 150) {
+                topPos -= 140; 
+            }
+            tooltipEl.style.top = topPos + 'px';
+            tooltipEl.style.transform = 'translateX(-50%)';
+        };
+
         // --- 5. Графики (Chart.js) ---
         function initCharts() {
             Chart.defaults.color = 'rgba(235, 235, 245, 0.6)';
@@ -1163,7 +1239,13 @@
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
-                        plugins: { legend: { display: false } },
+                        plugins: { 
+                            legend: { display: false },
+                            tooltip: {
+                                enabled: false, // Отключаем встроенный
+                                external: customTooltip // Подключаем кастомный (КНОПКА "ИЗМЕНИТЬ" ТОЛЬКО ЗДЕСЬ)
+                            }
+                        },
                         scales: {
                             x: { grid: { display: false } },
                             y: { grid: { color: 'rgba(255,255,255,0.05)' }, beginAtZero: true }
@@ -1210,11 +1292,11 @@
                         responsive: true,
                         maintainAspectRatio: false,
                         plugins: { 
-                            legend: { display: false }, // Отключаем стандартную, используем кастомную
+                            legend: { display: false }, // Отключаем стандартную легенду
                             tooltip: {
                                 callbacks: {
                                     afterBody: function(context) {
-                                        if (context[0].dataset.label.includes('2023')) return ''; 
+                                        if (context[0].dataset.label.includes('2023') || context[0].dataset.label.includes('2026')) return ''; 
                                         const dateKey = archiveDates[context[0].dataIndex];
                                         const temp = ARCHIVE_2025[dateKey].temp;
                                         const note = ARCHIVE_2025[dateKey].note;
@@ -1369,28 +1451,144 @@
             }
         }
 
-        // --- 6. Логика добавления новых данных ---
-        function openAddDataModal() {
-            let allNull = true;
-            ['alder', 'hazel', 'birch'].forEach(id => {
-                const val = db.today.allergens.find(a => a.id === id).value;
-                const input = document.getElementById(`input-${id}`);
-                const toggle = document.getElementById(`toggle-${id}`);
+        // --- 6. Логика добавления новых данных (Финальное ТЗ) ---
+        
+        // Лимиты для Amber Alerts
+        const VALIDATION_LIMITS = {
+            "birch": { "amber": 15000 },
+            "alder": { "amber": 500 },
+            "oak":   { "amber": 1000 },
+            "hazel": { "amber": 500 }
+        };
+
+        // Сезонность: какие месяцы (1-12) активны для аллергенов
+        const SEASONALITY = {
+            "alder": [3, 4],       // Март, Апрель
+            "hazel": [3, 4],       // Март, Апрель
+            "birch": [4, 5],       // Апрель, Май
+            "oak":   [5, 6]        // Май, Июнь
+        };
+
+        function generateInputGroupHTML(item) {
+            const prevValText = item.value !== null ? item.value : '—';
+            // Экранируем кавычки для безопасной передачи строки в JS
+            const nameStr = `'${item.id}'`; 
+            
+            return `
+            <div class="allergen-input-group" id="group-${item.id}">
+                <div class="allergen-input-header">
+                    <span style="font-size: 14px; color: var(--text-secondary);">${item.name} (ед/м³)</span>
+                    <span class="prev-value-badge" onclick="usePrevValue(${nameStr}, ${item.value !== null ? item.value : null})">Было: ${prevValText}</span>
+                </div>
+                <div class="input-wrapper">
+                    <input type="number" id="input-${item.id}" class="data-input" placeholder="—" inputmode="numeric" oninput="validateInput(${nameStr}, ${item.value})">
+                    <i data-lucide="alert-triangle" class="warning-icon"></i>
+                </div>
+                <div class="amber-alert-text" id="alert-text-${item.id}">Значение значительно выше нормы или в 10 раз превышает прошлый замер. Проверьте опечатку.</div>
+            </div>`;
+        }
+
+        function handleDateChange() {
+            const dateInput = document.getElementById('input-date').value; 
+            if (!dateInput) return;
+
+            // Устанавливаем температуру
+            const tempEl = document.getElementById('modal-temp');
+            if (historicalTemps[dateInput]) {
+                tempEl.innerText = historicalTemps[dateInput];
+            } else {
+                tempEl.innerText = "Нет данных";
+            }
+
+            // Ищем дату на графике
+            const targetLabel = dateToLabel(dateInput); 
+            const labelIdx = db.charts.today.labels.indexOf(targetLabel);
+            const deleteBtn = document.getElementById('delete-data-btn');
+
+            if (labelIdx !== -1) {
+                // Заполняем поля старыми данными
+                let allNull = true;
+                db.today.allergens.forEach(item => {
+                    const dataset = db.charts.today.datasets.find(d => d.label === item.name);
+                    if (dataset) {
+                        const val = dataset.data[labelIdx];
+                        const input = document.getElementById(`input-${item.id}`);
+                        if (input) {
+                            if (val !== null && val !== undefined) {
+                                input.value = val;
+                                allNull = false;
+                            } else {
+                                input.value = '';
+                            }
+                            input.disabled = false;
+                            input.classList.remove('amber-border');
+                            const alertText = document.getElementById(`alert-text-${item.id}`);
+                            if (alertText) alertText.style.display = 'none';
+                        }
+                    }
+                });
+                deleteBtn.style.display = 'block';
                 
-                if (val !== null) {
-                    toggle.checked = true;
-                    input.value = val;
-                    input.disabled = false;
-                    allNull = false;
+                const globalToggle = document.getElementById('global-no-data-toggle');
+                if (globalToggle) {
+                    globalToggle.checked = allNull;
+                    if (allNull) toggleAllMeasurements(true);
+                }
+            } else {
+                // Если новая дата - очищаем
+                db.today.allergens.forEach(item => {
+                    const input = document.getElementById(`input-${item.id}`);
+                    if (input) {
+                        input.disabled = false;
+                        input.value = '';
+                        input.classList.remove('amber-border');
+                        const alertText = document.getElementById(`alert-text-${item.id}`);
+                        if (alertText) alertText.style.display = 'none';
+                    }
+                });
+                const globalToggle = document.getElementById('global-no-data-toggle');
+                if (globalToggle) globalToggle.checked = false;
+                deleteBtn.style.display = 'none';
+            }
+            
+            checkSaveBtnState();
+        }
+
+        function openAddDataModal(label = null) {
+            const activeContainer = document.getElementById('active-allergens-container');
+            const archiveContainer = document.getElementById('archive-allergens-container');
+            activeContainer.innerHTML = '';
+            archiveContainer.innerHTML = '';
+
+            // Получаем текущий месяц (1-12) для смарт-фильтра
+            const currentMonth = new Date().getMonth() + 1; 
+            
+            db.today.allergens.forEach(item => {
+                const isActiveSeason = SEASONALITY[item.id] && SEASONALITY[item.id].includes(currentMonth);
+                // Если за последние 3 дня были значения > 0, выносим в активные даже вне сезона 
+                // (упрощенно проверяем текущее значение)
+                const isRecentlyActive = item.value > 0; 
+                
+                const html = generateInputGroupHTML(item);
+                if (isActiveSeason || isRecentlyActive) {
+                    activeContainer.innerHTML += html;
                 } else {
-                    toggle.checked = false;
-                    input.value = '';
-                    input.disabled = true;
+                    archiveContainer.innerHTML += html;
                 }
             });
 
-            document.getElementById('global-no-data-toggle').checked = allNull;
-            document.getElementById('validation-warning').style.display = 'none';
+            lucide.createIcons();
+            
+            const dateInput = document.getElementById('input-date');
+            if (label && typeof label === 'string') {
+                dateInput.value = labelToDateStr(label);
+            } else {
+                let yesterday = new Date();
+                yesterday.setDate(yesterday.getDate() - 1);
+                dateInput.value = yesterday.toISOString().split('T')[0];
+            }
+
+            handleDateChange();
             
             const overlay = document.getElementById('add-data-overlay');
             overlay.style.display = 'flex';
@@ -1403,111 +1601,200 @@
             setTimeout(() => overlay.style.display = 'none', 400);
         }
 
-        function toggleAllergen(id, isChecked) {
-            const input = document.getElementById(`input-${id}`);
-            input.disabled = !isChecked;
-            if (!isChecked) input.value = '';
+        function toggleAccordion() {
+            const content = document.getElementById('archive-allergens-container');
+            const icon = document.getElementById('accordion-icon');
+            content.classList.toggle('open');
             
-            if (isChecked) {
-                document.getElementById('global-no-data-toggle').checked = false;
+            if (content.classList.contains('open')) {
+                icon.style.transform = 'rotate(180deg)';
             } else {
-                checkGlobalToggleState();
+                icon.style.transform = 'rotate(0deg)';
             }
         }
 
-        function checkGlobalToggleState() {
-            const alder = document.getElementById('toggle-alder').checked;
-            const hazel = document.getElementById('toggle-hazel').checked;
-            const birch = document.getElementById('toggle-birch').checked;
-            document.getElementById('global-no-data-toggle').checked = !(alder || hazel || birch);
+        function usePrevValue(id, val) {
+            const input = document.getElementById(`input-${id}`);
+            if (input.disabled) return;
+            // Если предыдущее значение null (прочерк), мы не можем его вписать в number input. 
+            // Оставляем пустым.
+            input.value = val !== null ? val : '';
+            validateInput(id, val);
+        }
+
+        function validateInput(id, prevValue) {
+            const input = document.getElementById(`input-${id}`);
+            const alertText = document.getElementById(`alert-text-${id}`);
+            const val = input.value !== '' ? parseInt(input.value) : null;
+            
+            let isAmber = false;
+            if (val !== null) {
+                const limit = VALIDATION_LIMITS[id] ? VALIDATION_LIMITS[id].amber : 5000;
+                
+                // Проверка 1: Превышен жесткий порог (например 15000 для березы)
+                if (val >= limit) isAmber = true;
+                
+                // Проверка 2: Превышает "Было" более чем в 10 раз (исключаем скачки от 1 до 11)
+                if (prevValue > 0 && val >= prevValue * 10 && val > 20) isAmber = true;
+            }
+
+            if (isAmber) {
+                input.classList.add('amber-border');
+                alertText.style.display = 'block';
+            } else {
+                input.classList.remove('amber-border');
+                alertText.style.display = 'none';
+            }
+            
+            checkSaveBtnState();
         }
 
         function toggleAllMeasurements(isNoData) {
-            ['alder', 'hazel', 'birch'].forEach(id => {
-                const toggle = document.getElementById(`toggle-${id}`);
-                const input = document.getElementById(`input-${id}`);
-                toggle.checked = !isNoData;
-                input.disabled = isNoData;
-                if (isNoData) input.value = '';
-            });
-        }
-
-        function setQuickZero(id) {
-            document.getElementById(`toggle-${id}`).checked = true;
-            const input = document.getElementById(`input-${id}`);
-            input.disabled = false;
-            input.value = 0;
-            document.getElementById('global-no-data-toggle').checked = false;
-        }
-
-        function attemptSaveData() {
-            let hasEmptyActive = false;
-            ['alder', 'hazel', 'birch'].forEach(id => {
-                const isChecked = document.getElementById(`toggle-${id}`).checked;
-                const val = document.getElementById(`input-${id}`).value;
-                if (isChecked && val === '') hasEmptyActive = true;
-            });
-
-            if (hasEmptyActive) {
-                document.getElementById('validation-warning').style.display = 'block';
-            } else {
-                commitSave(false);
-            }
-        }
-
-        function cancelSave() {
-            document.getElementById('validation-warning').style.display = 'none';
-        }
-
-        function commitSave(forceNullForEmpty) {
-            let maxVal = -1; // Флаг полного отсутствия данных
-
-            ['alder', 'hazel', 'birch'].forEach(id => {
-                const isChecked = document.getElementById(`toggle-${id}`).checked;
-                const inputVal = document.getElementById(`input-${id}`).value;
-                let finalVal = null;
-
-                if (isChecked) {
-                    if (inputVal !== '') finalVal = parseInt(inputVal);
-                    else if (forceNullForEmpty) finalVal = null;
+            db.today.allergens.forEach(item => {
+                const input = document.getElementById(`input-${item.id}`);
+                if (input) {
+                    input.disabled = isNoData;
+                    if (isNoData) {
+                        input.value = '';
+                        input.classList.remove('amber-border');
+                        const alertText = document.getElementById(`alert-text-${item.id}`);
+                        if (alertText) alertText.style.display = 'none';
+                    }
                 }
+            });
+            checkSaveBtnState();
+        }
 
-                // Обновляем уровень для цвета
-                let finalLevel = 'safe';
-                if (finalVal !== null) {
-                    if (finalVal >= 100) finalLevel = 'critical';
-                    else if (finalVal >= 50) finalLevel = 'high';
-                    else if (finalVal >= 10) finalLevel = 'warning';
-                    else finalLevel = 'safe';
+        function checkSaveBtnState() {
+            const btn = document.getElementById('save-data-btn');
+            const isGlobalNoData = document.getElementById('global-no-data-toggle').checked;
+            
+            let hasAnyValue = false;
+            db.today.allergens.forEach(item => {
+                const input = document.getElementById(`input-${item.id}`);
+                if (input && input.value !== '') hasAnyValue = true;
+            });
+
+            // Кнопка активна, если хотя бы одно поле заполнено ИЛИ включен глобальный пропуск
+            btn.disabled = !(hasAnyValue || isGlobalNoData);
+        }
+
+        function deleteData() {
+            const dateInput = document.getElementById('input-date').value;
+            const targetLabel = dateToLabel(dateInput);
+            const labelIdx = db.charts.today.labels.indexOf(targetLabel);
+            
+            if (labelIdx !== -1) {
+                // Удаляем колонку из графиков
+                db.charts.today.labels.splice(labelIdx, 1);
+                db.charts.today.datasets.forEach(d => {
+                    d.data.splice(labelIdx, 1);
+                });
+                
+                // Если мы удалили крайнюю (самую новую) дату, обновляем карточки СЕГОДНЯ
+                const newLatestIdx = db.charts.today.labels.length - 1;
+                if (newLatestIdx >= 0) {
+                    let maxVal = -1;
+                    db.today.allergens.forEach(item => {
+                        const dataset = db.charts.today.datasets.find(d => d.label === item.name);
+                        const val = dataset ? dataset.data[newLatestIdx] : null;
+                        item.value = val;
+                        if (val !== null) {
+                            if (val >= 100) item.level = 'critical';
+                            else if (val >= 50) item.level = 'high';
+                            else if (val >= 10) item.level = 'warning';
+                            else item.level = 'safe';
+                            if (val > maxVal) maxVal = val;
+                        }
+                    });
                     
-                    if (finalVal > maxVal) maxVal = finalVal;
+                    db.today.hasDataToday = maxVal !== -1;
+                    if (maxVal >= 100) db.today.overallRisk = 'critical';
+                    else if (maxVal >= 50) db.today.overallRisk = 'high';
+                    else if (maxVal >= 10) db.today.overallRisk = 'warning';
+                    else db.today.overallRisk = 'safe';
+                } else {
+                    db.today.hasDataToday = false;
                 }
+                
+                renderTodayData();
+                initCharts();
+            }
+            closeAddDataModal();
+        }
 
-                const allergen = db.today.allergens.find(a => a.id === id);
-                allergen.value = finalVal;
-                if (finalVal !== null) allergen.level = finalLevel;
+        function commitSave() {
+            const isGlobalNoData = document.getElementById('global-no-data-toggle').checked;
+            const dateInput = document.getElementById('input-date').value;
+            const targetLabel = dateToLabel(dateInput);
+            
+            let labelIdx = db.charts.today.labels.indexOf(targetLabel);
+            const isNewDate = labelIdx === -1;
 
-                // Обновляем последнюю точку на графике (Сегодня)
-                const labelMap = { 'alder': 'Ольха', 'hazel': 'Орешник', 'birch': 'Береза' };
-                const datasets = db.charts.today.datasets;
-                const lastIdx = db.charts.today.labels.length - 1;
-                datasets.find(d => d.label === labelMap[id]).data[lastIdx] = finalVal;
-            });
-
-            // Обновляем общий риск
-            if (maxVal === -1) {
-                db.today.hasDataToday = false;
-                db.today.overallRisk = 'safe';
-            } else {
-                db.today.hasDataToday = true;
-                if (maxVal >= 100) db.today.overallRisk = 'critical';
-                else if (maxVal >= 50) db.today.overallRisk = 'high';
-                else if (maxVal >= 10) db.today.overallRisk = 'warning';
-                else db.today.overallRisk = 'safe';
+            // Если это новая дата - расширяем график с авто-сортировкой
+            if (isNewDate) {
+                db.charts.today.labels.push(targetLabel);
+                db.charts.today.datasets.forEach(d => d.data.push(null));
+                
+                const indices = db.charts.today.labels.map((l, i) => i);
+                indices.sort((a, b) => new Date(labelToDateStr(db.charts.today.labels[a])) - new Date(labelToDateStr(db.charts.today.labels[b])));
+                
+                db.charts.today.labels = indices.map(i => db.charts.today.labels[i]);
+                db.charts.today.datasets.forEach(d => {
+                    d.data = indices.map(i => d.data[i]);
+                });
+                
+                labelIdx = db.charts.today.labels.indexOf(targetLabel);
             }
 
-            // Перерисовываем интерфейс
-            renderTodayData();
+            let maxVal = -1; 
+            const isLatestDate = labelIdx === db.charts.today.labels.length - 1;
+
+            db.today.allergens.forEach(item => {
+                const input = document.getElementById(`input-${item.id}`);
+                if (!input) return;
+
+                let finalVal = null;
+                if (!isGlobalNoData && input.value !== '') {
+                    finalVal = parseInt(input.value);
+                }
+
+                // Обновляем график
+                const dataset = db.charts.today.datasets.find(d => d.label === item.name);
+                if (dataset) {
+                    dataset.data[labelIdx] = finalVal;
+                }
+
+                // Обновляем виджеты СЕГОДНЯ только если редактируем крайнюю (свежую) дату
+                if (isLatestDate) {
+                    let finalLevel = 'safe';
+                    if (finalVal !== null) {
+                        if (finalVal >= 100) finalLevel = 'critical';
+                        else if (finalVal >= 50) finalLevel = 'high';
+                        else if (finalVal >= 10) finalLevel = 'warning';
+                        else finalLevel = 'safe';
+                        
+                        if (finalVal > maxVal) maxVal = finalVal;
+                    }
+                    item.value = finalVal;
+                    if (finalVal !== null) item.level = finalLevel;
+                }
+            });
+
+            if (isLatestDate) {
+                if (maxVal === -1) {
+                    db.today.hasDataToday = false;
+                    db.today.overallRisk = 'safe';
+                } else {
+                    db.today.hasDataToday = true;
+                    if (maxVal >= 100) db.today.overallRisk = 'critical';
+                    else if (maxVal >= 50) db.today.overallRisk = 'high';
+                    else if (maxVal >= 10) db.today.overallRisk = 'warning';
+                    else db.today.overallRisk = 'safe';
+                }
+                renderTodayData();
+            }
+
             initCharts();
             lucide.createIcons();
             
