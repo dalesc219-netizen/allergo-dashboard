@@ -1468,20 +1468,43 @@
             updateArchiveChart();
         }
 
+        // --- Обработка свайпов (Жесты) для Архива ---
+        function initArchiveGestures() {
+            const wrapper = document.getElementById('archive-chart-wrapper');
+            if (!wrapper) return;
+            
+            let touchStartX = 0;
+            let touchEndX = 0;
+
+            wrapper.addEventListener('touchstart', e => {
+                if (archiveRange === 'season') return;
+                touchStartX = e.changedTouches[0].screenX;
+            }, {passive: true});
+
+            wrapper.addEventListener('touchend', e => {
+                if (archiveRange === 'season') return;
+                touchEndX = e.changedTouches[0].screenX;
+                const threshold = 40; // Минимальная длина свайпа в пикселях
+                
+                if (touchStartX - touchEndX > threshold) {
+                    navigateArchive(1); // Вперед во времени (свайп влево)
+                } else if (touchEndX - touchStartX > threshold) {
+                    navigateArchive(-1); // Назад во времени (свайп вправо)
+                }
+            }, {passive: true});
+        }
+
         function updateArchiveChart() {
             if (!archiveChartInst) return;
 
-            const prevBtn = document.getElementById('archive-prev-btn');
-            const nextBtn = document.getElementById('archive-next-btn');
             const labelEl = document.getElementById('archive-current-range-label');
+            const chartWrapper = document.getElementById('archive-chart-wrapper');
 
             if (archiveRange === 'season') {
-                if(prevBtn) prevBtn.style.display = 'none';
-                if(nextBtn) nextBtn.style.display = 'none';
                 if(labelEl) labelEl.innerText = '';
+                if(chartWrapper) chartWrapper.style.touchAction = 'auto'; // Разрешаем скролл вкладок
             } else {
-                if(prevBtn) prevBtn.style.display = 'block';
-                if(nextBtn) nextBtn.style.display = 'block';
+                if(chartWrapper) chartWrapper.style.touchAction = 'pan-y'; // Блокируем горизонтальный скролл вкладок при свайпе графика
                 
                 if (archiveRange === 'month') {
                     const months = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'];
