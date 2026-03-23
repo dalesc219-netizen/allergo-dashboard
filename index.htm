@@ -730,10 +730,6 @@
                         <canvas id="forecastChart"></canvas>
                     </div>
                 </div>
-            </div>
-
-            <!-- VIEW 2: ARCHIVE -->
-            <div class="view-pane" id="view-archive">
 
                 <!-- ИНСАЙТЫ (Отзывы пользователей) -->
                 <div class="card">
@@ -741,16 +737,32 @@
                     <p style="font-size: 11px; color: var(--text-secondary); margin-bottom: 15px;">Свежие комментарии из Москвы о текущей обстановке.</p>
                     <div style="display: flex; flex-direction: column; gap: 12px;">
                         <div class="insight-comment">
-                            <span style="color: var(--accent); font-weight: 600;">Анна М.</span>: Аллергия на березу, раньше проявлялась насморком и зудом в глазах, а в этом году очень сильно чешется горло, особенно ночью. Перекрестную еду не ем.
+                            <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px;">
+                                <span style="color: var(--accent); font-weight: 600;">Анна М.</span>
+                                <span style="color: var(--text-secondary); font-size: 11px;">Сегодня, 08:15</span>
+                            </div>
+                            Аллергия на березу, раньше проявлялась насморком и зудом в глазах, а в этом году очень сильно чешется горло, особенно ночью. Перекрестную еду не ем.
                         </div>
                         <div class="insight-comment">
-                            <span style="color: var(--accent); font-weight: 600;">Сергей В.</span>: Ольха дает о себе знать! Вчера прогулялся по парку, сегодня заложило нос и чихаю без остановки. Начинаю пить антигистаминные 🤧.
+                            <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px;">
+                                <span style="color: var(--accent); font-weight: 600;">Сергей В.</span>
+                                <span style="color: var(--text-secondary); font-size: 11px;">Вчера, 21:30</span>
+                            </div>
+                            Ольха дает о себе знать! Вчера прогулялся по парку, сегодня заложило нос и чихаю без остановки. Начинаю пить антигистаминные 🤧.
                         </div>
                         <div class="insight-comment">
-                            <span style="color: var(--accent); font-weight: 600;">Елена К.</span>: Лещина пылит вовсю. ЮЗАО, глаза красные, хотя цифры вроде не такие уж и страшные. Спасаюсь мойкой воздуха.
+                            <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px;">
+                                <span style="color: var(--accent); font-weight: 600;">Елена К.</span>
+                                <span style="color: var(--text-secondary); font-size: 11px;">Вчера, 14:05</span>
+                            </div>
+                            Лещина пылит вовсю. ЮЗАО, глаза красные, хотя цифры вроде не такие уж и страшные. Спасаюсь мойкой воздуха.
                         </div>
                     </div>
                 </div>
+            </div>
+
+            <!-- VIEW 2: ARCHIVE -->
+            <div class="view-pane" id="view-archive">
 
                 <div class="card">
                     <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
@@ -804,12 +816,12 @@
         // --- 1. Внутренняя База Данных с обновленными показателями за Март ---
         const ARCHIVE_2025 = {
             "03-16": { alder: 0, birch: 0, oak: 0, alder_2026: 4, hazel_2026: 7, temp: "Н/Д" },
-            "03-17": { alder: 0, birch: 0, oak: 0, alder_2026: 4, hazel_2026: 13, birch_2026: 3, temp: "+4°C" },
-            "03-18": { alder: 0, birch: 0, oak: 0, alder_2026: 1, hazel_2026: 3, temp: "+1°C" },
-            "03-19": { alder: 0, birch: 0, oak: 0, alder_2026: 20, hazel_2026: 78, birch_2026: 1, temp: "+2°C" },
-            "03-20": { alder: 0, birch: 0, oak: 0, alder_2026: 49, hazel_2026: 127, temp: "+5°C" },
+            "03-17": { alder: 0, birch: 0, oak: 0, alder_2026: 4, hazel_2026: 13, birch_2026: 3, temp: "Н/Д" },
+            "03-18": { alder: 0, birch: 0, oak: 0, alder_2026: 1, hazel_2026: 3, temp: "Н/Д" },
+            "03-19": { alder: 0, birch: 0, oak: 0, alder_2026: 20, hazel_2026: 78, birch_2026: 1, temp: "Н/Д" },
+            "03-20": { alder: 0, birch: 0, oak: 0, alder_2026: null, hazel_2026: null, temp: "Н/Д" },
             "03-21": { alder: 0, birch: 0, oak: 0, alder_2026: null, hazel_2026: null, temp: "Н/Д", note: "Выходные" },
-            "03-22": { alder: 0, birch: 0, oak: 0, alder_2026: null, hazel_2026: null, temp: "Н/Д", note: "Выходные" },
+            "03-22": { alder: 0, birch: 0, oak: 0, alder_2026: 49, hazel_2026: 127, temp: "Н/Д" },
             "03-23": { alder: 0, birch: 0, oak: 0, alder_2026: null, hazel_2026: null, temp: "Н/Д", note: "Ожидаем" },
             
             // Март: Ранний старт 2023 года
@@ -884,8 +896,8 @@
                 today: {
                     labels: ["16 Мар", "17 Мар", "18 Мар", "19 Мар", "20 Мар", "21 Мар", "22 Мар", "23 Мар"],
                     datasets: [
-                        { label: 'Ольха', data: [4, 4, 1, 20, 49, null, null, null], color: '#32D74B' },
-                        { label: 'Орешник', data: [7, 13, 3, 78, 127, null, null, null], color: '#FFD60A' },
+                        { label: 'Ольха', data: [4, 4, 1, 20, null, null, 49, null], color: '#32D74B' },
+                        { label: 'Орешник', data: [7, 13, 3, 78, null, null, 127, null], color: '#FFD60A' },
                         { label: 'Береза', data: [null, 3, null, 1, null, null, null, null], color: '#FF453A' }
                     ]
                 }
