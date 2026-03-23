@@ -253,7 +253,7 @@
             display: flex;
             flex-direction: column;
             gap: 8px;
-            flex: 0 0 auto; /* Колонки без сжатия */
+            flex: 0 0 auto;
             min-width: 100px;
         }
         .legend-group-title {
@@ -287,7 +287,7 @@
             flex-shrink: 0;
         }
 
-        /* --- НОВЫЙ UI МОДАЛЬНОГО ОКНА (ТЗ) --- */
+        /* --- НОВЫЙ UI МОДАЛЬНОГО ОКНА --- */
         .toggle-switch {
             position: relative;
             display: inline-block;
@@ -349,6 +349,22 @@
         .season-content { display: none; margin-top: 15px; }
         .season-content.open { display: block; }
 
+        .login-btn {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 16px;
+            width: 100%;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, background 0.2s;
+        }
+        .login-btn:active {
+            transform: scale(0.95);
+            background: #0071e3;
+        }
         .login-btn:disabled { background: #333333; color: #888888; cursor: not-allowed; transform: none; }
         
         /* Стили для кастомного тултипа на графике */
@@ -361,7 +377,7 @@
             border-radius: 12px;
             padding: 12px;
             color: white;
-            pointer-events: auto; /* Позволяет кликать на кнопку внутри */
+            pointer-events: auto;
             transition: opacity 0.2s ease;
             z-index: 1000;
             box-shadow: 0 10px 25px rgba(0,0,0,0.6);
@@ -522,24 +538,6 @@
             border-color: var(--accent);
         }
 
-        .login-btn {
-            background: var(--accent);
-            color: white;
-            border: none;
-            padding: 16px;
-            width: 100%;
-            border-radius: 12px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: transform 0.2s, background 0.2s;
-        }
-
-        .login-btn:active {
-            transform: scale(0.95);
-            background: #0071e3;
-        }
-
         .error-text {
             color: var(--critical);
             font-size: 13px;
@@ -562,6 +560,15 @@
             20%, 80% { transform: translate3d(4px, 0, 0); }
             30%, 50%, 70% { transform: translate3d(-6px, 0, 0); }
             40%, 60% { transform: translate3d(6px, 0, 0); }
+        }
+
+        .insight-comment {
+            background: rgba(255,255,255,0.05);
+            padding: 14px;
+            border-radius: 14px;
+            font-size: 13px;
+            line-height: 1.4;
+            border-left: 3px solid var(--accent);
         }
 
         @media (orientation: landscape) and (max-height: 600px) {
@@ -677,8 +684,7 @@
                     Данных с ловушек за сегодня пока нет 🤷‍♂️
                 </div>
 
-                <!-- ВОССТАНОВЛЕННЫЙ БЛОК: Заголовок с бейджем и данные ловушек -->
-                <div class="card">
+                <div class="card" id="risk-card">
                     <div class="risk-header" style="margin-bottom: 15px; align-items: flex-start;">
                         <div>
                             <h3 class="section-title" style="margin-bottom: 2px;"><i data-lucide="microscope" size="18"></i> Данные ловушек</h3>
@@ -712,11 +718,11 @@
                     </div>
                 </div>
 
-                <!-- НОВЫЙ БЛОК: ПРОГНОЗ CAMS/SILAM -->
+                <!-- ПРОГНОЗ CAMS/SILAM -->
                 <div class="card">
                     <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
                         <div style="flex: 1;">
-                            <h3 class="section-title" style="margin-bottom: 2px;"><i data-lucide="radar" size="18"></i> FMI SILAM / Copernicus</h3>
+                            <h3 class="section-title" style="margin-bottom: 2px;"><i data-lucide="radar" size="18"></i> Прогноз FMI SILAM</h3>
                             <p style="font-size: 11px; color: var(--text-secondary); line-height: 1.3;">Дневные максимумы на 5 дней вперед на основе атмосферных моделей.</p>
                         </div>
                     </div>
@@ -729,14 +735,30 @@
             <!-- VIEW 2: ARCHIVE -->
             <div class="view-pane" id="view-archive">
 
+                <!-- ИНСАЙТЫ (Отзывы пользователей) -->
+                <div class="card">
+                    <h3 class="section-title"><i data-lucide="message-circle" size="18"></i> Инсайты (VK Pollen Club)</h3>
+                    <p style="font-size: 11px; color: var(--text-secondary); margin-bottom: 15px;">Свежие комментарии из Москвы о текущей обстановке.</p>
+                    <div style="display: flex; flex-direction: column; gap: 12px;">
+                        <div class="insight-comment">
+                            <span style="color: var(--accent); font-weight: 600;">Анна М.</span>: Аллергия на березу, раньше проявлялась насморком и зудом в глазах, а в этом году очень сильно чешется горло, особенно ночью. Перекрестную еду не ем.
+                        </div>
+                        <div class="insight-comment">
+                            <span style="color: var(--accent); font-weight: 600;">Сергей В.</span>: Ольха дает о себе знать! Вчера прогулялся по парку, сегодня заложило нос и чихаю без остановки. Начинаю пить антигистаминные 🤧.
+                        </div>
+                        <div class="insight-comment">
+                            <span style="color: var(--accent); font-weight: 600;">Елена К.</span>: Лещина пылит вовсю. ЮЗАО, глаза красные, хотя цифры вроде не такие уж и страшные. Спасаюсь мойкой воздуха.
+                        </div>
+                    </div>
+                </div>
+
                 <div class="card">
                     <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
                         <div style="flex: 1;">
-                            <h3 class="section-title" style="margin-bottom: 5px;"><i data-lucide="bar-chart-2" size="18"></i> Сравнение сезонов (Весна)</h3>
+                            <h3 class="section-title" style="margin-bottom: 5px;"><i data-lucide="bar-chart-2" size="18"></i> Сравнение сезонов</h3>
                             <p style="font-size: 11px; color: var(--text-secondary); line-height: 1.3;">Эстафета аллергенов: Деревья</p>
                         </div>
                         
-                        <!-- Селектор диапазона -->
                         <div class="segment-control" id="archive-range-control" style="width: 160px; padding: 2px; flex-shrink: 0; height: 26px;">
                             <div class="segment-indicator" id="archive-range-indicator" style="width: calc(33.33% - 2px); background: #48484A;"></div>
                             <button class="segment-btn active" onclick="setArchiveRange('season', 0)" style="font-size: 10px; padding: 0; line-height: 22px;">Сезон</button>
@@ -750,16 +772,13 @@
                         <div id="archive-current-range-label" style="font-size: 12px; color: var(--text-secondary); font-weight: 600;"></div>
                     </div>
 
-                    <!-- Кастомная сгруппированная легенда -->
                     <div id="archive-custom-legend" class="custom-legend-container"></div>
 
-                    <!-- Обертка графика с поддержкой свайпов -->
                     <div class="chart-container" id="archive-chart-wrapper">
                         <canvas id="archiveChart"></canvas>
                     </div>
                 </div>
 
-                <!-- НОВЫЙ БЛОК: Летне-осенний сезон 2023 -->
                 <div class="card">
                     <h3 class="section-title"><i data-lucide="sun" size="18"></i> Летне-осенний сезон (2023)</h3>
                     <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 5px;">Злаки, сорные травы и плесневые грибы.</p>
@@ -769,7 +788,7 @@
                     </div>
                 </div>
 
-                <div class="card">
+                <div class="card" style="margin-bottom: 30px;">
                     <h3 class="section-title"><i data-lucide="calendar" size="18"></i> Сводка 2023-2026</h3>
                     <table class="summary-table" id="summary-table">
                         <!-- Populated by JS -->
@@ -778,20 +797,23 @@
 
             </div>
         </div>
+
     </div>
 
     <script>
-        // --- 1. Внутренняя База Данных (Hardcoded JSON) ---
+        // --- 1. Внутренняя База Данных с обновленными показателями за Март ---
         const ARCHIVE_2025 = {
-            // Март: Данные текущего 2026 года (интеграция свежих ловушек)
             "03-16": { alder: 0, birch: 0, oak: 0, alder_2026: 4, hazel_2026: 7, temp: "Н/Д" },
-            "03-17": { alder: 0, birch: 0, oak: 0, alder_2026: 4, hazel_2026: 13, birch_2026: 3, temp: "Н/Д" },
+            "03-17": { alder: 0, birch: 0, oak: 0, alder_2026: 4, hazel_2026: 13, birch_2026: 3, temp: "+4°C" },
             "03-18": { alder: 0, birch: 0, oak: 0, alder_2026: 1, hazel_2026: 3, temp: "+1°C" },
-            "03-19": { alder: 0, birch: 0, oak: 0, alder_2026: 1, hazel_2026: 3, temp: "+1°C" },
-            "03-20": { alder: 0, birch: 0, oak: 0, alder_2026: 20, hazel_2026: 78, birch_2026: 1, temp: "Н/Д" },
+            "03-19": { alder: 0, birch: 0, oak: 0, alder_2026: 20, hazel_2026: 78, birch_2026: 1, temp: "+2°C" },
+            "03-20": { alder: 0, birch: 0, oak: 0, alder_2026: 49, hazel_2026: 127, temp: "+5°C" },
+            "03-21": { alder: 0, birch: 0, oak: 0, alder_2026: null, hazel_2026: null, temp: "Н/Д", note: "Выходные" },
+            "03-22": { alder: 0, birch: 0, oak: 0, alder_2026: null, hazel_2026: null, temp: "Н/Д", note: "Выходные" },
+            "03-23": { alder: 0, birch: 0, oak: 0, alder_2026: null, hazel_2026: null, temp: "Н/Д", note: "Ожидаем" },
             
             // Март: Ранний старт 2023 года
-            "03-24": { alder: 0, birch: 0, oak: 0, alder_2023: 122, hazel_2023: 33 },
+            "03-24_2023": { alder: 0, birch: 0, oak: 0, alder_2023: 122, hazel_2023: 33 },
             "03-28": { alder: 0, birch: 0, oak: 0, alder_2023: 323, hazel_2023: 1 },
             
             // Апрель: Эстафета Ольха -> Береза
@@ -825,13 +847,10 @@
             "05-14": { alder: 0, birch: 29, oak: 0, temp: "+18°C" },
             "05-15": { alder: 0, birch: 30, oak: 0, temp: "+22°C" },
             "05-18": { alder: 0, birch: 40, oak: 0, temp: "+20°C" },
-            "05-19": { alder: 0, birch: 4, oak: 0, temp: "Н/Д" },
             "05-20": { alder: 0, birch: 100, oak: 0, temp: "+24°C" },
             "05-21": { alder: 0, birch: 80, oak: 0, temp: "+21°C" },
             "05-22": { alder: 0, birch: 140, oak: 0, temp: "+24°C", note: "Вторая волна березы" },
-            "05-25": { alder: 0, birch: 5, oak: 0, temp: "+20°C" },
-            "05-27": { alder: 0, birch: 9, oak: 0, temp: "Н/Д" },
-            "05-28": { alder: 0, birch: 3, oak: 0, temp: "Н/Д" }
+            "05-25": { alder: 0, birch: 5, oak: 0, temp: "+20°C" }
         };
 
         const ARCHIVE_SUMMER_2023 = {
@@ -849,25 +868,25 @@
         const db = {
             metadata: {
                 location: "Москва",
-                lastUpdated: "20 Марта 2026"
+                lastUpdated: "23 Марта 2026"
             },
             today: {
                 hasDataToday: true, 
-                overallRisk: "high", 
+                overallRisk: "critical", 
                 allergens: [
-                    { id: "alder", name: "Ольха", value: 20, level: "warning", trend: "up", icon: "leaf" },
-                    { id: "hazel", name: "Орешник", value: 78, level: "high", trend: "up", icon: "tree-deciduous" },
-                    { id: "birch", name: "Береза", value: 1, level: "safe", trend: "up", icon: "tree-pine" },
+                    { id: "alder", name: "Ольха", value: 49, level: "warning", trend: "up", icon: "leaf" },
+                    { id: "hazel", name: "Орешник", value: 127, level: "critical", trend: "up", icon: "tree-deciduous" },
+                    { id: "birch", name: "Береза", value: null, level: "safe", trend: "flat", icon: "tree-pine" },
                     { id: "oak", name: "Дуб", value: null, level: "safe", trend: "flat", icon: "tree-deciduous" } 
                 ]
             },
             charts: {
                 today: {
-                    labels: ["15 Мар", "16 Мар", "17 Мар", "18 Мар", "19 Мар", "20 Мар"],
+                    labels: ["16 Мар", "17 Мар", "18 Мар", "19 Мар", "20 Мар", "21 Мар", "22 Мар", "23 Мар"],
                     datasets: [
-                        { label: 'Ольха', data: [null, 4, 4, 1, 1, 20], color: '#32D74B' },
-                        { label: 'Орешник', data: [null, 7, 13, 3, 3, 78], color: '#FFD60A' },
-                        { label: 'Береза', data: [null, null, 3, null, null, 1], color: '#FF453A' }
+                        { label: 'Ольха', data: [4, 4, 1, 20, 49, null, null, null], color: '#32D74B' },
+                        { label: 'Орешник', data: [7, 13, 3, 78, 127, null, null, null], color: '#FFD60A' },
+                        { label: 'Береза', data: [null, 3, null, 1, null, null, null, null], color: '#FF453A' }
                     ]
                 }
             },
@@ -1054,7 +1073,6 @@
         async function fetchWeather() {
             const lat = 55.75;
             const lon = 37.62;
-            const yandexApiKey = 'ВАШ_YANDEX_API_KEY'; // Укажите реальный ключ для работы Яндекс.Погоды
 
             const wTemp = document.getElementById('w-temp');
             const wHum = document.getElementById('w-hum');
@@ -1078,44 +1096,24 @@
             };
 
             try {
-                const yandexRes = await fetch(`https://api.weather.yandex.ru/v2/informers?lat=${lat}&lon=${lon}`, {
-                    headers: { 'X-Yandex-API-Key': yandexApiKey }
-                });
-
-                if (!yandexRes.ok) throw new Error('Yandex API Error');
-
-                const data = await yandexRes.json();
-                const temp = data.fact.feels_like; 
-                const hum = data.fact.humidity;
-                const windSpeed = data.fact.wind_speed;
-                const precipStrength = data.fact.precip_strength; 
+                const omRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=apparent_temperature,relative_humidity_2m,wind_speed_10m,wind_direction_10m,precipitation&wind_speed_unit=ms`);
+                if (!omRes.ok) throw new Error('Open-Meteo API Error');
                 
-                const yandexWindDirs = { 'nw': 'СЗ', 'n': 'С', 'ne': 'СВ', 'e': 'В', 'se': 'ЮВ', 's': 'Ю', 'sw': 'ЮЗ', 'w': 'З', 'c': 'Штиль' };
-                const dirStr = yandexWindDirs[data.fact.wind_dir] || '';
-
-                updateUI(temp, hum, windSpeed, dirStr, precipStrength > 0);
-
-            } catch (e) {
-                console.warn('Яндекс.Погода недоступна (ошибка сети или ключа), переключаемся на Open-Meteo...', e);
+                const omData = await omRes.json();
                 
-                try {
-                    const omRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=apparent_temperature,relative_humidity_2m,wind_speed_10m,wind_direction_10m,precipitation&wind_speed_unit=ms`);
-                    const omData = await omRes.json();
-                    
-                    const temp = omData.current.apparent_temperature; 
-                    const hum = omData.current.relative_humidity_2m;
-                    const windSpeed = omData.current.wind_speed_10m;
-                    const windDir = omData.current.wind_direction_10m;
-                    const precip = omData.current.precipitation;
-                    
-                    const dirs = ['С', 'ССВ', 'СВ', 'ВСВ', 'В', 'ВЮВ', 'ЮВ', 'ЮЮВ', 'Ю', 'ЮЮЗ', 'ЮЗ', 'ЗЮЗ', 'З', 'ЗСЗ', 'СЗ', 'ССЗ'];
-                    const dirStr = dirs[Math.round(windDir / 22.5) % 16]; 
-                    
-                    updateUI(temp, hum, windSpeed, dirStr, precip > 0);
+                const temp = omData.current.apparent_temperature; 
+                const hum = omData.current.relative_humidity_2m;
+                const windSpeed = omData.current.wind_speed_10m;
+                const windDir = omData.current.wind_direction_10m;
+                const precip = omData.current.precipitation;
+                
+                const dirs = ['С', 'ССВ', 'СВ', 'ВСВ', 'В', 'ВЮВ', 'ЮВ', 'ЮЮВ', 'Ю', 'ЮЮЗ', 'ЮЗ', 'ЗЮЗ', 'З', 'ЗСЗ', 'СЗ', 'ССЗ'];
+                const dirStr = dirs[Math.round(windDir / 22.5) % 16]; 
+                
+                updateUI(temp, hum, windSpeed, dirStr, precip > 0);
 
-                } catch (fallbackError) {
-                    console.error('Ошибка получения погоды из обоих источников:', fallbackError);
-                }
+            } catch (error) {
+                console.error('Ошибка получения погоды:', error);
             }
         }
 
