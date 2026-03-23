@@ -821,7 +821,7 @@
             "03-19": { alder: 0, birch: 0, oak: 0, alder_2026: 20, hazel_2026: 78, birch_2026: 1, temp: "Н/Д" },
             "03-20": { alder: 0, birch: 0, oak: 0, alder_2026: null, hazel_2026: null, temp: "Н/Д" },
             "03-21": { alder: 0, birch: 0, oak: 0, alder_2026: null, hazel_2026: null, temp: "Н/Д", note: "Выходные" },
-            "03-22": { alder: 0, birch: 0, oak: 0, alder_2026: 49, hazel_2026: 127, temp: "Н/Д" },
+            "03-22": { alder: 0, birch: 0, oak: 0, alder_2026: 49, hazel_2026: 127, birch_2026: 1, temp: "Н/Д" },
             "03-23": { alder: 0, birch: 0, oak: 0, alder_2026: null, hazel_2026: null, temp: "Н/Д", note: "Ожидаем" },
             
             // Март: Ранний старт 2023 года
@@ -888,7 +888,7 @@
                 allergens: [
                     { id: "alder", name: "Ольха", value: 49, level: "warning", trend: "up", icon: "leaf" },
                     { id: "hazel", name: "Орешник", value: 127, level: "critical", trend: "up", icon: "tree-deciduous" },
-                    { id: "birch", name: "Береза", value: null, level: "safe", trend: "flat", icon: "tree-pine" },
+                    { id: "birch", name: "Береза", value: 1, level: "safe", trend: "flat", icon: "tree-pine" },
                     { id: "oak", name: "Дуб", value: null, level: "safe", trend: "flat", icon: "tree-deciduous" } 
                 ]
             },
@@ -898,7 +898,7 @@
                     datasets: [
                         { label: 'Ольха', data: [4, 4, 1, 20, null, null, 49, null], color: '#32D74B' },
                         { label: 'Орешник', data: [7, 13, 3, 78, null, null, 127, null], color: '#FFD60A' },
-                        { label: 'Береза', data: [null, 3, null, 1, null, null, null, null], color: '#FF453A' }
+                        { label: 'Береза', data: [null, 3, null, 1, null, null, 1, null], color: '#FF453A' }
                     ]
                 }
             },
