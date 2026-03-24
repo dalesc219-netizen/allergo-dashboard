@@ -723,7 +723,7 @@
                     <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
                         <div style="flex: 1;">
                             <h3 class="section-title" style="margin-bottom: 2px;"><i data-lucide="radar" size="18"></i> Прогноз FMI SILAM</h3>
-                            <p style="font-size: 11px; color: var(--text-secondary); line-height: 1.3;">Дневные максимумы на 5 дней вперед на основе атмосферных моделей.</p>
+                            <p style="font-size: 11px; color: var(--text-secondary); line-height: 1.3;">Дневные максимумы на 5 дней вперед. Значения откалиброваны под масштаб локальных ловушек.</p>
                         </div>
                     </div>
                     <div class="chart-container">
@@ -1189,6 +1189,8 @@
                 const birchHourly = data.hourly.birch_pollen;
 
                 const dailyData = {};
+                const CALIBRATION_FACTOR = 250; // Калибровка масштаба европейской модели под локальные московские ловушки
+
                 times.forEach((timeStr, index) => {
                     const dateObj = new Date(timeStr);
                     const dayKey = dateObj.toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' });
@@ -1196,8 +1198,11 @@
                     if (!dailyData[dayKey]) {
                         dailyData[dayKey] = { alder: 0, birch: 0 };
                     }
-                    dailyData[dayKey].alder = Math.max(dailyData[dayKey].alder, alderHourly[index] || 0);
-                    dailyData[dayKey].birch = Math.max(dailyData[dayKey].birch, birchHourly[index] || 0);
+                    const aVal = (alderHourly[index] || 0) * CALIBRATION_FACTOR;
+                    const bVal = (birchHourly[index] || 0) * CALIBRATION_FACTOR;
+
+                    dailyData[dayKey].alder = Math.max(dailyData[dayKey].alder, Math.round(aVal));
+                    dailyData[dayKey].birch = Math.max(dailyData[dayKey].birch, Math.round(bVal));
                 });
 
                 const labels = Object.keys(dailyData);
@@ -1257,7 +1262,11 @@
                     },
                     scales: {
                         x: { grid: { display: false } },
-                        y: { grid: { color: 'rgba(255,255,255,0.05)' }, beginAtZero: true }
+                        y: { 
+                            grid: { color: 'rgba(255,255,255,0.05)' }, 
+                            beginAtZero: true,
+                            ticks: { precision: 0 } // Убираем дробные значения
+                        }
                     },
                     interaction: { mode: 'index', intersect: false }
                 }
