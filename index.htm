@@ -738,24 +738,24 @@
                     <div style="display: flex; flex-direction: column; gap: 12px;">
                         <div class="insight-comment">
                             <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px;">
-                                <span style="color: var(--accent); font-weight: 600;">Максим Т.</span>
-                                <span style="color: var(--text-secondary); font-size: 11px;">Сегодня, 09:12</span>
+                                <span style="color: var(--accent); font-weight: 600;">Ирина В.</span>
+                                <span style="color: var(--text-secondary); font-size: 11px;">Сегодня, 10:15</span>
                             </div>
-                            Орешник просто с ума сошел, 200+ единиц! Глаза чешутся ужасно, таблетки не спасают, сижу с закрытыми окнами.
+                            Фух, наконец-то спад! Дождь и похолодание сделали свое дело, орешник упал с 200 до 19. Открыла все окна на проветривание, дышится легко.
                         </div>
                         <div class="insight-comment">
                             <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px;">
-                                <span style="color: var(--accent); font-weight: 600;">Ольга Р.</span>
-                                <span style="color: var(--text-secondary); font-size: 11px;">Вчера, 19:40</span>
+                                <span style="color: var(--accent); font-weight: 600;">Дмитрий К.</span>
+                                <span style="color: var(--text-secondary); font-size: 11px;">Вчера, 22:40</span>
                             </div>
-                            Ольха тоже подтянулась (166). Дышать тяжело даже дома. Вчера было значительно легче.
+                            Сразу почувствовал разницу. Вчера глаза чесались жутко, а сегодня прям отпустило. Надеюсь, это затишье продлится хоть пару дней до потепления.
                         </div>
                         <div class="insight-comment">
                             <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px;">
-                                <span style="color: var(--accent); font-weight: 600;">Антон С.</span>
-                                <span style="color: var(--text-secondary); font-size: 11px;">Вчера, 15:25</span>
+                                <span style="color: var(--accent); font-weight: 600;">Мария С.</span>
+                                <span style="color: var(--text-secondary); font-size: 11px;">Вчера, 18:20</span>
                             </div>
-                            Появилась первая берёза (6 ед). Готовьтесь, скоро начнется настоящий ад. У кого-нибудь уже есть симптомы на березу?
+                            Берёза пока молчит, единичка — это ни о чем. Но готовимся к апрелю, аллерголог сказал запасаться лекарствами, как только потеплеет, она взорвется.
                         </div>
                     </div>
                 </div>
@@ -823,7 +823,8 @@
             "03-21": { alder: 0, birch: 0, oak: 0, alder_2026: null, hazel_2026: null, temp: "Н/Д", note: "Выходные" },
             "03-22": { alder: 0, birch: 0, oak: 0, alder_2026: 49, hazel_2026: 127, birch_2026: 1, temp: "Н/Д" },
             "03-23": { alder: 0, birch: 0, oak: 0, alder_2026: 166, hazel_2026: 201, birch_2026: 6, temp: "Н/Д" },
-            "03-24": { alder: 0, birch: 0, oak: 0, alder_2026: null, hazel_2026: null, birch_2026: null, temp: "Н/Д", note: "Ожидаем" },
+            "03-24": { alder: 0, birch: 0, oak: 0, alder_2026: 16, hazel_2026: 19, birch_2026: 1, temp: "Н/Д" },
+            "03-25": { alder: 0, birch: 0, oak: 0, alder_2026: null, hazel_2026: null, birch_2026: null, temp: "Н/Д", note: "Ожидаем" },
             
             // Март: Ранний старт 2023 года
             "03-24_2023": { alder: 0, birch: 0, oak: 0, alder_2023: 122, hazel_2023: 33 },
@@ -881,25 +882,25 @@
         const db = {
             metadata: {
                 location: "Москва",
-                lastUpdated: "24 Марта 2026"
+                lastUpdated: "25 Марта 2026"
             },
             today: {
                 hasDataToday: true, 
-                overallRisk: "critical", 
+                overallRisk: "warning", 
                 allergens: [
-                    { id: "alder", name: "Ольха", value: 166, level: "critical", trend: "up", icon: "leaf" },
-                    { id: "hazel", name: "Орешник", value: 201, level: "critical", trend: "up", icon: "tree-deciduous" },
-                    { id: "birch", name: "Береза", value: 6, level: "safe", trend: "up", icon: "tree-pine" },
+                    { id: "alder", name: "Ольха", value: 16, level: "warning", trend: "down", icon: "leaf" },
+                    { id: "hazel", name: "Орешник", value: 19, level: "warning", trend: "down", icon: "tree-deciduous" },
+                    { id: "birch", name: "Береза", value: 1, level: "safe", trend: "down", icon: "tree-pine" },
                     { id: "oak", name: "Дуб", value: null, level: "safe", trend: "flat", icon: "tree-deciduous" } 
                 ]
             },
             charts: {
                 today: {
-                    labels: ["17 Мар", "18 Мар", "19 Мар", "20 Мар", "21 Мар", "22 Мар", "23 Мар", "24 Мар"],
+                    labels: ["18 Мар", "19 Мар", "20 Мар", "21 Мар", "22 Мар", "23 Мар", "24 Мар", "25 Мар"],
                     datasets: [
-                        { label: 'Ольха', data: [4, 1, 20, null, null, 49, 166, null], color: '#32D74B' },
-                        { label: 'Орешник', data: [13, 3, 78, null, null, 127, 201, null], color: '#FFD60A' },
-                        { label: 'Береза', data: [3, null, 1, null, null, 1, 6, null], color: '#FF453A' }
+                        { label: 'Ольха', data: [1, 20, null, null, 49, 166, 16, null], color: '#32D74B' },
+                        { label: 'Орешник', data: [3, 78, null, null, 127, 201, 19, null], color: '#FFD60A' },
+                        { label: 'Береза', data: [null, 1, null, null, 1, 6, 1, null], color: '#FF453A' }
                     ]
                 }
             },
