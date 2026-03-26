@@ -739,16 +739,16 @@
                         <div class="insight-comment">
                             <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px;">
                                 <span style="color: var(--accent); font-weight: 600;">Ирина В.</span>
-                                <span style="color: var(--text-secondary); font-size: 11px;">Сегодня, 10:15</span>
+                                <span style="color: var(--text-secondary); font-size: 11px;">Сегодня, 09:20</span>
                             </div>
-                            Фух, наконец-то спад! Дождь и похолодание сделали свое дело, орешник упал с 200 до 19. Открыла все окна на проветривание, дышится легко.
+                            Показатели немного подросли (орешник 32), но после резкого спада всё еще чувствую себя человеком. Мойка воздуха работает на минимуме.
                         </div>
                         <div class="insight-comment">
                             <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px;">
                                 <span style="color: var(--accent); font-weight: 600;">Дмитрий К.</span>
-                                <span style="color: var(--text-secondary); font-size: 11px;">Вчера, 22:40</span>
+                                <span style="color: var(--text-secondary); font-size: 11px;">Вчера, 20:15</span>
                             </div>
-                            Сразу почувствовал разницу. Вчера глаза чесались жутко, а сегодня прям отпустило. Надеюсь, это затишье продлится хоть пару дней до потепления.
+                            Влажная погода спасает! Пока дожди — гуляем. Как только подсохнет, цифры снова полетят в космос.
                         </div>
                         <div class="insight-comment">
                             <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px;">
@@ -824,7 +824,8 @@
             "03-22": { alder: 0, birch: 0, oak: 0, alder_2026: 49, hazel_2026: 127, birch_2026: 1, temp: "Н/Д" },
             "03-23": { alder: 0, birch: 0, oak: 0, alder_2026: 166, hazel_2026: 201, birch_2026: 6, temp: "Н/Д" },
             "03-24": { alder: 0, birch: 0, oak: 0, alder_2026: 16, hazel_2026: 19, birch_2026: 1, temp: "Н/Д" },
-            "03-25": { alder: 0, birch: 0, oak: 0, alder_2026: null, hazel_2026: null, birch_2026: null, temp: "Н/Д", note: "Ожидаем" },
+            "03-25": { alder: 0, birch: 0, oak: 0, alder_2026: 21, hazel_2026: 32, birch_2026: 1, temp: "Н/Д" },
+            "03-26": { alder: 0, birch: 0, oak: 0, alder_2026: null, hazel_2026: null, birch_2026: null, temp: "Н/Д", note: "Ожидаем" },
             
             // Март: Ранний старт 2023 года
             "03-24_2023": { alder: 0, birch: 0, oak: 0, alder_2023: 122, hazel_2023: 33 },
@@ -882,25 +883,25 @@
         const db = {
             metadata: {
                 location: "Москва",
-                lastUpdated: "25 Марта 2026"
+                lastUpdated: "26 Марта 2026"
             },
             today: {
                 hasDataToday: true, 
                 overallRisk: "warning", 
                 allergens: [
-                    { id: "alder", name: "Ольха", value: 16, level: "warning", trend: "down", icon: "leaf" },
-                    { id: "hazel", name: "Орешник", value: 19, level: "warning", trend: "down", icon: "tree-deciduous" },
-                    { id: "birch", name: "Береза", value: 1, level: "safe", trend: "down", icon: "tree-pine" },
+                    { id: "alder", name: "Ольха", value: 21, level: "warning", trend: "up", icon: "leaf" },
+                    { id: "hazel", name: "Орешник", value: 32, level: "warning", trend: "up", icon: "tree-deciduous" },
+                    { id: "birch", name: "Береза", value: 1, level: "safe", trend: "flat", icon: "tree-pine" },
                     { id: "oak", name: "Дуб", value: null, level: "safe", trend: "flat", icon: "tree-deciduous" } 
                 ]
             },
             charts: {
                 today: {
-                    labels: ["18 Мар", "19 Мар", "20 Мар", "21 Мар", "22 Мар", "23 Мар", "24 Мар", "25 Мар"],
+                    labels: ["19 Мар", "20 Мар", "21 Мар", "22 Мар", "23 Мар", "24 Мар", "25 Мар", "26 Мар"],
                     datasets: [
-                        { label: 'Ольха', data: [1, 20, null, null, 49, 166, 16, null], color: '#32D74B' },
-                        { label: 'Орешник', data: [3, 78, null, null, 127, 201, 19, null], color: '#FFD60A' },
-                        { label: 'Береза', data: [null, 1, null, null, 1, 6, 1, null], color: '#FF453A' }
+                        { label: 'Ольха', data: [20, null, null, 49, 166, 16, 21, null], color: '#32D74B' },
+                        { label: 'Орешник', data: [78, null, null, 127, 201, 19, 32, null], color: '#FFD60A' },
+                        { label: 'Береза', data: [1, null, null, 1, 6, 1, 1, null], color: '#FF453A' }
                     ]
                 }
             },
