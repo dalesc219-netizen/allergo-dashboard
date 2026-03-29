@@ -1170,14 +1170,12 @@
             const currentDateEl = document.getElementById('current-date');
             if (currentDateEl) currentDateEl.innerText = parts.join(' ');
 
-            let yesterday = new Date(today);
-            yesterday.setDate(yesterday.getDate() - 1);
-            let yDateStr = yesterday.toLocaleDateString('ru-RU', options).replace(' г.', '');
-            let yParts = yDateStr.split(' ');
-            if(yParts.length >= 2) yParts[1] = yParts[1].toLowerCase();
-            
             const measurementDateEl = document.getElementById('measurement-date');
-            if (measurementDateEl) measurementDateEl.innerText = 'Дата измерений: ' + yParts.join(' ');
+            if (measurementDateEl) {
+                let dbDateParts = db.metadata.lastUpdated.split(' ');
+                if(dbDateParts.length >= 2) dbDateParts[1] = dbDateParts[1].toLowerCase();
+                measurementDateEl.innerText = 'Дата измерений: ' + dbDateParts.join(' ');
+            }
         }
 
         // Прогноз SILAM / CAMS
@@ -2098,6 +2096,13 @@
                     else db.today.overallRisk = 'safe';
                 }
                 renderTodayData();
+            }
+
+            if (dateInput) {
+                const dateObj = new Date(dateInput);
+                const opts = { day: 'numeric', month: 'long', year: 'numeric' };
+                db.metadata.lastUpdated = dateObj.toLocaleDateString('ru-RU', opts).replace(' г.', '');
+                updateDate();
             }
 
             initCharts();
