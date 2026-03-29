@@ -738,24 +738,24 @@
                     <div style="display: flex; flex-direction: column; gap: 12px;">
                         <div class="insight-comment">
                             <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px;">
-                                <span style="color: var(--accent); font-weight: 600;">Ирина В.</span>
-                                <span style="color: var(--text-secondary); font-size: 11px;">Сегодня, 09:20</span>
+                                <span style="color: var(--accent); font-weight: 600;">Антон М.</span>
+                                <span style="color: var(--text-secondary); font-size: 11px;">Сегодня, 08:30</span>
                             </div>
-                            Показатели немного подросли (орешник 32), но после резкого спада всё еще чувствую себя человеком. Мойка воздуха работает на минимуме.
+                            Ольха вернулась с новыми силами (207). Вчера было нормально, а сегодня утром проснулся с заложенным носом и отекшими глазами.
                         </div>
                         <div class="insight-comment">
                             <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px;">
-                                <span style="color: var(--accent); font-weight: 600;">Дмитрий К.</span>
-                                <span style="color: var(--text-secondary); font-size: 11px;">Вчера, 20:15</span>
+                                <span style="color: var(--accent); font-weight: 600;">Елена В.</span>
+                                <span style="color: var(--text-secondary); font-size: 11px;">Вчера, 21:15</span>
                             </div>
-                            Влажная погода спасает! Пока дожди — гуляем. Как только подсохнет, цифры снова полетят в космос.
+                            Орешник тоже не отстает (166). Ветер разносит пыльцу, на улице без очков и маски делать нечего, всё сразу чешется.
                         </div>
                         <div class="insight-comment">
                             <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px;">
                                 <span style="color: var(--accent); font-weight: 600;">Мария С.</span>
                                 <span style="color: var(--text-secondary); font-size: 11px;">Вчера, 18:20</span>
                             </div>
-                            Берёза пока молчит, единичка — это ни о чем. Но готовимся к апрелю, аллерголог сказал запасаться лекарствами, как только потеплеет, она взорвется.
+                            Берёза пока на единичке, но с таким потеплением, думаю, скоро начнется. Пьем антигистаминные заранее.
                         </div>
                     </div>
                 </div>
@@ -825,7 +825,8 @@
             "03-23": { alder: 0, birch: 0, oak: 0, alder_2026: 166, hazel_2026: 201, birch_2026: 6, temp: "Н/Д" },
             "03-24": { alder: 0, birch: 0, oak: 0, alder_2026: 16, hazel_2026: 19, birch_2026: 1, temp: "Н/Д" },
             "03-25": { alder: 0, birch: 0, oak: 0, alder_2026: 21, hazel_2026: 32, birch_2026: 1, temp: "Н/Д" },
-            "03-26": { alder: 0, birch: 0, oak: 0, alder_2026: null, hazel_2026: null, birch_2026: null, temp: "Н/Д", note: "Ожидаем" },
+            "03-26": { alder: 0, birch: 0, oak: 0, alder_2026: 207, hazel_2026: 166, birch_2026: 1, temp: "Н/Д" },
+            "03-27": { alder: 0, birch: 0, oak: 0, alder_2026: null, hazel_2026: null, birch_2026: null, temp: "Н/Д", note: "Ожидаем" },
             
             // Март: Ранний старт 2023 года
             "03-24_2023": { alder: 0, birch: 0, oak: 0, alder_2023: 122, hazel_2023: 33 },
@@ -883,25 +884,25 @@
         const db = {
             metadata: {
                 location: "Москва",
-                lastUpdated: "26 Марта 2026"
+                lastUpdated: "27 Марта 2026"
             },
             today: {
                 hasDataToday: true, 
-                overallRisk: "warning", 
+                overallRisk: "critical", 
                 allergens: [
-                    { id: "alder", name: "Ольха", value: 21, level: "warning", trend: "up", icon: "leaf" },
-                    { id: "hazel", name: "Орешник", value: 32, level: "warning", trend: "up", icon: "tree-deciduous" },
+                    { id: "alder", name: "Ольха", value: 207, level: "critical", trend: "up", icon: "leaf" },
+                    { id: "hazel", name: "Орешник", value: 166, level: "critical", trend: "up", icon: "tree-deciduous" },
                     { id: "birch", name: "Береза", value: 1, level: "safe", trend: "flat", icon: "tree-pine" },
                     { id: "oak", name: "Дуб", value: null, level: "safe", trend: "flat", icon: "tree-deciduous" } 
                 ]
             },
             charts: {
                 today: {
-                    labels: ["19 Мар", "20 Мар", "21 Мар", "22 Мар", "23 Мар", "24 Мар", "25 Мар", "26 Мар"],
+                    labels: ["20 Мар", "21 Мар", "22 Мар", "23 Мар", "24 Мар", "25 Мар", "26 Мар", "27 Мар"],
                     datasets: [
-                        { label: 'Ольха', data: [20, null, null, 49, 166, 16, 21, null], color: '#32D74B' },
-                        { label: 'Орешник', data: [78, null, null, 127, 201, 19, 32, null], color: '#FFD60A' },
-                        { label: 'Береза', data: [1, null, null, 1, 6, 1, 1, null], color: '#FF453A' }
+                        { label: 'Ольха', data: [null, null, 49, 166, 16, 21, 207, null], color: '#32D74B' },
+                        { label: 'Орешник', data: [null, null, 127, 201, 19, 32, 166, null], color: '#FFD60A' },
+                        { label: 'Береза', data: [null, null, 1, 6, 1, 1, 1, null], color: '#FF453A' }
                     ]
                 }
             },
