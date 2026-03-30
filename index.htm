@@ -221,9 +221,9 @@
         }
 
         .section-title {
-            font-size: 22px;
-            font-weight: 700;
-            margin-bottom: 20px;
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
             display: flex;
             align-items: center;
             gap: 8px;
@@ -235,15 +235,7 @@
             width: 100%;
         }
 
-        .chart-container.large {
-            height: 320px;
-        }
-
-        .view-pane#view-archive .card {
-            margin-bottom: 25px;
-        }
-
-        /* --- Кастомная легенда для архива --- */
+        /* --- Кастомная легенда для архива (Надежная Flex-версия) --- */
         .custom-legend-container {
             display: flex;
             flex-wrap: nowrap;
@@ -261,7 +253,7 @@
             display: flex;
             flex-direction: column;
             gap: 8px;
-            flex: 0 0 auto; 
+            flex: 0 0 auto; /* Колонки без сжатия */
             min-width: 100px;
         }
         .legend-group-title {
@@ -345,11 +337,13 @@
         .data-input::placeholder { color: var(--text-secondary); opacity: 0.7; }
         .data-input:disabled { opacity: 0.3; background: rgba(0,0,0,0.3); border-color: transparent; cursor: not-allowed; color: transparent; }
 
+        /* Янтарные уведомления */
         .data-input.amber-border { border-color: var(--high); color: var(--high); }
         .warning-icon { position: absolute; right: 12px; top: 12px; color: var(--high); display: none; pointer-events: none; }
         .data-input.amber-border + .warning-icon { display: block; }
         .amber-alert-text { font-size: 11px; color: var(--high); margin-top: 6px; display: none; line-height: 1.3; }
 
+        /* Аккордеон "Остальные" */
         .season-accordion { margin-top: 25px; border-top: 1px solid var(--glass-border); padding-top: 15px; }
         .season-header { display: flex; justify-content: space-between; font-size: 14px; color: var(--text-secondary); cursor: pointer; align-items: center; padding: 5px 0; }
         .season-content { display: none; margin-top: 15px; }
@@ -373,8 +367,8 @@
         }
         .login-btn:disabled { background: #333333; color: #888888; cursor: not-allowed; transform: none; }
         
-        /* Кастомный тултип для графиков пыльцы */
-        #custom-chart-tooltip {
+        /* Стили для кастомного тултипа на графике */
+        #custom-chart-tooltip, #weather-chart-tooltip {
             position: absolute;
             background: rgba(28, 28, 30, 0.95);
             backdrop-filter: blur(10px);
@@ -390,23 +384,12 @@
             min-width: 145px;
         }
 
-        /* Кастомный тултип для графика погоды */
-        #weather-custom-tooltip {
-            position: absolute;
-            background: rgba(28, 28, 30, 0.95);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.15);
-            border-radius: 12px;
-            padding: 12px;
-            color: white;
-            pointer-events: none; /* Тултип погоды не кликабелен */
-            transition: opacity 0.2s ease;
-            z-index: 1000;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.6);
-            min-width: 180px;
+        #weather-chart-tooltip {
+            z-index: 9999;
+            pointer-events: none;
         }
 
+        /* Кнопка добавления данных */
         .add-data-btn {
             background: rgba(255, 255, 255, 0.1);
             border: none;
@@ -709,7 +692,7 @@
                 <div class="card" id="risk-card">
                     <div class="risk-header" style="margin-bottom: 15px; align-items: flex-start;">
                         <div>
-                            <h3 class="section-title" style="margin-bottom: 2px;"><i data-lucide="microscope" size="22"></i> Данные ловушек</h3>
+                            <h3 class="section-title" style="margin-bottom: 2px;"><i data-lucide="microscope" size="18"></i> Данные ловушек</h3>
                             <div style="font-size: 11px; color: var(--text-secondary); margin-left: 26px;" id="measurement-date">Дата измерений: --</div>
                         </div>
                         <div class="risk-badge" id="main-risk-badge" style="background: rgba(255, 159, 10, 0.2); color: var(--high);">
@@ -723,7 +706,7 @@
 
                 <div class="card">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                        <h3 class="section-title" style="margin-bottom: 0;"><i data-lucide="trending-up" size="22"></i> Динамика ловушек</h3>
+                        <h3 class="section-title" style="margin-bottom: 0;"><i data-lucide="trending-up" size="18"></i> Динамика ловушек</h3>
                         <div style="display: flex; gap: 10px; align-items: center;">
                             <div class="segment-control" style="width: 90px; padding: 2px; flex-shrink: 0; height: 26px;">
                                 <div class="segment-indicator" id="today-scale-indicator" style="width: calc(50% - 2px); background: #48484A;"></div>
@@ -740,9 +723,9 @@
                     </div>
                 </div>
 
-                <!-- ИНСАЙТЫ -->
+                <!-- ИНСАЙТЫ (Отзывы пользователей) -->
                 <div class="card">
-                    <h3 class="section-title"><i data-lucide="message-circle" size="22"></i> Инсайты (VK Pollen Club)</h3>
+                    <h3 class="section-title"><i data-lucide="message-circle" size="18"></i> Инсайты (VK Pollen Club)</h3>
                     <p style="font-size: 11px; color: var(--text-secondary); margin-bottom: 15px;">Свежие комментарии из Москвы о текущей обстановке.</p>
                     <div style="display: flex; flex-direction: column; gap: 12px;">
                         <div class="insight-comment">
@@ -776,7 +759,7 @@
                 <div class="card">
                     <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
                         <div style="flex: 1;">
-                            <h3 class="section-title" style="margin-bottom: 5px;"><i data-lucide="bar-chart-2" size="22"></i> Сравнение сезонов</h3>
+                            <h3 class="section-title" style="margin-bottom: 5px;"><i data-lucide="bar-chart-2" size="18"></i> Сравнение сезонов</h3>
                             <p style="font-size: 11px; color: var(--text-secondary); line-height: 1.3;">Эстафета аллергенов: Деревья</p>
                         </div>
                         
@@ -795,32 +778,31 @@
 
                     <div id="archive-custom-legend" class="custom-legend-container"></div>
 
-                    <div class="chart-container large" id="archive-chart-wrapper">
+                    <div class="chart-container" id="archive-chart-wrapper">
                         <canvas id="archiveChart"></canvas>
                     </div>
                 </div>
 
-                <!-- БЛОК: Погодный контекст -->
-                <div class="card">
-                    <h3 class="section-title"><i data-lucide="cloud-rain" size="22"></i> Погодный контекст</h3>
-                    <p style="font-size: 11px; color: var(--text-secondary); margin-bottom: 15px;">Амплитуда температур, осадки и явления. График синхронизирован с архивом выше.</p>
-                    <div class="chart-container large" id="weather-chart-wrapper">
-                        <canvas id="weatherChart"></canvas>
+                <!-- ПОГОДНЫЙ КОНТЕКСТ -->
+                <div class="card" style="margin-top: 15px; margin-bottom: 15px;">
+                    <h3 class="section-title" style="margin-bottom: 15px;"><i data-lucide="cloud-rain" size="18"></i> Погодный контекст</h3>
+                    <p style="font-size: 11px; color: var(--text-secondary); margin-bottom: 10px;">Температура и осадки (синие столбцы) синхронизированы с графиком пыльцы.</p>
+                    <div class="chart-container" style="height: 180px;">
+                        <canvas id="weatherArchiveChart"></canvas>
                     </div>
-                    <div id="weather-custom-tooltip"></div>
                 </div>
 
                 <div class="card">
-                    <h3 class="section-title"><i data-lucide="sun" size="22"></i> Летне-осенний сезон (2023)</h3>
+                    <h3 class="section-title"><i data-lucide="sun" size="18"></i> Летне-осенний сезон (2023)</h3>
                     <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 5px;">Злаки, сорные травы и плесневые грибы.</p>
                     <p style="font-size: 11px; color: var(--text-secondary); margin-bottom: 15px;">* Кладоспориум достигает 10 000+ ед., используется логарифмическая шкала.</p>
-                    <div class="chart-container large">
+                    <div class="chart-container">
                         <canvas id="summerArchiveChart"></canvas>
                     </div>
                 </div>
 
                 <div class="card" style="margin-bottom: 30px;">
-                    <h3 class="section-title"><i data-lucide="calendar" size="22"></i> Сводка 2023-2026</h3>
+                    <h3 class="section-title"><i data-lucide="calendar" size="18"></i> Сводка 2023-2026</h3>
                     <table class="summary-table" id="summary-table">
                         <!-- Populated by JS -->
                     </table>
@@ -832,7 +814,7 @@
     </div>
 
     <script>
-        // --- 1. Внутренняя База Данных пыльцы ---
+        // --- 1. Внутренняя База Данных с обновленными показателями за Март ---
         const ARCHIVE_2025 = {
             "03-16": { alder: 0, birch: 0, oak: 0, alder_2026: 4, hazel_2026: 7, temp: "Н/Д" },
             "03-17": { alder: 0, birch: 0, oak: 0, alder_2026: 4, hazel_2026: 13, birch_2026: 3, temp: "Н/Д" },
@@ -898,6 +880,8 @@
             "05-25": { alder: 0, birch: 5, oak: 0, temp: "+20°C" }
         };
 
+        const WEATHER_ARCHIVE_2023 = {"03-01":{tempMin:-6.6,tempMax:-1.9,windDir:"СЗ",windSpeedMax:2,precip:0.9,snow:36,phenomena:["снег","метель"]},"03-02":{tempMin:-4.4,tempMax:-1.5,windDir:"З",windSpeedMax:2,precip:0,snow:35,phenomena:["снег"]},"03-03":{tempMin:-1.7,tempMax:1.6,windDir:"ЮЗ",windSpeedMax:2,precip:2.4,snow:37,phenomena:["снег"]},"03-04":{tempMin:-3,tempMax:1.2,windDir:"ЮЗ",windSpeedMax:2,precip:8.4,snow:41,phenomena:["снег"]},"03-05":{tempMin:-3.5,tempMax:-0.4,windDir:"СЗ",windSpeedMax:2,precip:0.9,snow:41,phenomena:["снег"]},"03-06":{tempMin:-4.4,tempMax:1.3,windDir:"ЮЗ",windSpeedMax:1,precip:0.7,snow:41,phenomena:["снег"]},"03-07":{tempMin:-10.5,tempMax:-0.5,windDir:"ЮВ",windSpeedMax:3,precip:0.2,snow:41,phenomena:["снег"]},"03-08":{tempMin:-7.5,tempMax:0.6,windDir:"З",windSpeedMax:2,precip:1.8,snow:42,phenomena:["снег"]},"03-09":{tempMin:-7.5,tempMax:-3.7,windDir:"СЗ",windSpeedMax:2,precip:0,snow:42,phenomena:["снег"]},"03-10":{tempMin:-7.3,tempMax:-1.5,windDir:"ЮВ",windSpeedMax:4,precip:3.2,snow:42,phenomena:["снег","метель"]},"03-11":{tempMin:-1.5,tempMax:5.8,windDir:"ЮВ",windSpeedMax:3,precip:5,snow:39,phenomena:["дождь","снег"]},"03-12":{tempMin:-6.3,tempMax:5.9,windDir:"З",windSpeedMax:3,precip:5,snow:38,phenomena:["снег"]},"03-13":{tempMin:-5.5,tempMax:8.6,windDir:"Ю",windSpeedMax:2,precip:1.5,snow:37,phenomena:["снег"]},"03-14":{tempMin:2,tempMax:3.3,windDir:"ЮВ",windSpeedMax:1,precip:4,snow:31,phenomena:["дождь"]},"03-15":{tempMin:-2,tempMax:4.9,windDir:"С",windSpeedMax:3,precip:0.2,snow:28,phenomena:["снег","морось"]},"03-16":{tempMin:-5.6,tempMax:4.9,windDir:"ЮВ",windSpeedMax:1,precip:0,snow:27,phenomena:[]},"03-17":{tempMin:-5.1,tempMax:4.2,windDir:"штиль",windSpeedMax:0,precip:0,snow:26,phenomena:[]},"03-18":{tempMin:-5.2,tempMax:8.2,windDir:"ЮЗ",windSpeedMax:1,precip:0,snow:25,phenomena:[]},"03-19":{tempMin:-2.8,tempMax:8.9,windDir:"Ю",windSpeedMax:1,precip:0.4,snow:24,phenomena:["дождь"]},"03-20":{tempMin:2.2,tempMax:6.5,windDir:"СЗ",windSpeedMax:2,precip:0,snow:22,phenomena:[]},"03-21":{tempMin:-1,tempMax:12,windDir:"ЮЗ",windSpeedMax:1,precip:0,snow:18,phenomena:[]},"03-22":{tempMin:6.5,tempMax:8.9,windDir:"ЮЗ",windSpeedMax:2,precip:4,snow:12,phenomena:["дождь"]},"03-23":{tempMin:3.2,tempMax:10,windDir:"Ю",windSpeedMax:1,precip:2,snow:9,phenomena:["дождь"]},"03-24":{tempMin:4.2,tempMax:7.6,windDir:"штиль",windSpeedMax:0,precip:0.2,snow:5,phenomena:["дождь","туман"]},"03-25":{tempMin:3.1,tempMax:8.9,windDir:"ЮЗ",windSpeedMax:1,precip:0.6,snow:1,phenomena:["дождь"]},"03-26":{tempMin:-0.2,tempMax:9.9,windDir:"В",windSpeedMax:2,precip:0.1,snow:0,phenomena:[]},"03-27":{tempMin:4.3,tempMax:8.3,windDir:"ЮВ",windSpeedMax:3,precip:5,snow:0,phenomena:["дождь"]},"03-28":{tempMin:4.8,tempMax:6.1,windDir:"СЗ",windSpeedMax:2,precip:1.1,snow:0,phenomena:["дождь"]},"03-29":{tempMin:-1,tempMax:2.9,windDir:"С",windSpeedMax:3,precip:0.9,snow:0,phenomena:["снег"]},"03-30":{tempMin:0.8,tempMax:8.3,windDir:"С",windSpeedMax:2,precip:0.1,snow:0,phenomena:["дождь"]},"03-31":{tempMin:2.5,tempMax:6.6,windDir:"ЮВ",windSpeedMax:2,precip:0,snow:0,phenomena:[]},"04-01":{tempMin:6.8,tempMax:21.6,windDir:"Ю",windSpeedMax:2,precip:0,snow:0,phenomena:[]},"04-02":{tempMin:9,tempMax:23.2,windDir:"ЮВ",windSpeedMax:3,precip:0.6,snow:0,phenomena:["дождь"]},"04-03":{tempMin:4.4,tempMax:18.1,windDir:"ЮЗ",windSpeedMax:3,precip:0.1,snow:0,phenomena:["дождь"]},"04-04":{tempMin:-2.4,tempMax:6.1,windDir:"С",windSpeedMax:3,precip:0.1,snow:0,phenomena:["дождь"]},"04-05":{tempMin:-2.4,tempMax:4.7,windDir:"ЮВ",windSpeedMax:2,precip:0,snow:0,phenomena:[]},"04-06":{tempMin:0.7,tempMax:8.1,windDir:"Ю",windSpeedMax:2,precip:0,snow:0,phenomena:["снег"]},"04-07":{tempMin:1.8,tempMax:14.9,windDir:"штиль",windSpeedMax:0,precip:0,snow:0,phenomena:[]},"04-08":{tempMin:8.6,tempMax:16.9,windDir:"З",windSpeedMax:2,precip:0,snow:0,phenomena:[]},"04-09":{tempMin:9.3,tempMax:17.9,windDir:"СВ",windSpeedMax:1,precip:1.3,snow:0,phenomena:["дождь","туман"]},"04-10":{tempMin:11.6,tempMax:19.1,windDir:"ЮВ",windSpeedMax:2,precip:0,snow:0,phenomena:[]},"04-11":{tempMin:-0.5,tempMax:18.1,windDir:"З",windSpeedMax:2,precip:0,snow:0,phenomena:[]},"04-12":{tempMin:7.9,tempMax:14.9,windDir:"З",windSpeedMax:2,precip:2.2,snow:0,phenomena:["дождь"]},"04-13":{tempMin:4.6,tempMax:13.5,windDir:"СЗ",windSpeedMax:2,precip:0.5,snow:0,phenomena:[]},"04-14":{tempMin:4.6,tempMax:14.2,windDir:"ЮЗ",windSpeedMax:1,precip:1,snow:0,phenomena:["дождь"]},"04-15":{tempMin:5.2,tempMax:9.5,windDir:"З",windSpeedMax:2,precip:3.1,snow:0,phenomena:["дождь","гроза"]},"04-16":{tempMin:-0.4,tempMax:13.8,windDir:"ЮЗ",windSpeedMax:1,precip:0.1,snow:0,phenomena:[]},"04-17":{tempMin:7.6,tempMax:11.7,windDir:"штиль",windSpeedMax:0,precip:1.2,snow:0,phenomena:["дождь"]},"04-18":{tempMin:3.8,tempMax:11.7,windDir:"СВ",windSpeedMax:2,precip:4,snow:0,phenomena:["дождь"]},"04-19":{tempMin:5.4,tempMax:15,windDir:"Ю",windSpeedMax:3,precip:12.7,snow:0,phenomena:["дождь","морось"]},"04-20":{tempMin:2.9,tempMax:12.5,windDir:"штиль",windSpeedMax:0,precip:0.3,snow:0,phenomena:[]},"04-21":{tempMin:2.4,tempMax:17.7,windDir:"В",windSpeedMax:2,precip:0,snow:0,phenomena:["дождь"]},"04-22":{tempMin:11.8,tempMax:18.1,windDir:"Ю",windSpeedMax:2,precip:2,snow:0,phenomena:[]},"04-23":{tempMin:6.7,tempMax:13.7,windDir:"З",windSpeedMax:1,precip:0,snow:0,phenomena:[]},"04-24":{tempMin:-2.9,tempMax:13.9,windDir:"В",windSpeedMax:2,precip:0,snow:0,phenomena:["дождь"]},"04-25":{tempMin:10.2,tempMax:21.5,windDir:"штиль",windSpeedMax:0,precip:0.2,snow:0,phenomena:[]},"04-26":{tempMin:11.4,tempMax:22.4,windDir:"Ю",windSpeedMax:2,precip:0.4,snow:0,phenomena:["дождь"]},"04-27":{tempMin:14.2,tempMax:15.3,windDir:"штиль",windSpeedMax:0,precip:13.8,snow:0,phenomena:["дождь","гроза"]},"04-28":{tempMin:4.9,tempMax:16.5,windDir:"С",windSpeedMax:2,precip:1,snow:0,phenomena:[]},"04-29":{tempMin:4.7,tempMax:19.5,windDir:"СВ",windSpeedMax:2,precip:0,snow:0,phenomena:[]},"04-30":{tempMin:7.1,tempMax:23,windDir:"З",windSpeedMax:2,precip:0,snow:0,phenomena:[]},"05-01":{tempMin:0.1,tempMax:10.6,windDir:"З",windSpeedMax:3,precip:0.2,snow:0,phenomena:["дождь"]},"05-02":{tempMin:-2.4,tempMax:15.6,windDir:"Ю",windSpeedMax:2,precip:0.3,snow:0,phenomena:["дождь"]},"05-03":{tempMin:-2.4,tempMax:14.6,windDir:"СЗ",windSpeedMax:3,precip:0.3,snow:0,phenomena:["дождь"]},"05-04":{tempMin:-4.6,tempMax:6.6,windDir:"СЗ",windSpeedMax:3,precip:0,snow:0,phenomena:[]},"05-05":{tempMin:-8.5,tempMax:8.6,windDir:"С",windSpeedMax:3,precip:0,snow:0,phenomena:[]},"05-06":{tempMin:-6,tempMax:10.9,windDir:"С",windSpeedMax:2,precip:0,snow:0,phenomena:[]},"05-07":{tempMin:-7,tempMax:13.1,windDir:"СЗ",windSpeedMax:2,precip:0,snow:0,phenomena:[]},"05-08":{tempMin:-3.2,tempMax:15.8,windDir:"В",windSpeedMax:2,precip:0,snow:0,phenomena:["дождь"]},"05-09":{tempMin:6.7,tempMax:16.5,windDir:"ЮЗ",windSpeedMax:1,precip:2,snow:0,phenomena:["дождь"]},"05-10":{tempMin:8.7,tempMax:22.3,windDir:"СЗ",windSpeedMax:2,precip:0,snow:0,phenomena:[]},"05-11":{tempMin:4.7,tempMax:19,windDir:"С",windSpeedMax:3,precip:0,snow:0,phenomena:[]},"05-12":{tempMin:4.8,tempMax:20.2,windDir:"Ю",windSpeedMax:3,precip:0,snow:0,phenomena:[]},"05-13":{tempMin:5.7,tempMax:24.6,windDir:"СЗ",windSpeedMax:2,precip:0,snow:0,phenomena:[]},"05-14":{tempMin:9.8,tempMax:14.5,windDir:"СЗ",windSpeedMax:3,precip:0,snow:0,phenomena:["дождь"]},"05-15":{tempMin:9.9,tempMax:17.3,windDir:"В",windSpeedMax:2,precip:0,snow:0,phenomena:["дождь"]},"05-16":{tempMin:8.5,tempMax:20,windDir:"СЗ",windSpeedMax:2,precip:12,snow:0,phenomena:["дождь","гроза"]},"05-17":{tempMin:10,tempMax:21.2,windDir:"Ю",windSpeedMax:2,precip:0.2,snow:0,phenomena:["дождь"]},"05-18":{tempMin:12.8,tempMax:23.7,windDir:"С",windSpeedMax:2,precip:0,snow:0,phenomena:["дождь"]},"05-19":{tempMin:9,tempMax:20.7,windDir:"СЗ",windSpeedMax:3,precip:4,snow:0,phenomena:["дождь","гроза"]},"05-20":{tempMin:8,tempMax:21.1,windDir:"З",windSpeedMax:2,precip:0,snow:0,phenomena:[]},"05-21":{tempMin:9.9,tempMax:22.1,windDir:"СЗ",windSpeedMax:1,precip:0,snow:0,phenomena:[]},"05-22":{tempMin:11.1,tempMax:14.3,windDir:"СЗ",windSpeedMax:3,precip:0.8,snow:0,phenomena:["дождь"]},"05-23":{tempMin:2.9,tempMax:12.2,windDir:"СЗ",windSpeedMax:2,precip:0,snow:0,phenomena:[]},"05-24":{tempMin:-0.6,tempMax:10.4,windDir:"СВ",windSpeedMax:2,precip:0,snow:0,phenomena:["дождь"]},"05-25":{tempMin:1.3,tempMax:14.8,windDir:"СВ",windSpeedMax:2,precip:0,snow:0,phenomena:[]},"05-26":{tempMin:-1.5,tempMax:10.3,windDir:"С",windSpeedMax:2,precip:0,snow:0,phenomena:[]},"05-27":{tempMin:-0.9,tempMax:13.1,windDir:"СЗ",windSpeedMax:2,precip:0,snow:0,phenomena:[]},"05-28":{tempMin:6.3,tempMax:16.7,windDir:"СВ",windSpeedMax:2,precip:0,snow:0,phenomena:[]},"05-29":{tempMin:6.7,tempMax:21.2,windDir:"С",windSpeedMax:2,precip:0,snow:0,phenomena:["дождь"]},"05-30":{tempMin:5.7,tempMax:20.9,windDir:"Ю",windSpeedMax:2,precip:0,snow:0,phenomena:["дождь"]},"05-31":{tempMin:11.1,tempMax:11.8,windDir:"СЗ",windSpeedMax:2,precip:3,snow:0,phenomena:["дождь"]},"06-01":{tempMin:6,tempMax:21.1,windDir:"ЮВ",windSpeedMax:1,precip:0,snow:0,phenomena:[]},"06-02":{tempMin:8.4,tempMax:24,windDir:"СЗ",windSpeedMax:3,precip:7,snow:0,phenomena:["дождь","гроза"]},"06-03":{tempMin:4.9,tempMax:9.8,windDir:"СЗ",windSpeedMax:3,precip:8,snow:0,phenomena:["дождь"]},"06-04":{tempMin:4.9,tempMax:14.8,windDir:"З",windSpeedMax:1,precip:0,snow:0,phenomena:[]},"06-05":{tempMin:8.6,tempMax:15.9,windDir:"З",windSpeedMax:2,precip:0.4,snow:0,phenomena:["дождь"]},"06-06":{tempMin:9.4,tempMax:20.3,windDir:"З",windSpeedMax:2,precip:0,snow:0,phenomena:[]},"06-07":{tempMin:10.3,tempMax:22.9,windDir:"СЗ",windSpeedMax:2,precip:0,snow:0,phenomena:[]},"06-08":{tempMin:10.3,tempMax:23.5,windDir:"СЗ",windSpeedMax:4,precip:0,snow:0,phenomena:[]},"06-09":{tempMin:9.9,tempMax:16.3,windDir:"С2",windSpeedMax:3,precip:0,snow:0,phenomena:[]},"06-10":{tempMin:-1.3,tempMax:10.3,windDir:"СВ",windSpeedMax:3,precip:0,snow:0,phenomena:[]},"06-11":{tempMin:-0.9,tempMax:10.4,windDir:"В",windSpeedMax:2,precip:0,snow:0,phenomena:[]},"06-12":{tempMin:-1.5,tempMax:16.4,windDir:"СВ",windSpeedMax:2,precip:0,snow:0,phenomena:[]},"06-13":{tempMin:6.2,tempMax:14.3,windDir:"Ю",windSpeedMax:1,precip:0,snow:0,phenomena:[]},"06-14":{tempMin:8,tempMax:21.3,windDir:"СВ",windSpeedMax:3,precip:0,snow:0,phenomena:[]},"06-15":{tempMin:9,tempMax:24,windDir:"В",windSpeedMax:1,precip:0,snow:0,phenomena:[]},"06-16":{tempMin:10.5,tempMax:26.3,windDir:"СВ",windSpeedMax:2,precip:0,snow:0,phenomena:[]},"06-17":{tempMin:13.3,tempMax:26.7,windDir:"С",windSpeedMax:2,precip:0,snow:0,phenomena:[]},"06-18":{tempMin:13.7,tempMax:26.2,windDir:"СВ",windSpeedMax:2,precip:0,snow:0,phenomena:[]},"06-19":{tempMin:12.6,tempMax:21.4,windDir:"С",windSpeedMax:2,precip:0,snow:0,phenomena:[]},"06-20":{tempMin:8.2,tempMax:23.2,windDir:"СЗ",windSpeedMax:3,precip:0.6,snow:0,phenomena:["дождь"]},"06-21":{tempMin:8.3,tempMax:20.7,windDir:"С",windSpeedMax:2,precip:0,snow:0,phenomena:[]},"06-22":{tempMin:9.5,tempMax:25.2,windDir:"ЮВ",windSpeedMax:1,precip:0,snow:0,phenomena:[]},"06-23":{tempMin:12.9,tempMax:20,windDir:"СЗ",windSpeedMax:2,precip:17,snow:0,phenomena:["дождь"]},"06-24":{tempMin:10.8,tempMax:19.1,windDir:"С",windSpeedMax:3,precip:0,snow:0,phenomena:[]},"06-25":{tempMin:10.3,tempMax:22.9,windDir:"Ю",windSpeedMax:1,precip:0,snow:0,phenomena:[]},"06-26":{tempMin:14.3,tempMax:15.7,windDir:"ЮЗ",windSpeedMax:1,precip:0,snow:0,phenomena:[]},"06-27":{tempMin:9.9,tempMax:16.3,windDir:"СВ",windSpeedMax:3,precip:0,snow:0,phenomena:[]},"06-28":{tempMin:8,tempMax:17.1,windDir:"В",windSpeedMax:3,precip:0.1,snow:0,phenomena:["дождь"]},"06-29":{tempMin:13.7,tempMax:19.8,windDir:"ЮВ",windSpeedMax:2,precip:6,snow:0,phenomena:["дождь"]},"06-30":{tempMin:13.7,tempMax:18,windDir:"СВ",windSpeedMax:1,precip:0.1,snow:0,phenomena:["дождь","туман"]},"07-01":{tempMin:13.3,tempMax:25.4,windDir:"З",windSpeedMax:2,precip:0.4,snow:0,phenomena:["дождь"]},"07-02":{tempMin:14.8,tempMax:24.2,windDir:"СЗ",windSpeedMax:2,precip:0,snow:0,phenomena:[]},"07-03":{tempMin:13.7,tempMax:26.2,windDir:"З",windSpeedMax:2,precip:0,snow:0,phenomena:[]},"07-04":{tempMin:15.1,tempMax:29.1,windDir:"ЮВ",windSpeedMax:2,precip:0,snow:0,phenomena:[]},"07-05":{tempMin:16.6,tempMax:26.8,windDir:"Ю",windSpeedMax:3,precip:26,snow:0,phenomena:["дождь","гроза"]},"07-06":{tempMin:14.5,tempMax:25.1,windDir:"СВ",windSpeedMax:2,precip:0.2,snow:0,phenomena:["дождь"]},"07-07":{tempMin:13.7,tempMax:24,windDir:"ЮВ",windSpeedMax:2,precip:8,snow:0,phenomena:["дождь","гроза"]},"07-08":{tempMin:14.7,tempMax:23.1,windDir:"З",windSpeedMax:2,precip:7,snow:0,phenomena:["дождь"]},"07-09":{tempMin:12.2,tempMax:23.5,windDir:"СЗ",windSpeedMax:3,precip:0,snow:0,phenomena:[]},"07-10":{tempMin:10.4,tempMax:17.6,windDir:"СЗ",windSpeedMax:2,precip:0.9,snow:0,phenomena:["дождь"]},"07-11":{tempMin:11.9,tempMax:19.4,windDir:"СЗ",windSpeedMax:2,precip:0.5,snow:0,phenomena:["дождь"]},"07-12":{tempMin:13.2,tempMax:27.2,windDir:"З",windSpeedMax:2,precip:12,snow:0,phenomena:["дождь","гроза"]},"07-13":{tempMin:14.3,tempMax:18,windDir:"З",windSpeedMax:2,precip:3,snow:0,phenomena:["дождь"]},"07-14":{tempMin:12.4,tempMax:20.9,windDir:"СЗ",windSpeedMax:2,precip:0.1,snow:0,phenomena:["дождь"]},"07-15":{tempMin:10.7,tempMax:22.8,windDir:"СЗ",windSpeedMax:2,precip:0,snow:0,phenomena:[]},"07-16":{tempMin:12,tempMax:24.5,windDir:"СЗ",windSpeedMax:2,precip:0,snow:0,phenomena:[]},"07-17":{tempMin:13.5,tempMax:26.1,windDir:"Ю",windSpeedMax:2,precip:0,snow:0,phenomena:[]},"07-18":{tempMin:15.2,tempMax:22.5,windDir:"З",windSpeedMax:3,precip:15,snow:0,phenomena:["дождь","гроза"]},"07-19":{tempMin:11.8,tempMax:20.1,windDir:"СЗ",windSpeedMax:2,precip:1,snow:0,phenomena:["дождь"]},"07-20":{tempMin:11.5,tempMax:21,windDir:"З",windSpeedMax:2,precip:0,snow:0,phenomena:[]},"07-21":{tempMin:12.2,tempMax:22.5,windDir:"ЮЗ",windSpeedMax:2,precip:4,snow:0,phenomena:["дождь"]},"07-22":{tempMin:13.5,tempMax:20.8,windDir:"З",windSpeedMax:2,precip:2,snow:0,phenomena:["дождь"]},"07-23":{tempMin:12,tempMax:22,windDir:"СЗ",windSpeedMax:2,precip:0,snow:0,phenomena:[]},"07-24":{tempMin:13,tempMax:24.5,windDir:"Ю",windSpeedMax:2,precip:0,snow:0,phenomena:[]},"07-25":{tempMin:14.5,tempMax:26.2,windDir:"Ю",windSpeedMax:3,precip:5,snow:0,phenomena:["дождь","гроза"]},"07-26":{tempMin:16,tempMax:28.1,windDir:"ЮВ",windSpeedMax:3,precip:18,snow:0,phenomena:["дождь","гроза"]},"07-27":{tempMin:17.5,tempMax:29.5,windDir:"Ю",windSpeedMax:3,precip:1,snow:0,phenomena:["дождь"]},"07-28":{tempMin:15,tempMax:23.5,windDir:"З",windSpeedMax:4,precip:11,snow:0,phenomena:["дождь","гроза"]},"07-29":{tempMin:13.5,tempMax:21,windDir:"СЗ",windSpeedMax:3,precip:3,snow:0,phenomena:["дождь"]},"07-30":{tempMin:12,tempMax:22.5,windDir:"С",windSpeedMax:2,precip:0,snow:0,phenomena:[]},"07-31":{tempMin:13.5,tempMax:24,windDir:"С",windSpeedMax:2,precip:0,snow:0,phenomena:[]},"08-01":{tempMin:15.1,tempMax:26.4,windDir:"ЮВ",windSpeedMax:2,precip:0,snow:0,phenomena:[]},"08-02":{tempMin:16.4,tempMax:26.2,windDir:"ЮВ",windSpeedMax:2,precip:0,snow:0,phenomena:[]},"08-03":{tempMin:18.1,tempMax:27.8,windDir:"Ю",windSpeedMax:2,precip:0,snow:0,phenomena:[]},"08-04":{tempMin:19.1,tempMax:28,windDir:"ЮЗ",windSpeedMax:2,precip:0,snow:0,phenomena:[]},"08-05":{tempMin:16.5,tempMax:28.5,windDir:"СЗ",windSpeedMax:2,precip:0,snow:0,phenomena:[]},"08-06":{tempMin:18.5,tempMax:31.1,windDir:"В",windSpeedMax:2,precip:0,snow:0,phenomena:[]},"08-07":{tempMin:20.8,tempMax:30,windDir:"ЮВ",windSpeedMax:3,precip:0,snow:0,phenomena:[]},"08-08":{tempMin:20.8,tempMax:30.3,windDir:"ЮВ",windSpeedMax:2,precip:0,snow:0,phenomena:[]},"08-09":{tempMin:21.1,tempMax:22.3,windDir:"В",windSpeedMax:1,precip:0,snow:0,phenomena:["дождь"]},"08-10":{tempMin:21.1,tempMax:25.2,windDir:"ЮВ",windSpeedMax:2,precip:0,snow:0,phenomena:[]},"08-11":{tempMin:19.6,tempMax:22.4,windDir:"ЮВ",windSpeedMax:2,precip:0.4,snow:0,phenomena:["дождь"]},"08-12":{tempMin:17.3,tempMax:21.2,windDir:"ЮЗ",windSpeedMax:2,precip:0.7,snow:0,phenomena:["дождь"]},"08-13":{tempMin:14.7,tempMax:22.4,windDir:"Ю",windSpeedMax:2,precip:9,snow:0,phenomena:["дождь"]},"08-14":{tempMin:12.6,tempMax:23.9,windDir:"ЮВ",windSpeedMax:2,precip:3,snow:0,phenomena:["дождь"]},"08-15":{tempMin:15.4,tempMax:23.7,windDir:"В",windSpeedMax:2,precip:0,snow:0,phenomena:[]},"08-16":{tempMin:13.2,tempMax:21.6,windDir:"ЮВ",windSpeedMax:3,precip:5,snow:0,phenomena:["дождь","гроза"]},"08-17":{tempMin:14.1,tempMax:21.2,windDir:"СЗ",windSpeedMax:2,precip:0.4,snow:0,phenomena:["дождь"]},"08-18":{tempMin:15.2,tempMax:22.6,windDir:"Ю",windSpeedMax:2,precip:1,snow:0,phenomena:["дождь"]},"08-19":{tempMin:14.4,tempMax:19.6,windDir:"В",windSpeedMax:2,precip:1,snow:0,phenomena:["дождь"]},"08-20":{tempMin:12.1,tempMax:17.5,windDir:"В",windSpeedMax:3,precip:11,snow:0,phenomena:["дождь","гроза"]},"08-21":{tempMin:13.1,tempMax:18.3,windDir:"СЗ",windSpeedMax:2,precip:1,snow:0,phenomena:["дождь"]},"08-22":{tempMin:10.4,tempMax:21.9,windDir:"ЮВ",windSpeedMax:2,precip:1,snow:0,phenomena:["дождь"]},"08-23":{tempMin:9.9,tempMax:19.4,windDir:"Ю",windSpeedMax:2,precip:0.5,snow:0,phenomena:["дождь"]},"08-24":{tempMin:8.7,tempMax:16.7,windDir:"ЮВ",windSpeedMax:2,precip:0,snow:0,phenomena:[]},"08-25":{tempMin:8.9,tempMax:17.2,windDir:"З",windSpeedMax:2,precip:0,snow:0,phenomena:[]},"08-26":{tempMin:10.8,tempMax:19.3,windDir:"Ю",windSpeedMax:1,precip:0,snow:0,phenomena:[]},"08-27":{tempMin:12.3,tempMax:17.6,windDir:"ЮВ",windSpeedMax:2,precip:4,snow:0,phenomena:["дождь"]},"08-28":{tempMin:11.1,tempMax:19.7,windDir:"З",windSpeedMax:3,precip:0.6,snow:0,phenomena:["дождь"]},"08-29":{tempMin:10,tempMax:16.4,windDir:"штиль",windSpeedMax:0,precip:0.1,snow:0,phenomena:["дождь"]},"08-30":{tempMin:11.9,tempMax:25.2,windDir:"ЮВ",windSpeedMax:2,precip:0,snow:0,phenomena:[]},"08-31":{tempMin:14.8,tempMax:25.4,windDir:"штиль",windSpeedMax:0,precip:0,snow:0,phenomena:[]},"09-01":{tempMin:14.4,tempMax:26.9,windDir:"ЮВ",windSpeedMax:2,precip:0,snow:0,phenomena:[]},"09-02":{tempMin:14.8,tempMax:20.9,windDir:"З",windSpeedMax:1,precip:2,snow:0,phenomena:["дождь"]},"09-03":{tempMin:13.3,tempMax:21.6,windDir:"З",windSpeedMax:1,precip:0.1,snow:0,phenomena:[]},"09-04":{tempMin:13.1,tempMax:21.9,windDir:"штиль",windSpeedMax:0,precip:0,snow:0,phenomena:[]},"09-05":{tempMin:11.5,tempMax:21.8,windDir:"С",windSpeedMax:1,precip:0,snow:0,phenomena:[]},"09-06":{tempMin:10.2,tempMax:15.6,windDir:"СЗ",windSpeedMax:2,precip:0.4,snow:0,phenomena:["дождь"]},"09-07":{tempMin:9.4,tempMax:16.9,windDir:"СЗ",windSpeedMax:1,precip:0,snow:0,phenomena:[]},"09-08":{tempMin:8.7,tempMax:21,windDir:"штиль",windSpeedMax:0,precip:0,snow:0,phenomena:[]},"09-09":{tempMin:10.9,tempMax:22.4,windDir:"штиль",windSpeedMax:0,precip:0,snow:0,phenomena:["дымка"]},"09-10":{tempMin:13.6,tempMax:18.6,windDir:"ЮВ",windSpeedMax:1,precip:0.1,snow:0,phenomena:["дождь"]},"09-11":{tempMin:11.8,tempMax:18.2,windDir:"СВ",windSpeedMax:1,precip:0,snow:0,phenomena:[]},"09-12":{tempMin:11.2,tempMax:22.1,windDir:"С",windSpeedMax:1,precip:0,snow:0,phenomena:[]},"09-13":{tempMin:11.2,tempMax:23.5,windDir:"ЮВ",windSpeedMax:1,precip:0,snow:0,phenomena:[]},"09-14":{tempMin:15.1,tempMax:25.6,windDir:"В",windSpeedMax:1,precip:0,snow:0,phenomena:[]},"09-15":{tempMin:10.5,tempMax:19.6,windDir:"СВ",windSpeedMax:2,precip:0,snow:0,phenomena:[]},"09-16":{tempMin:13.2,tempMax:18.5,windDir:"ЮВ",windSpeedMax:2,precip:0,snow:0,phenomena:[]},"09-17":{tempMin:11.7,tempMax:18.0,windDir:"З",windSpeedMax:1,precip:0,snow:0,phenomena:[]},"09-18":{tempMin:5.7,tempMax:18.1,windDir:"СВ",windSpeedMax:1,precip:0,snow:0,phenomena:[]},"09-19":{tempMin:1.3,tempMax:18.7,windDir:"СВ",windSpeedMax:1,precip:0,snow:0,phenomena:[]},"09-20":{tempMin:0.6,tempMax:21.6,windDir:"В",windSpeedMax:1,precip:0,snow:0,phenomena:[]},"09-21":{tempMin:0.5,tempMax:23.2,windDir:"штиль",windSpeedMax:0,precip:0,snow:0,phenomena:[]},"09-22":{tempMin:6.2,tempMax:24.7,windDir:"Ю",windSpeedMax:1,precip:0,snow:0,phenomena:[]},"09-23":{tempMin:10.5,tempMax:26.6,windDir:"Ю",windSpeedMax:2,precip:0,snow:0,phenomena:[]},"09-24":{tempMin:10.2,tempMax:27.2,windDir:"Ю",windSpeedMax:1,precip:0,snow:0,phenomena:[]},"09-25":{tempMin:8,tempMax:24.9,windDir:"СЗ",windSpeedMax:1,precip:0,snow:0,phenomena:[]},"09-26":{tempMin:3.6,tempMax:17,windDir:"СВ",windSpeedMax:1,precip:0.2,snow:0,phenomena:["дождь"]},"09-27":{tempMin:3,tempMax:11.7,windDir:"СЗ",windSpeedMax:2,precip:0,snow:0,phenomena:[]},"09-28":{tempMin:4.1,tempMax:15.3,windDir:"С",windSpeedMax:1,precip:0,snow:0,phenomena:[]},"09-29":{tempMin:5.7,tempMax:22.6,windDir:"ЮВ",windSpeedMax:1,precip:0,snow:0,phenomena:[]},"09-30":{tempMin:12.4,tempMax:25.2,windDir:"ЮВ",windSpeedMax:2,precip:0,snow:0,phenomena:[]}};
+
         const ARCHIVE_SUMMER_2023 = {
             "06-20": { grass: 5, weed: 0, clado: 1830, alt: 130 },
             "07-04": { grass: 27, weed: 0, clado: 6190, alt: 310 },
@@ -908,39 +892,6 @@
             "09-04": { grass: 0, weed: 11, clado: 5051, alt: 71 },
             "09-11": { grass: 0, weed: 0, clado: 4051, alt: 41 },
             "09-13": { grass: 0, weed: 0, clado: 4008, alt: 0 }
-        };
-
-        // --- 2. Внутренняя база данных погоды ---
-        const WEATHER_ARCHIVE = {
-            "03-24": { tempMin: 1, tempMax: 6, windDir: "СЗ", windSpeedMax: 8, precip: 0, snow: 0, phenomena: [] },
-            "03-25": { tempMin: 3, tempMax: 8, windDir: "Ю", windSpeedMax: 4, precip: 2, snow: 0, phenomena: ["Дождь"] },
-            "03-26": { tempMin: -2, tempMax: 2, windDir: "СВ", windSpeedMax: 12, precip: 5, snow: 2, phenomena: ["Снег", "Метель"] },
-            "03-27": { tempMin: -5, tempMax: 1, windDir: "СВ", windSpeedMax: 6, precip: 0, snow: 5, phenomena: [] },
-            "04-01": { tempMin: 2, tempMax: 8, windDir: "ЮЗ", windSpeedMax: 7, precip: 4, snow: 0, phenomena: ["Дождь"] },
-            "04-02": { tempMin: 8, tempMax: 18, windDir: "Ю", windSpeedMax: 4, precip: 0, snow: 0, phenomena: [] },
-            "04-03": { tempMin: 5, tempMax: 12, windDir: "СЗ", windSpeedMax: 9, precip: 1, snow: 0, phenomena: [] },
-            "04-06": { tempMin: -3, tempMax: 2, windDir: "С", windSpeedMax: 15, precip: 8, snow: 5, phenomena: ["Снег", "Сильный ветер"] },
-            "04-08": { tempMin: -5, tempMax: 1, windDir: "СВ", windSpeedMax: 12, precip: 10, snow: 10, phenomena: ["Снегопад"] },
-            "04-09": { tempMin: -1, tempMax: 8, windDir: "В", windSpeedMax: 6, precip: 2, snow: 3, phenomena: ["Снег с дождем"] },
-            "04-10": { tempMin: 0, tempMax: 10, windDir: "ЮВ", windSpeedMax: 5, precip: 0, snow: 0, phenomena: [] },
-            "04-11": { tempMin: 5, tempMax: 15, windDir: "Ю", windSpeedMax: 4, precip: 0, snow: 0, phenomena: [] },
-            "04-13": { tempMin: 6, tempMax: 14, windDir: "Ю", windSpeedMax: 6, precip: 0, snow: 0, phenomena: [] },
-            "04-14": { tempMin: 8, tempMax: 16, windDir: "ЮЗ", windSpeedMax: 5, precip: 0, snow: 0, phenomena: [] },
-            "04-15": { tempMin: 12, tempMax: 22, windDir: "ЮЗ", windSpeedMax: 4, precip: 0, snow: 0, phenomena: [] },
-            "04-16": { tempMin: 15, tempMax: 26, windDir: "Ю", windSpeedMax: 3, precip: 0, snow: 0, phenomena: [] },
-            "04-17": { tempMin: 10, tempMax: 19, windDir: "СЗ", windSpeedMax: 8, precip: 3, snow: 0, phenomena: ["Дождь", "Гроза"] },
-            "04-18": { tempMin: 8, tempMax: 15, windDir: "СЗ", windSpeedMax: 6, precip: 1, snow: 0, phenomena: [] },
-            "04-19": { tempMin: 12, tempMax: 23, windDir: "Ю", windSpeedMax: 4, precip: 0, snow: 0, phenomena: [] },
-            "04-20": { tempMin: 14, tempMax: 26, windDir: "Ю", windSpeedMax: 3, precip: 0, snow: 0, phenomena: [] },
-            "04-21": { tempMin: 15, tempMax: 26, windDir: "Ю", windSpeedMax: 5, precip: 0, snow: 0, phenomena: [] },
-            "04-22": { tempMin: 12, tempMax: 23, windDir: "ЮВ", windSpeedMax: 4, precip: 1, snow: 0, phenomena: ["Кратковременный дождь"] },
-            "04-23": { tempMin: 14, tempMax: 26, windDir: "ЮВ", windSpeedMax: 3, precip: 0, snow: 0, phenomena: [] },
-            "04-24": { tempMin: 10, tempMax: 18, windDir: "СЗ", windSpeedMax: 7, precip: 0, snow: 0, phenomena: [] },
-            "04-25": { tempMin: 11, tempMax: 20, windDir: "В", windSpeedMax: 5, precip: 0, snow: 0, phenomena: [] },
-            "04-26": { tempMin: 12, tempMax: 22, windDir: "ЮВ", windSpeedMax: 4, precip: 0, snow: 0, phenomena: [] },
-            "04-27": { tempMin: 5, tempMax: 10, windDir: "СЗ", windSpeedMax: 8, precip: 4, snow: 0, phenomena: ["Дождь"] },
-            "04-28": { tempMin: 4, tempMax: 12, windDir: "С", windSpeedMax: 5, precip: 0, snow: 0, phenomena: [] },
-            "04-29": { tempMin: 6, tempMax: 14, windDir: "СВ", windSpeedMax: 3, precip: 0, snow: 0, phenomena: [] }
         };
 
         const db = {
@@ -983,11 +934,14 @@
         // Глобальные переменные
         let chartTodayInst = null;
         let archiveChartInst = null;
-        let weatherChartInst = null;
+        let weatherArchiveChartInst = null;
         let summerChartInst = null;
         
         let historicalTemps = {};
+        
         let todayScaleType = 'linear';
+        
+        // --- Новые переменные для диапазонов Архива ---
         let archiveRange = 'season';
         let currentArchiveViewDate = new Date();
 
@@ -1014,11 +968,14 @@
             updateDate();
             fetchWeather();
             fetchHistoricalWeather();
+            
             renderTodayData();
             renderSummaryTable();
+            
             initCharts();
             lucide.createIcons();
-            document.getElementById('pwd-input').addEventListener('keypress', (e) => {
+
+            document.getElementById('pwd-input').addEventListener('keypress', function (e) {
                 if (e.key === 'Enter') checkPassword();
             });
         });
@@ -1027,6 +984,7 @@
             const input = document.getElementById('pwd-input').value;
             const errorText = document.getElementById('login-error');
             const card = document.getElementById('login-card');
+            
             if (input === '885522') {
                 document.getElementById('login-overlay').classList.add('hidden');
                 setTimeout(() => document.getElementById('login-overlay').style.display = 'none', 400);
@@ -1078,7 +1036,11 @@
                 const valueColor = isNull ? 'var(--text-main)' : colorMap[item.level];
                 const bg = isNull ? 'rgba(255, 255, 255, 0.05)' : bgAlphaMap[item.level];
                 const delay = index * 0.4; 
-                const valHTML = isNull ? `—` : `${item.value} <span style="font-size:12px; color:var(--text-secondary); font-weight:normal;">ед/м³</span>`;
+                
+                const valHTML = isNull 
+                    ? `—` 
+                    : `${item.value} <span style="font-size:12px; color:var(--text-secondary); font-weight:normal;">ед/м³</span>`;
+
                 const trendHTML = isNull ? '<i data-lucide="minus" size="14"></i> Нет данных' : iconTrendMap[item.trend];
                 
                 html += `
@@ -1101,9 +1063,14 @@
         function renderSummaryTable() {
             const table = document.getElementById('summary-table');
             if (!table) return;
+
             let html = `<tr><th>Год</th><th>Статус / Пик</th></tr>`;
             db.summary.forEach(row => {
-                html += `<tr><td style="font-weight: 600;">${row.year}</td><td><span class="status-dot" style="background-color: ${colorMap[row.level]};"></span>${row.status}</td></tr>`;
+                html += `
+                <tr>
+                    <td style="font-weight: 600;">${row.year}</td>
+                    <td><span class="status-dot" style="background-color: ${colorMap[row.level]};"></span>${row.status}</td>
+                </tr>`;
             });
             table.innerHTML = html;
         }
@@ -1132,12 +1099,19 @@
         }
 
         async function fetchWeather() {
-            const lat = 55.75, lon = 37.62;
-            const wTemp = document.getElementById('w-temp'), wHum = document.getElementById('w-hum'), wWind = document.getElementById('w-wind'), dropIcon = document.querySelector('.icon-drop');
+            const lat = 55.75;
+            const lon = 37.62;
+
+            const wTemp = document.getElementById('w-temp');
+            const wHum = document.getElementById('w-hum');
+            const wWind = document.getElementById('w-wind');
+            const dropIcon = document.querySelector('.icon-drop');
+
             const updateUI = (temp, hum, windSpeed, dirStr, isRaining) => {
                 if (wTemp) wTemp.innerText = `${temp > 0 ? '+' : ''}${Math.round(temp)}°`;
                 if (wHum) wHum.innerText = `${Math.round(hum)}%`;
                 if (wWind) wWind.innerText = `${dirStr} ${Math.round(windSpeed)}`;
+                
                 if (dropIcon) {
                     if (isRaining) {
                         dropIcon.style.color = '#0A84FF'; 
@@ -1148,36 +1122,66 @@
                     }
                 }
             };
+
             try {
                 const omRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=apparent_temperature,relative_humidity_2m,wind_speed_10m,wind_direction_10m,precipitation&wind_speed_unit=ms`);
                 if (!omRes.ok) throw new Error('Open-Meteo API Error');
+                
                 const omData = await omRes.json();
-                const temp = omData.current.apparent_temperature, hum = omData.current.relative_humidity_2m, windSpeed = omData.current.wind_speed_10m, windDir = omData.current.wind_direction_10m, precip = omData.current.precipitation;
+                
+                const temp = omData.current.apparent_temperature; 
+                const hum = omData.current.relative_humidity_2m;
+                const windSpeed = omData.current.wind_speed_10m;
+                const windDir = omData.current.wind_direction_10m;
+                const precip = omData.current.precipitation;
+                
                 const dirs = ['С', 'ССВ', 'СВ', 'ВСВ', 'В', 'ВЮВ', 'ЮВ', 'ЮЮВ', 'Ю', 'ЮЮЗ', 'ЮЗ', 'ЗЮЗ', 'З', 'ЗСЗ', 'СЗ', 'ССЗ'];
-                updateUI(temp, hum, windSpeed, dirs[Math.round(windDir / 22.5) % 16], precip > 0);
-            } catch (error) { console.error('Ошибка получения погоды:', error); }
+                const dirStr = dirs[Math.round(windDir / 22.5) % 16]; 
+                
+                updateUI(temp, hum, windSpeed, dirStr, precip > 0);
+
+            } catch (error) {
+                console.error('Ошибка получения погоды:', error);
+            }
         }
 
         async function fetchHistoricalWeather() {
             try {
+                // Добавлены осадки и ветер в запрос Open-Meteo
                 const url = 'https://api.open-meteo.com/v1/forecast?latitude=55.7558&longitude=37.6173&past_days=14&daily=temperature_2m_max,precipitation_sum,wind_speed_10m_max&timezone=Europe%2FMoscow';
-                const res = await fetch(url), data = await res.json();
+                const res = await fetch(url);
+                const data = await res.json();
+                
                 data.daily.time.forEach((dateStr, i) => {
+                    const temp = data.daily.temperature_2m_max[i];
+                    const precip = data.daily.precipitation_sum[i];
+                    const wind = data.daily.wind_speed_10m_max[i];
+                    
                     historicalTemps[dateStr] = {
-                        temp: data.daily.temperature_2m_max[i] !== null ? `${data.daily.temperature_2m_max[i] > 0 ? '+' : ''}${Math.round(data.daily.temperature_2m_max[i])}°C` : 'Н/Д',
-                        hasPrecip: data.daily.precipitation_sum[i] > 0,
-                        wind: data.daily.wind_speed_10m_max[i] !== null ? Math.round(data.daily.wind_speed_10m_max[i]) : 0
+                        temp: temp !== null ? `${temp > 0 ? '+' : ''}${Math.round(temp)}°C` : 'Н/Д',
+                        hasPrecip: precip > 0,
+                        wind: wind !== null ? Math.round(wind) : 0
                     };
                 });
-                if (document.getElementById('input-date')) handleDateChange();
-            } catch (e) { console.error('Ошибка получения исторической погоды:', e); }
+                
+                if (document.getElementById('input-date')) {
+                    handleDateChange(); // Перерисовываем UI погоды, если модалка открыта
+                }
+            } catch (e) {
+                console.error('Ошибка получения исторической погоды:', e);
+            }
         }
 
         function updateDate() {
             const options = { day: 'numeric', month: 'long', year: 'numeric' };
-            let today = new Date(), dateStr = today.toLocaleDateString('ru-RU', options).replace(' г.', ''), parts = dateStr.split(' ');
+            let today = new Date();
+            let dateStr = today.toLocaleDateString('ru-RU', options).replace(' г.', '');
+            let parts = dateStr.split(' ');
             if(parts.length >= 2) parts[1] = parts[1].charAt(0).toUpperCase() + parts[1].slice(1);
-            if (document.getElementById('current-date')) document.getElementById('current-date').innerText = parts.join(' ');
+            
+            const currentDateEl = document.getElementById('current-date');
+            if (currentDateEl) currentDateEl.innerText = parts.join(' ');
+
             const measurementDateEl = document.getElementById('measurement-date');
             if (measurementDateEl) {
                 let dbDateParts = db.metadata.lastUpdated.split(' ');
@@ -1186,12 +1190,14 @@
             }
         }
 
+        // Интерактивный тултип с кнопкой "Изменить"
         const customTooltip = (context) => {
             let tooltipEl = document.getElementById('custom-chart-tooltip');
             if (!tooltipEl) {
                 tooltipEl = document.createElement('div');
                 tooltipEl.id = 'custom-chart-tooltip';
                 document.body.appendChild(tooltipEl);
+                
                 document.addEventListener('click', (e) => {
                     if (!tooltipEl.contains(e.target) && e.target.tagName !== 'CANVAS') {
                         tooltipEl.style.opacity = 0;
@@ -1199,76 +1205,149 @@
                     }
                 });
             }
+
             const tooltipModel = context.tooltip;
             if (tooltipModel.opacity === 0) return;
+
             if (tooltipModel.body) {
-                const titleLines = tooltipModel.title || [], label = titleLines[0]; 
-                let innerHtml = `<div style="position:relative; padding-right: 36px;"><div style="font-size: 11px; color: var(--text-secondary); text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px; margin-bottom: 12px;">${label}</div><button onclick="openAddDataModal('${label}'); document.getElementById('custom-chart-tooltip').style.opacity=0;" style="position:absolute; top:-4px; right:-4px; background:transparent; color:var(--accent); border:1px solid var(--accent); padding:6px; border-radius:8px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:0.2s;"><i data-lucide="edit-2" size="14"></i></button>`;
-                tooltipModel.body.map(b => b.lines).forEach((body, i) => {
+                const titleLines = tooltipModel.title || [];
+                const bodyLines = tooltipModel.body.map(b => b.lines);
+                const label = titleLines[0]; 
+
+                let innerHtml = `
+                    <div style="position:relative; padding-right: 36px;">
+                        <div style="font-size: 11px; color: var(--text-secondary); text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px; margin-bottom: 12px;">${label}</div>
+                        <button onclick="openAddDataModal('${label}'); document.getElementById('custom-chart-tooltip').style.opacity=0;" style="position:absolute; top:-4px; right:-4px; background:transparent; color:var(--accent); border:1px solid var(--accent); padding:6px; border-radius:8px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:0.2s;"><i data-lucide="edit-2" size="14"></i></button>
+                `;
+                
+                bodyLines.forEach((body, i) => {
                     const colors = tooltipModel.labelColors[i];
-                    innerHtml += `<div style="font-size: 16px; font-weight: 600; margin-bottom: 6px; display:flex; align-items:center;"><span style="background:${colors.backgroundColor}; width:12px; height:12px; border-radius:3px; display:inline-block; margin-right:8px;"></span>${body}</div>`;
+                    innerHtml += `<div style="font-size: 16px; font-weight: 600; margin-bottom: 6px; display:flex; align-items:center;">
+                        <span style="background:${colors.backgroundColor}; width:12px; height:12px; border-radius:3px; display:inline-block; margin-right:8px;"></span>
+                        ${body}
+                    </div>`;
                 });
-                const temp = historicalTemps[labelToDateStr(label)];
-                if (temp) innerHtml += `<div style="font-size: 12px; color: var(--text-secondary); margin-top: 10px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 8px;">Погода (сбор): <span style="color: var(--safe); font-weight: 600;">${temp.temp}</span></div>`;
+
+                const dateStr = labelToDateStr(label);
+                const temp = historicalTemps[dateStr];
+                if (temp) {
+                    innerHtml += `<div style="font-size: 12px; color: var(--text-secondary); margin-top: 10px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 8px;">Погода (сбор): <span style="color: var(--safe); font-weight: 600;">${temp.temp}</span></div>`;
+                }
+
                 innerHtml += `</div>`;
+
                 tooltipEl.innerHTML = innerHtml;
                 lucide.createIcons();
             }
+
             const position = context.chart.canvas.getBoundingClientRect();
             tooltipEl.style.opacity = 1;
             tooltipEl.style.left = position.left + window.scrollX + tooltipModel.caretX + 'px';
+            
             let topPos = position.top + window.scrollY + tooltipModel.caretY + 10;
-            if (topPos > window.innerHeight + window.scrollY - 150) topPos -= 140; 
+            if (topPos > window.innerHeight + window.scrollY - 150) {
+                topPos -= 140; 
+            }
             tooltipEl.style.top = topPos + 'px';
             tooltipEl.style.transform = 'translateX(-50%)';
         };
 
-        // --- Погодный Плагин и Тултип ---
-        const snowPlugin = {
-            id: 'snowPlugin',
-            beforeDraw: (chart) => {
-                const { ctx, chartArea: { top, bottom, left, right }, scales: { x } } = chart;
-                const snowDataset = chart.data.datasets.find(d => d.label === 'Снег');
-                if (!snowDataset) return;
-                ctx.save();
-                x.ticks.forEach((tick, index) => {
-                    if (snowDataset.data[index] > 0) {
-                        const startX = index === 0 ? left : x.getPixelForTick(index) - (x.getPixelForTick(index) - x.getPixelForTick(index-1))/2;
-                        const endX = index === x.ticks.length - 1 ? right : x.getPixelForTick(index) + (x.getPixelForTick(index+1) - x.getPixelForTick(index))/2;
-                        ctx.fillStyle = 'rgba(10, 132, 255, 0.08)';
-                        ctx.fillRect(startX, top, endX - startX, bottom - top);
-                    }
-                });
-                ctx.restore();
+        // Тултип для графика Погоды (Умное позиционирование)
+        const weatherCustomTooltip = (context) => {
+            let tooltipEl = document.getElementById('weather-chart-tooltip');
+            if (!tooltipEl) {
+                tooltipEl = document.createElement('div');
+                tooltipEl.id = 'weather-chart-tooltip';
+                document.body.appendChild(tooltipEl);
             }
-        };
 
-        const weatherTooltip = (context) => {
-            let tooltipEl = document.getElementById('weather-custom-tooltip');
             const tooltipModel = context.tooltip;
-            if (tooltipModel.opacity === 0) { tooltipEl.style.opacity = 0; return; }
-            if (tooltipModel.body) {
-                const index = tooltipModel.dataPoints[0].dataIndex, raw = context.chart.data.datasets.find(d => d.label === 'RawData').data[index];
-                if (raw) {
-                    let html = `<div style="font-size: 11px; color: var(--text-secondary); text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px; margin-bottom: 8px;">${tooltipModel.title[0]}</div>`;
-                    html += `<div style="font-size: 14px; font-weight: 600; margin-bottom: 6px; display:flex; align-items:center;"><i data-lucide="thermometer" size="14" style="color:var(--high); margin-right:6px;"></i>от ${raw.tempMin}°C до ${raw.tempMax}°C</div>`;
-                    if (raw.precip > 0) html += `<div style="font-size: 13px; margin-bottom: 4px; display:flex; align-items:center;"><i data-lucide="droplets" size="14" style="color:var(--accent); margin-right:6px;"></i>${raw.precip} мм</div>`;
-                    if (raw.windSpeedMax > 0) html += `<div style="font-size: 13px; margin-bottom: 4px; display:flex; align-items:center; color: var(--text-secondary);"><i data-lucide="wind" size="14" style="margin-right:6px;"></i>${raw.windDir}, до ${raw.windSpeedMax} м/с</div>`;
-                    if (raw.phenomena && raw.phenomena.length > 0) {
-                        html += `<div style="font-size: 13px; display:flex; align-items:center; margin-top:6px; color: #E5C07B;"><i data-lucide="${raw.snow > 0 ? 'snowflake' : 'cloud-lightning'}" size="14" style="margin-right:6px;"></i>${raw.phenomena.join(', ')}</div>`;
-                    }
-                    tooltipEl.innerHTML = html; lucide.createIcons();
-                }
+            if (tooltipModel.opacity === 0) {
+                tooltipEl.style.opacity = 0;
+                return;
             }
+
+            if (tooltipModel.body) {
+                const dataIndex = tooltipModel.dataPoints[0].dataIndex;
+                const datasetIndex = tooltipModel.dataPoints[0].datasetIndex;
+                const chartInst = context.chart;
+                const rawLabel = chartInst.data.labels[dataIndex];
+                
+                // Извлекаем год из названия датасета (например, "Температура (2023)")
+                const dsLabel = chartInst.data.datasets[datasetIndex].label;
+                const yearMatch = dsLabel.match(/\((\d{4})\)/);
+                const yearStr = yearMatch ? yearMatch[1] : new Date().getFullYear();
+
+                // Конвертируем '21 Апр' в '21 АПР 2023'
+                const monthsRU = {'Янв':'ЯНВ', 'Фев':'ФЕВ', 'Мар':'МАР', 'Апр':'АПР', 'Мая':'МАЯ', 'Июн':'ИЮН', 'Июл':'ИЮЛ', 'Авг':'АВГ', 'Сен':'СЕН', 'Окт':'ОКТ', 'Ноя':'НОЯ', 'Дек':'ДЕК'};
+                const parts = rawLabel.split(' ');
+                const displayDate = `${parts[0]} ${monthsRU[parts[1]] || parts[1]} ${yearStr}`;
+                
+                // Собираем ключ даты (MM-DD) для запроса в базу
+                const revMonth = {'Янв':'01', 'Фев':'02', 'Мар':'03', 'Апр':'04', 'Мая':'05', 'Июн':'06', 'Июл':'07', 'Авг':'08', 'Сен':'09', 'Окт':'10', 'Ноя':'11', 'Дек':'12'};
+                const dateKey = `${revMonth[parts[1]]}-${parts[0].padStart(2, '0')}`;
+                
+                let innerHtml = `<div style="font-size: 11px; color: var(--text-secondary); font-weight: 700; letter-spacing: 0.5px; margin-bottom: 10px;">${displayDate}</div>`;
+
+                if (yearStr === '2023' && WEATHER_ARCHIVE_2023[dateKey]) {
+                    const w = WEATHER_ARCHIVE_2023[dateKey];
+                    const tempColor = w.tempMax < 0 ? '#0A84FF' : '#32D74B';
+                    innerHtml += `
+                        <div style="display:flex; align-items:center; gap: 8px; margin-bottom: 8px;">
+                            <i data-lucide="thermometer" size="16" style="color: ${tempColor};"></i>
+                            <span style="font-weight: 600; font-size: 15px;">${w.tempMin > 0 ? '+' : ''}${w.tempMin}° ... ${w.tempMax > 0 ? '+' : ''}${w.tempMax}°</span>
+                        </div>
+                    `;
+                    
+                    if (w.precip > 0) {
+                        innerHtml += `
+                            <div style="display:flex; align-items:center; gap: 8px; margin-bottom: 8px;">
+                                <i data-lucide="droplet" size="16" style="color: #0A84FF;"></i>
+                                <span style="font-weight: 600; font-size: 14px;">${w.precip} мм</span>
+                            </div>
+                        `;
+                    }
+
+                    innerHtml += `
+                        <div style="display:flex; align-items:center; gap: 8px; color: var(--text-secondary); font-size: 12px; margin-top: 10px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 10px;">
+                            <i data-lucide="wind" size="14"></i> ${w.windDir}, ${w.windSpeedMax} м/с
+                        </div>
+                    `;
+                    
+                    if (w.phenomena && w.phenomena.length > 0) {
+                        innerHtml += `<div style="font-size: 12px; color: var(--warning); margin-top: 6px; text-transform: capitalize;">${w.phenomena.join(', ')}</div>`;
+                    }
+                } else {
+                    innerHtml += `<div style="font-size: 13px; color: var(--text-secondary);">Нет данных о погоде</div>`;
+                }
+
+                tooltipEl.innerHTML = innerHtml;
+                lucide.createIcons();
+            }
+
             const position = context.chart.canvas.getBoundingClientRect();
+            let desiredLeft = position.left + window.scrollX + tooltipModel.caretX;
+            let desiredTop = position.top + window.scrollY + tooltipModel.caretY - 15;
+
             tooltipEl.style.opacity = 1;
-            tooltipEl.style.left = position.left + window.scrollX + tooltipModel.caretX + 'px';
-            let topPos = position.top + window.scrollY + tooltipModel.caretY + 10;
-            if (topPos > window.innerHeight + window.scrollY - 150) topPos -= 100; 
-            tooltipEl.style.top = topPos + 'px';
-            tooltipEl.style.transform = 'translateX(-50%)';
+            tooltipEl.style.top = desiredTop + 'px';
+            tooltipEl.style.transform = 'translate(-50%, -100%)';
+            
+            // Коррекция вылета за края
+            tooltipEl.style.left = desiredLeft + 'px';
+            setTimeout(() => {
+                const rect = tooltipEl.getBoundingClientRect();
+                if (rect.left < 10) {
+                    tooltipEl.style.transform = 'translate(0, -100%)';
+                    tooltipEl.style.left = '10px';
+                } else if (rect.right > window.innerWidth - 10) {
+                    tooltipEl.style.transform = 'translate(-100%, -100%)';
+                    tooltipEl.style.left = (window.innerWidth - 10) + 'px';
+                }
+            }, 0);
         };
 
+        // Графики (Chart.js)
         function toggleTodayScale(type) {
             todayScaleType = type;
             if (chartTodayInst) {
@@ -1276,263 +1355,877 @@
                 chartTodayInst.options.scales.y.min = type === 'logarithmic' ? 0.5 : 0;
                 chartTodayInst.update();
             }
+            
+            const btnLin = document.getElementById('btn-today-lin');
+            const btnLog = document.getElementById('btn-today-log');
             const indicator = document.getElementById('today-scale-indicator');
-            if (indicator) indicator.style.transform = type === 'linear' ? 'translateX(0)' : 'translateX(100%)';
-            document.getElementById('btn-today-lin').classList.toggle('active', type === 'linear');
-            document.getElementById('btn-today-log').classList.toggle('active', type === 'logarithmic');
+            if (btnLin && btnLog && indicator) {
+                if (type === 'linear') {
+                    btnLin.classList.add('active');
+                    btnLog.classList.remove('active');
+                    indicator.style.transform = 'translateX(0)';
+                } else {
+                    btnLog.classList.add('active');
+                    btnLin.classList.remove('active');
+                    indicator.style.transform = 'translateX(100%)';
+                }
+            }
         }
 
         function initCharts() {
             Chart.defaults.color = 'rgba(235, 235, 245, 0.6)';
+            Chart.defaults.font.family = '-apple-system, BlinkMacSystemFont, sans-serif';
+
             const canvasToday = document.getElementById('todayChart');
             if (canvasToday) {
+                const ctxToday = canvasToday.getContext('2d');
                 if (chartTodayInst) chartTodayInst.destroy();
-                chartTodayInst = new Chart(canvasToday.getContext('2d'), {
+                chartTodayInst = new Chart(ctxToday, {
                     type: 'line',
                     data: {
                         labels: db.charts.today.labels,
                         datasets: db.charts.today.datasets.map(ds => ({
-                            label: ds.label, data: ds.data, borderColor: ds.color, backgroundColor: ds.color + '33', borderWidth: 3, tension: 0.4, fill: true, pointRadius: 3, pointBackgroundColor: ds.color
+                            label: ds.label,
+                            data: ds.data,
+                            borderColor: ds.color,
+                            backgroundColor: ds.color + '33', 
+                            borderWidth: 3,
+                            tension: 0.4,
+                            fill: true,
+                            pointRadius: 3, 
+                            pointBackgroundColor: ds.color
                         }))
                     },
-                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { enabled: false, external: customTooltip } }, scales: { x: { grid: { display: false } }, y: { type: todayScaleType, min: todayScaleType === 'logarithmic' ? 0.5 : 0, grid: { color: 'rgba(255,255,255,0.05)' } } }, interaction: { mode: 'index', intersect: false } }
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { 
+                            legend: { display: false },
+                            tooltip: {
+                                enabled: false,
+                                external: customTooltip
+                            }
+                        },
+                        scales: {
+                            x: { grid: { display: false } },
+                            y: { 
+                                type: todayScaleType,
+                                min: todayScaleType === 'logarithmic' ? 0.5 : 0,
+                                grid: { color: 'rgba(255,255,255,0.05)' },
+                                ticks: {
+                                    callback: function(value) {
+                                        if (todayScaleType === 'logarithmic') {
+                                            if (value === 1 || value === 10 || value === 100 || value === 1000 || value === 10000) return value;
+                                            return null;
+                                        }
+                                        return value;
+                                    }
+                                }
+                            }
+                        },
+                        interaction: { mode: 'index', intersect: false }
+                    }
                 });
             }
 
             const canvasArchive = document.getElementById('archiveChart');
             if (canvasArchive) {
+                const ctxArchive = canvasArchive.getContext('2d');
+                
+                // Изначальная инициализация графика без данных. 
+                // Данные будут добавлены сразу после вызовом updateArchiveChart().
                 if (archiveChartInst) archiveChartInst.destroy();
-                archiveChartInst = new Chart(canvasArchive.getContext('2d'), {
+                archiveChartInst = new Chart(ctxArchive, {
                     type: 'bar',
-                    data: { labels: [], datasets: [ { label: 'Ольха (2025)', data: [], backgroundColor: '#FF9F0A', borderRadius: 4 }, { label: 'Орешник (2025)', data: [], backgroundColor: '#E5C07B', borderRadius: 4 }, { label: 'Береза (2025)', data: [], backgroundColor: '#FF453A', borderRadius: 4 }, { label: 'Дуб (2025)', data: [], backgroundColor: '#0A84FF', borderRadius: 4 }, { label: 'Ольха (2023)', data: [], backgroundColor: '#FFD60A', borderRadius: 4, hidden: true }, { label: 'Орешник (2023)', data: [], backgroundColor: '#EBEBF599', borderRadius: 4, hidden: true }, { label: 'Береза (2023)', data: [], backgroundColor: '#32D74B', borderRadius: 4, hidden: true }, { label: 'Береза (2024)', data: [], backgroundColor: '#FF8A65', borderRadius: 4, hidden: true }, { label: 'Ольха (2026)', data: [], backgroundColor: '#64D2FF', borderRadius: 4 }, { label: 'Орешник (2026)', data: [], backgroundColor: '#FFD60A', borderRadius: 4 }, { label: 'Береза (2026)', data: [], backgroundColor: '#BF5AF2', borderRadius: 4 } ] },
-                    options: { responsive: true, maintainAspectRatio: false, barPercentage: 0.8, categoryPercentage: 0.7, plugins: { legend: { display: false }, tooltip: { callbacks: { afterBody: (ctx) => { const label = ctx[0].label, d = label.split(' ')[0].padStart(2,'0'), m = {'Мар':'03','Апр':'04','Мая':'05','Июн':'06','Июл':'07','Авг':'08','Сен':'09'}[label.split(' ')[1]], entry = ARCHIVE_2025[`${m}-${d}`]; return entry && entry.temp ? `Погода: ${entry.temp}${entry.note ? '\n⚠️ '+entry.note : ''}` : ''; } } } }, scales: { x: { grid: { display: false } }, y: { type: 'logarithmic', min: 0.5, grid: { color: 'rgba(255,255,255,0.05)' } } } }
+                    data: {
+                        labels: [],
+                        datasets: [
+                            { label: 'Ольха (2025)', data: [], backgroundColor: '#FF9F0A', borderRadius: 4 },
+                            { label: 'Орешник (2025)', data: [], backgroundColor: '#E5C07B', borderRadius: 4 },
+                            { label: 'Береза (2025)', data: [], backgroundColor: '#FF453A', borderRadius: 4 },
+                            { label: 'Дуб (2025)', data: [], backgroundColor: '#0A84FF', borderRadius: 4 },
+                            
+                            { label: 'Ольха (2023)', data: [], backgroundColor: '#FFD60A', borderRadius: 4, hidden: true },
+                            { label: 'Орешник (2023)', data: [], backgroundColor: '#EBEBF599', borderRadius: 4, hidden: true },
+                            { label: 'Береза (2023)', data: [], backgroundColor: '#32D74B', borderRadius: 4, hidden: true },
+                            
+                            { label: 'Береза (2024)', data: [], backgroundColor: '#FF8A65', borderRadius: 4, hidden: true },
+                            
+                            { label: 'Ольха (2026)', data: [], backgroundColor: '#64D2FF', borderRadius: 4 },
+                            { label: 'Орешник (2026)', data: [], backgroundColor: '#FFD60A', borderRadius: 4 },
+                            { label: 'Береза (2026)', data: [], backgroundColor: '#BF5AF2', borderRadius: 4 }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        barPercentage: 0.8,
+                        categoryPercentage: 0.7,
+                        plugins: { 
+                            legend: { display: false }, 
+                            tooltip: {
+                                callbacks: {
+                                    afterBody: function(context) {
+                                        if (context[0].dataset.label.includes('2023') || context[0].dataset.label.includes('2024') || context[0].dataset.label.includes('2026')) return ''; 
+                                        // Восстановление оригинальной даты из лейбла для получения тултипов
+                                        const reverseFormatMonth = {'Мар':'03', 'Апр':'04', 'Мая':'05', 'Июн':'06', 'Июл':'07', 'Авг':'08', 'Сен':'09'};
+                                        const parts = context[0].label.split(' ');
+                                        const d = parts[0].padStart(2, '0');
+                                        const m = reverseFormatMonth[parts[1]];
+                                        const dateKey = `${m}-${d}`;
+                                        
+                                        if(!ARCHIVE_2025[dateKey]) return '';
+                                        
+                                        const temp = ARCHIVE_2025[dateKey].temp;
+                                        const note = ARCHIVE_2025[dateKey].note;
+                                        let str = temp ? `Погода: ${temp}` : '';
+                                        if(note) str += str ? `\n⚠️ ${note}` : `⚠️ ${note}`;
+                                        return str;
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: { grid: { display: false } },
+                            y: { 
+                                type: 'logarithmic',
+                                min: 0.5, 
+                                grid: { color: 'rgba(255,255,255,0.05)' },
+                                ticks: {
+                                    callback: function(value) {
+                                        if (value === 1 || value === 10 || value === 100 || value === 1000 || value === 10000) return value;
+                                        return null;
+                                    }
+                                }
+                            }
+                        }
+                    }
                 });
+                
+                // Инициализация погодного графика
+                const weatherCanvas = document.getElementById('weatherArchiveChart');
+                if (weatherCanvas) {
+                    const ctxW = weatherCanvas.getContext('2d');
+                    if (weatherArchiveChartInst) weatherArchiveChartInst.destroy();
+                    weatherArchiveChartInst = new Chart(ctxW, {
+                        type: 'bar',
+                        data: {
+                            labels: [],
+                            datasets: [
+                                { label: 'Осадки (2023)', data: [], backgroundColor: 'rgba(10, 132, 255, 0.4)', borderRadius: 2, yAxisID: 'yPrecip', order: 2, hidden: true },
+                                { label: 'Температура (2023)', data: [], backgroundColor: [], borderRadius: 4, yAxisID: 'yTemp', order: 1, hidden: true }
+                            ]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            barPercentage: 0.9,
+                            categoryPercentage: 0.8,
+                            plugins: {
+                                legend: { display: false },
+                                tooltip: { enabled: false, external: weatherCustomTooltip }
+                            },
+                            interaction: { mode: 'index', intersect: false },
+                            scales: {
+                                x: { grid: { display: false } },
+                                yTemp: {
+                                    type: 'linear',
+                                    position: 'left',
+                                    grid: {
+                                        color: (ctx) => ctx.tick.value === 0 ? 'rgba(255, 255, 255, 0.4)' : 'rgba(255,255,255,0.05)',
+                                        lineWidth: (ctx) => ctx.tick.value === 0 ? 2 : 1
+                                    },
+                                    ticks: { callback: value => value + '°' }
+                                },
+                                yPrecip: {
+                                    type: 'linear',
+                                    position: 'right',
+                                    display: false,
+                                    min: 0
+                                }
+                            }
+                        }
+                    });
+                }
+
+                // Первичное обновление данных (режим 'Сезон')
                 updateArchiveChart();
             }
+
             generateArchiveLegend(archiveChartInst);
-            initSummerChart();
-        }
 
-        function initSummerChart() {
-            const canvas = document.getElementById('summerArchiveChart');
-            if (!canvas) return;
-            const dates = Object.keys(ARCHIVE_SUMMER_2023), labels = dates.map(d => `${parseInt(d.split('-')[1])} ${{'03':'Мар','04':'Апр','05':'Мая','06':'Июн','07':'Июл','08':'Авг','09':'Сен'}[d.split('-')[0]]}`);
-            if (summerChartInst) summerChartInst.destroy();
-            summerChartInst = new Chart(canvas.getContext('2d'), {
-                type: 'bar',
-                data: { labels, datasets: [ { label: 'Злаки', data: dates.map(d => ARCHIVE_SUMMER_2023[d].grass || null), backgroundColor: '#FFD60A', borderRadius: 4 }, { label: 'Сорные (Полынь)', data: dates.map(d => ARCHIVE_SUMMER_2023[d].weed || null), backgroundColor: '#32D74B', borderRadius: 4 }, { label: 'Кладоспориум', data: dates.map(d => ARCHIVE_SUMMER_2023[d].clado || null), backgroundColor: '#BF5AF2', borderRadius: 4 }, { label: 'Альтернария', data: dates.map(d => ARCHIVE_SUMMER_2023[d].alt || null), backgroundColor: '#FF453A', borderRadius: 4 } ] },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'top', labels: { usePointStyle: true, boxWidth: 8 } } }, scales: { x: { grid: { display: false } }, y: { type: 'logarithmic', min: 0.5, grid: { color: 'rgba(255,255,255,0.05)' } } } }
-            });
-        }
+            const canvasSummer = document.getElementById('summerArchiveChart');
+            if (canvasSummer) {
+                const ctxSummer = canvasSummer.getContext('2d');
+                const summerDates = Object.keys(ARCHIVE_SUMMER_2023);
+                
+                const formatMonth = (m) => {
+                    const months = {'03': 'Мар', '04': 'Апр', '05': 'Мая', '06': 'Июн', '07': 'Июл', '08': 'Авг', '09': 'Сен'};
+                    return months[m] || m;
+                };
 
-        // --- Управление погодным графиком ---
-        function updateWeatherChart(dates, labels) {
-            const canvasWeather = document.getElementById('weatherChart');
-            if (!canvasWeather) return;
-            const ctx = canvasWeather.getContext('2d');
-            if (weatherChartInst) weatherChartInst.destroy();
+                const labelsSummer = summerDates.map(d => `${parseInt(d.split('-')[1])} ${formatMonth(d.split('-')[0])}`);
 
-            const tempData = dates.map(d => WEATHER_ARCHIVE[d] ? [WEATHER_ARCHIVE[d].tempMin, WEATHER_ARCHIVE[d].tempMax] : null);
-            const precipData = dates.map(d => WEATHER_ARCHIVE[d] ? WEATHER_ARCHIVE[d].precip : null);
-            const snowData = dates.map(d => WEATHER_ARCHIVE[d] ? WEATHER_ARCHIVE[d].snow : 0);
-            const rawData = dates.map(d => WEATHER_ARCHIVE[d] || null);
-
-            let gradient = ctx.createLinearGradient(0, 0, 0, 320);
-            gradient.addColorStop(0, 'rgba(255, 69, 58, 0.9)'); 
-            gradient.addColorStop(0.5, 'rgba(255, 159, 10, 0.9)'); 
-            gradient.addColorStop(1, 'rgba(10, 132, 255, 0.9)'); 
-
-            weatherChartInst = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: labels,
-                    datasets: [
-                        {
-                            label: 'Температура', data: tempData, yAxisID: 'yTemp', borderRadius: 4, borderSkipped: false,
-                            backgroundColor: (ctx) => {
-                                const val = ctx.raw;
-                                if (!val) return 'transparent';
-                                return val[1] < 0 ? 'rgba(10, 132, 255, 0.8)' : gradient;
-                            }
-                        },
-                        { label: 'Осадки', data: precipData, backgroundColor: 'rgba(10, 132, 255, 0.5)', borderRadius: 4, yAxisID: 'yPrecip' },
-                        { label: 'Снег', data: snowData, hidden: true },
-                        { label: 'RawData', data: rawData, hidden: true }
-                    ]
-                },
-                options: {
-                    responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { enabled: false, external: weatherTooltip } },
-                    scales: {
-                        x: { grid: { display: false } },
-                        yTemp: {
-                            type: 'linear', position: 'left', suggestedMin: -10, suggestedMax: 30,
-                            grid: {
-                                color: (ctx) => ctx.tick.value === 0 ? 'rgba(255, 255, 255, 0.4)' : 'rgba(255,255,255,0.05)',
-                                lineWidth: (ctx) => ctx.tick.value === 0 ? 2 : 1
-                            }
-                        },
-                        yPrecip: { type: 'linear', position: 'right', display: false, beginAtZero: true, max: 45 }
+                if (summerChartInst) summerChartInst.destroy();
+                summerChartInst = new Chart(ctxSummer, {
+                    type: 'bar',
+                    data: {
+                        labels: labelsSummer,
+                        datasets: [
+                            { label: 'Злаки', data: summerDates.map(d => ARCHIVE_SUMMER_2023[d].grass > 0 ? ARCHIVE_SUMMER_2023[d].grass : null), backgroundColor: '#FFD60A', borderRadius: 4 },
+                            { label: 'Сорные (Полынь)', data: summerDates.map(d => ARCHIVE_SUMMER_2023[d].weed > 0 ? ARCHIVE_SUMMER_2023[d].weed : null), backgroundColor: '#32D74B', borderRadius: 4 },
+                            { label: 'Кладоспориум', data: summerDates.map(d => ARCHIVE_SUMMER_2023[d].clado > 0 ? ARCHIVE_SUMMER_2023[d].clado : null), backgroundColor: '#BF5AF2', borderRadius: 4 },
+                            { label: 'Альтернария', data: summerDates.map(d => ARCHIVE_SUMMER_2023[d].alt > 0 ? ARCHIVE_SUMMER_2023[d].alt : null), backgroundColor: '#FF453A', borderRadius: 4 }
+                        ]
                     },
-                    interaction: { mode: 'index', intersect: false }
-                },
-                plugins: [snowPlugin]
-            });
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { 
+                            legend: { position: 'top', labels: { usePointStyle: true, boxWidth: 8 } }
+                        },
+                        scales: {
+                            x: { grid: { display: false } },
+                            y: { 
+                                type: 'logarithmic',
+                                min: 0.5,
+                                grid: { color: 'rgba(255,255,255,0.05)' },
+                                ticks: {
+                                    callback: function(value) {
+                                        if (value === 1 || value === 10 || value === 100 || value === 1000 || value === 10000) return value;
+                                        return null;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
         }
 
+        // Синхронизация видимости погодных графиков с главным графиком архива
+        function syncWeatherVisibility(year, isVisible) {
+            if (!weatherArchiveChartInst) return;
+            weatherArchiveChartInst.data.datasets.forEach((ds, idx) => {
+                if (ds.label.includes(year)) {
+                    weatherArchiveChartInst.setDatasetVisibility(idx, isVisible);
+                }
+            });
+            weatherArchiveChartInst.update();
+        }
+
+        // --- Управление временными диапазонами Архива ---
         function setArchiveRange(range, index) {
-            archiveRange = range; currentArchiveViewDate = new Date();
-            const indicator = document.getElementById('archive-range-indicator'), btns = document.querySelectorAll('#archive-range-control .segment-btn');
-            if (indicator && btns.length) { btns.forEach((b, i) => b.classList.toggle('active', i === index)); indicator.style.transform = `translateX(${index * 100}%)`; }
+            archiveRange = range;
+            currentArchiveViewDate = new Date(); // Сброс на "сегодня"
+            
+            const indicator = document.getElementById('archive-range-indicator');
+            const btns = document.querySelectorAll('#archive-range-control .segment-btn');
+            if (indicator && btns.length) {
+                btns.forEach((b, i) => b.classList.toggle('active', i === index));
+                indicator.style.transform = `translateX(${index * 100}%)`;
+            }
+            
             updateArchiveChart();
+        }
+
+        function navigateArchive(direction) {
+            if (archiveRange === 'month') {
+                currentArchiveViewDate.setMonth(currentArchiveViewDate.getMonth() + direction);
+            } else if (archiveRange === 'week') {
+                currentArchiveViewDate.setDate(currentArchiveViewDate.getDate() + (direction * 7));
+            }
+            updateArchiveChart();
+        }
+
+        // --- Обработка свайпов (Жесты) для Архива ---
+        function initArchiveGestures() {
+            const wrapper = document.getElementById('archive-chart-wrapper');
+            if (!wrapper) return;
+            
+            let touchStartX = 0;
+            let touchEndX = 0;
+
+            wrapper.addEventListener('touchstart', e => {
+                if (archiveRange === 'season') return;
+                touchStartX = e.changedTouches[0].screenX;
+            }, {passive: true});
+
+            wrapper.addEventListener('touchend', e => {
+                if (archiveRange === 'season') return;
+                touchEndX = e.changedTouches[0].screenX;
+                const threshold = 40; // Минимальная длина свайпа в пикселях
+                
+                if (touchStartX - touchEndX > threshold) {
+                    navigateArchive(1); // Вперед во времени (свайп влево)
+                } else if (touchEndX - touchStartX > threshold) {
+                    navigateArchive(-1); // Назад во времени (свайп вправо)
+                }
+            }, {passive: true});
         }
 
         function updateArchiveChart() {
             if (!archiveChartInst) return;
-            const labelEl = document.getElementById('archive-current-range-label');
-            if (archiveRange === 'month') labelEl.innerText = `${['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'][currentArchiveViewDate.getMonth()]} ${currentArchiveViewDate.getFullYear()}`;
-            else if (archiveRange === 'week') {
-                const s = new Date(currentArchiveViewDate); s.setDate(s.getDate()-3);
-                const e = new Date(currentArchiveViewDate); e.setDate(e.getDate()+3);
-                labelEl.innerText = `${String(s.getDate()).padStart(2,'0')}.${String(s.getMonth()+1).padStart(2,'0')} - ${String(e.getDate()).padStart(2,'0')}.${String(e.getMonth()+1).padStart(2,'0')}`;
-            } else labelEl.innerText = '';
 
-            const allDates = Object.keys(ARCHIVE_2025);
-            let filtered = allDates;
-            if (archiveRange === 'month') filtered = allDates.filter(d => d.startsWith(String(currentArchiveViewDate.getMonth()+1).padStart(2,'0')));
-            else if (archiveRange === 'week') {
-                const start = new Date(currentArchiveViewDate); start.setDate(start.getDate()-3); start.setHours(0,0,0,0);
-                const end = new Date(currentArchiveViewDate); end.setDate(end.getDate()+3); end.setHours(23,59,59,999);
-                filtered = allDates.filter(d => { const o = new Date(currentArchiveViewDate.getFullYear(), parseInt(d.split('-')[0])-1, parseInt(d.split('-')[1])); return o >= start && o <= end; });
+            const labelEl = document.getElementById('archive-current-range-label');
+            const chartWrapper = document.getElementById('archive-chart-wrapper');
+
+            if (archiveRange === 'season') {
+                if(labelEl) labelEl.innerText = '';
+                if(chartWrapper) chartWrapper.style.touchAction = 'auto'; // Разрешаем скролл вкладок
+            } else {
+                if(chartWrapper) chartWrapper.style.touchAction = 'pan-y'; // Блокируем горизонтальный скролл вкладок при свайпе графика
+                
+                if (archiveRange === 'month') {
+                    const months = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'];
+                    if(labelEl) labelEl.innerText = `${months[currentArchiveViewDate.getMonth()]} ${currentArchiveViewDate.getFullYear()}`;
+                } else if (archiveRange === 'week') {
+                    const start = new Date(currentArchiveViewDate);
+                    start.setDate(start.getDate() - 3);
+                    const end = new Date(currentArchiveViewDate);
+                    end.setDate(end.getDate() + 3);
+                    const fm = (d) => String(d.getMonth()+1).padStart(2, '0');
+                    const fd = (d) => String(d.getDate()).padStart(2, '0');
+                    if(labelEl) labelEl.innerText = `${fd(start)}.${fm(start)} - ${fd(end)}.${fm(end)}`;
+                }
             }
 
-            const formatM = m => ({'03':'Мар','04':'Апр','05':'Мая','06':'Июн','07':'Июл','08':'Авг','09':'Сен'}[m] || m);
-            const newLabels = filtered.map(d => `${parseInt(d.split('-')[1])} ${formatM(d.split('-')[0])}`);
-            const keys = ['alder','hazel','birch','oak','alder_2023','hazel_2023','birch_2023','birch_2024','alder_2026','hazel_2026','birch_2026'];
-            
+            const allDates = Object.keys(ARCHIVE_2025);
+            let filteredDates = [];
+
+            if (archiveRange === 'season') {
+                filteredDates = allDates;
+            } else if (archiveRange === 'month') {
+                const targetMonth = String(currentArchiveViewDate.getMonth() + 1).padStart(2, '0');
+                filteredDates = allDates.filter(d => d.startsWith(targetMonth));
+            } else if (archiveRange === 'week') {
+                const start = new Date(currentArchiveViewDate);
+                start.setDate(start.getDate() - 3);
+                start.setHours(0,0,0,0);
+                const end = new Date(currentArchiveViewDate);
+                end.setDate(end.getDate() + 3);
+                end.setHours(23,59,59,999);
+
+                filteredDates = allDates.filter(d => {
+                    const [m, day] = d.split('-');
+                    // Так как в ключах нет года, соотносим с годом выбранной даты навигатора
+                    const dObj = new Date(currentArchiveViewDate.getFullYear(), parseInt(m)-1, parseInt(day));
+                    return dObj >= start && dObj <= end;
+                });
+            }
+
+            const formatMonth = (m) => {
+                const months = {'03': 'Мар', '04': 'Апр', '05': 'Мая', '06': 'Июн', '07': 'Июл', '08': 'Авг', '09': 'Сен'};
+                return months[m] || m;
+            };
+            const newLabels = filteredDates.map(d => `${parseInt(d.split('-')[1])} ${formatMonth(d.split('-')[0])}`);
+
+            // Маппинг данных из ARCHIVE_2025 в индексы датасетов
+            const keyMapping = [
+                'alder', 'hazel', 'birch', 'oak',
+                'alder_2023', 'hazel_2023', 'birch_2023',
+                'birch_2024',
+                'alder_2026', 'hazel_2026', 'birch_2026'
+            ];
+
             archiveChartInst.data.labels = newLabels;
-            keys.forEach((k, i) => { if (archiveChartInst.data.datasets[i]) archiveChartInst.data.datasets[i].data = filtered.map(d => ARCHIVE_2025[d][k] || null); });
+            keyMapping.forEach((key, idx) => {
+                if (archiveChartInst.data.datasets[idx]) {
+                     archiveChartInst.data.datasets[idx].data = filteredDates.map(d => ARCHIVE_2025[d][key] > 0 ? ARCHIVE_2025[d][key] : null);
+                }
+            });
+
             archiveChartInst.update();
-            updateWeatherChart(filtered, newLabels);
-            lucide.createIcons();
+            
+            // ---------------------------------------------
+            // Обновление Погодного Графика (Синхронизация)
+            // ---------------------------------------------
+            if (weatherArchiveChartInst) {
+                const temp2023 = [], precip2023 = [], colorsTemp2023 = [];
+                let maxPrecip = 0;
+
+                filteredDates.forEach(d => {
+                    const w = WEATHER_ARCHIVE_2023[d];
+                    if (w) {
+                        temp2023.push([w.tempMin, w.tempMax]);
+                        precip2023.push(w.precip);
+                        colorsTemp2023.push(w.tempMax < 0 ? '#0A84FF' : '#32D74B'); // #32D74B - цвет березы 2023
+                        if (w.precip > maxPrecip) maxPrecip = w.precip;
+                    } else {
+                        temp2023.push(null);
+                        precip2023.push(null);
+                        colorsTemp2023.push('#32D74B');
+                    }
+                });
+
+                weatherArchiveChartInst.data.labels = newLabels;
+                weatherArchiveChartInst.data.datasets[0].data = precip2023; // Осадки
+                weatherArchiveChartInst.data.datasets[1].data = temp2023;   // Температура
+                weatherArchiveChartInst.data.datasets[1].backgroundColor = colorsTemp2023;
+
+                // Настраиваем шкалу осадков, чтобы столбцы занимали только нижнюю треть
+                if (maxPrecip < 1) maxPrecip = 1;
+                weatherArchiveChartInst.options.scales.yPrecip.max = maxPrecip * 3;
+
+                weatherArchiveChartInst.update();
+            }
+
+            lucide.createIcons(); // Для кнопок навигации
         }
 
+        // Кастомная Flex-легенда для Архива
         function generateArchiveLegend(chart) {
             const container = document.getElementById('archive-custom-legend');
-            if (!container || !chart) return; container.innerHTML = '';
+            if (!container || !chart) return;
+            container.innerHTML = '';
+            
             const groups = {};
-            chart.data.datasets.forEach((ds, i) => { const b = ds.label.split(' ')[0]; if (!groups[b]) groups[b] = []; groups[b].push({ ds, i }); });
-            const order = ['Береза','Ольха','Орешник','Дуб'];
-            Object.entries(groups).sort((a,b) => (order.indexOf(a[0])===-1?99:order.indexOf(a[0])) - (order.indexOf(b[0])===-1?99:order.indexOf(b[0]))).forEach(([name, items]) => {
-                const group = document.createElement('div'); group.className = 'legend-group';
-                const title = document.createElement('div'); title.className = 'legend-group-title'; title.innerText = name; group.appendChild(title);
-                items.forEach(item => {
-                    const div = document.createElement('div'); div.className = 'legend-item' + (chart.isDatasetVisible(item.i)?'':' hidden-dataset');
-                    div.innerHTML = `<div class="legend-color-box" style="background:${item.ds.backgroundColor}"></div><span>${item.ds.label.match(/\((\d{4})\)/)?item.ds.label.match(/\((\d{4})\)/)[1]+' год':item.ds.label}</span>`;
-                    div.onclick = () => { const v = chart.isDatasetVisible(item.i); chart.setDatasetVisibility(item.i, !v); chart.update(); div.classList.toggle('hidden-dataset', v); };
-                    group.appendChild(div);
-                });
-                container.appendChild(group);
+            chart.data.datasets.forEach((dataset, index) => {
+                let baseName = dataset.label.split(' ')[0];
+                if (!groups[baseName]) groups[baseName] = [];
+                groups[baseName].push({ dataset, index });
             });
+
+            const order = ['Береза', 'Ольха', 'Орешник', 'Дуб'];
+            const sortedGroups = Object.entries(groups).sort((a, b) => {
+                let idxA = order.indexOf(a[0]);
+                let idxB = order.indexOf(b[0]);
+                if (idxA === -1) idxA = 99;
+                if (idxB === -1) idxB = 99;
+                return idxA - idxB;
+            });
+
+            for (const [baseName, items] of sortedGroups) {
+                const groupDiv = document.createElement('div');
+                groupDiv.className = 'legend-group';
+                
+                const title = document.createElement('div');
+                title.className = 'legend-group-title';
+                title.innerText = baseName;
+                groupDiv.appendChild(title);
+                
+                items.sort((a, b) => a.dataset.label.localeCompare(b.dataset.label));
+
+                items.forEach(item => {
+                    const itemDiv = document.createElement('div');
+                    itemDiv.className = 'legend-item';
+                    
+                    if (!chart.isDatasetVisible(item.index)) {
+                        itemDiv.classList.add('hidden-dataset');
+                    }
+                    
+                    const colorBox = document.createElement('div');
+                    colorBox.className = 'legend-color-box';
+                    colorBox.style.backgroundColor = item.dataset.backgroundColor;
+                    
+                    const text = document.createElement('span');
+                    const match = item.dataset.label.match(/\((\d{4})\)/);
+                    text.innerText = match ? match[1] + ' год' : item.dataset.label;
+                    
+                    itemDiv.appendChild(colorBox);
+                    itemDiv.appendChild(text);
+                    
+                    itemDiv.onclick = () => {
+                        const isVisible = chart.isDatasetVisible(item.index);
+                        chart.setDatasetVisibility(item.index, !isVisible);
+                        chart.update();
+                        itemDiv.classList.toggle('hidden-dataset', isVisible);
+
+                        // Синхронизация с погодным графиком
+                        if (match) {
+                            const year = match[1];
+                            let yearVisible = false;
+                            chart.data.datasets.forEach((ds, idx) => {
+                                if (ds.label.includes(year) && chart.isDatasetVisible(idx)) {
+                                    yearVisible = true;
+                                }
+                            });
+                            syncWeatherVisibility(year, yearVisible);
+                        }
+                    };
+                    
+                    groupDiv.appendChild(itemDiv);
+                });
+                
+                container.appendChild(groupDiv);
+            }
+        }
+
+        // Логика добавления новых данных
+        const VALIDATION_LIMITS = {
+            "birch": { "amber": 15000 },
+            "alder": { "amber": 500 },
+            "oak":   { "amber": 1000 },
+            "hazel": { "amber": 500 }
+        };
+
+        const SEASONALITY = {
+            "alder": [3, 4],     
+            "hazel": [3, 4],     
+            "birch": [4, 5],     
+            "oak":   [5, 6]      
+        };
+
+        function generateInputGroupHTML(item) {
+            const nameStr = `'${item.id}'`; 
+            
+            return `
+            <div class="allergen-input-group" id="group-${item.id}">
+                <div class="allergen-input-header">
+                    <span style="font-size: 14px; color: var(--text-secondary);">${item.name} (ед/м³)</span>
+                    <span class="prev-value-badge" id="prev-badge-${item.id}" onclick="usePrevValue(${nameStr})">Было: —</span>
+                </div>
+                <div class="input-wrapper">
+                    <input type="number" id="input-${item.id}" class="data-input" placeholder="—" inputmode="numeric" oninput="validateInput(${nameStr})">
+                    <i data-lucide="alert-triangle" class="warning-icon"></i>
+                </div>
+                <div class="amber-alert-text" id="alert-text-${item.id}">Значение значительно выше нормы или в 10 раз превышает прошлый замер. Проверьте опечатку.</div>
+            </div>`;
         }
 
         function handleDateChange() {
-            const date = document.getElementById('input-date').value; if (!date) return;
-            const w = historicalTemps[date], tempEl = document.getElementById('modal-temp');
-            if (w) { tempEl.innerHTML = `<span style="color:var(--safe)">${w.temp}</span>${w.hasPrecip?'<i data-lucide="droplet" size="12" style="color:var(--accent);margin-left:6px"></i>':''}${w.wind>0?'<i data-lucide="wind" size="12" style="color:var(--text-secondary);margin-left:6px"></i><span style="font-size:11px;color:var(--text-secondary)">'+w.wind+' м/с</span>':''}`; lucide.createIcons({root:tempEl.parentNode}); }
-            else tempEl.innerText = "Нет данных";
-            const label = dateToLabel(date), idx = db.charts.today.labels.indexOf(label);
-            db.today.allergens.forEach(a => {
-                const ds = db.charts.today.datasets.find(d => d.label === a.name), input = document.getElementById(`input-${a.id}`), badge = document.getElementById(`prev-badge-${a.id}`);
-                let prev = null; if (ds) { for(let i=0; i<db.charts.today.labels.length; i++) { if(new Date(labelToDateStr(db.charts.today.labels[i])) < new Date(date) && ds.data[i]!==null) prev = ds.data[i]; } }
-                if (badge) badge.innerText = `Было: ${prev!==null?prev:'—'}`;
-                if (input) { input.setAttribute('data-prev', prev!==null?prev:''); input.value = (idx!==-1 && ds && ds.data[idx]!==null) ? ds.data[idx] : ''; input.disabled = false; input.classList.remove('amber-border'); }
+            const dateInput = document.getElementById('input-date').value; 
+            if (!dateInput) return;
+
+            // 1. Отрисовка умной погоды с иконками
+            const tempEl = document.getElementById('modal-temp');
+            const wData = historicalTemps[dateInput];
+            if (wData) {
+                let html = `<span style="color: var(--safe);">${wData.temp}</span>`;
+                if (wData.hasPrecip) html += `<i data-lucide="droplet" size="12" style="color: var(--accent); margin-left: 6px;"></i>`;
+                if (wData.wind > 0) html += `<i data-lucide="wind" size="12" style="color: var(--text-secondary); margin-left: 6px;"></i><span style="font-size:11px; font-weight:normal; color:var(--text-secondary); margin-left: 2px;">${wData.wind} м/с</span>`;
+                tempEl.innerHTML = html;
+                lucide.createIcons({root: tempEl.parentNode});
+            } else {
+                tempEl.innerText = "Нет данных";
+            }
+
+            const targetLabel = dateToLabel(dateInput); 
+            const labelIdx = db.charts.today.labels.indexOf(targetLabel);
+            
+            const selectedDateObj = new Date(dateInput);
+
+            const deleteBtn = document.getElementById('delete-data-btn');
+            let allNull = true;
+
+            db.today.allergens.forEach(item => {
+                const dataset = db.charts.today.datasets.find(d => d.label === item.name);
+                const input = document.getElementById(`input-${item.id}`);
+                const prevBadge = document.getElementById(`prev-badge-${item.id}`);
+                
+                // Найти последнее известное (не пустое) значение строго ДО выбранной даты
+                let prevVal = null;
+                if (dataset) {
+                    let latestDate = new Date(0);
+                    for (let i = 0; i < db.charts.today.labels.length; i++) {
+                        const lDateObj = new Date(labelToDateStr(db.charts.today.labels[i]));
+                        if (lDateObj < selectedDateObj && dataset.data[i] !== null && dataset.data[i] !== undefined) {
+                            if (lDateObj > latestDate) {
+                                latestDate = lDateObj;
+                                prevVal = dataset.data[i];
+                            }
+                        }
+                    }
+                }
+                
+                if (prevBadge) {
+                    prevBadge.innerText = `Было: ${prevVal !== null && prevVal !== undefined ? prevVal : '—'}`;
+                }
+
+                if (input) {
+                    // Сохраняем prevVal в data-атрибут для валидации и заполнения по клику
+                    input.setAttribute('data-prev', prevVal !== null && prevVal !== undefined ? prevVal : '');
+                    
+                    if (labelIdx !== -1 && dataset) {
+                        const val = dataset.data[labelIdx];
+                        if (val !== null && val !== undefined) {
+                            input.value = val;
+                            allNull = false;
+                        } else {
+                            input.value = '';
+                        }
+                    } else {
+                        input.value = '';
+                    }
+                    
+                    input.disabled = false;
+                    input.classList.remove('amber-border');
+                    const alertText = document.getElementById(`alert-text-${item.id}`);
+                    if (alertText) alertText.style.display = 'none';
+                }
             });
-            const delBtn = document.getElementById('delete-data-btn'); delBtn.style.display = idx!==-1?'block':'none';
+
+            if (labelIdx !== -1) {
+                deleteBtn.style.display = 'block';
+                const globalToggle = document.getElementById('global-no-data-toggle');
+                if (globalToggle) {
+                    globalToggle.checked = allNull;
+                    if (allNull) toggleAllMeasurements(true);
+                }
+            } else {
+                const globalToggle = document.getElementById('global-no-data-toggle');
+                if (globalToggle) globalToggle.checked = false;
+                deleteBtn.style.display = 'none';
+            }
+            
             checkSaveBtnState();
         }
 
-        function openAddDataModal(label=null) {
-            const active = document.getElementById('active-allergens-container'), arch = document.getElementById('archive-allergens-container');
-            active.innerHTML = ''; arch.innerHTML = '';
-            const currentMonth = new Date().getMonth()+1; let archCount = 0;
-            db.today.allergens.forEach(a => {
-                const html = generateInputGroupHTML(a);
-                if (SEASONALITY[a.id].includes(currentMonth) || a.value>0) active.innerHTML += html;
-                else { arch.innerHTML += html; archCount++; }
+        function openAddDataModal(label = null) {
+            const activeContainer = document.getElementById('active-allergens-container');
+            const archiveContainer = document.getElementById('archive-allergens-container');
+            activeContainer.innerHTML = '';
+            archiveContainer.innerHTML = '';
+
+            const currentMonth = new Date().getMonth() + 1; 
+            let archiveCount = 0;
+            
+            db.today.allergens.forEach(item => {
+                const isActiveSeason = SEASONALITY[item.id] && SEASONALITY[item.id].includes(currentMonth);
+                const isRecentlyActive = item.value > 0; 
+                
+                const html = generateInputGroupHTML(item);
+                if (isActiveSeason || isRecentlyActive) {
+                    activeContainer.innerHTML += html;
+                } else {
+                    archiveContainer.innerHTML += html;
+                    archiveCount++;
+                }
             });
-            document.getElementById('accordion-title').innerText = `Остальные (вне сезона) (${archCount})`;
-            const dateInput = document.getElementById('input-date');
-            if (label) dateInput.value = labelToDateStr(label);
-            else { const d = new Date(); dateInput.value = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
-            handleDateChange();
-            const overlay = document.getElementById('add-data-overlay'); overlay.style.display = 'flex'; setTimeout(()=>overlay.classList.remove('hidden'),10);
+            
+            const accordionTitle = document.getElementById('accordion-title');
+            if (accordionTitle) accordionTitle.innerText = `Остальные (вне сезона) (${archiveCount})`;
+
             lucide.createIcons();
+            
+            const dateInput = document.getElementById('input-date');
+            if (label && typeof label === 'string') {
+                dateInput.value = labelToDateStr(label);
+            } else {
+                const today = new Date();
+                const yyyy = today.getFullYear();
+                const mm = String(today.getMonth() + 1).padStart(2, '0');
+                const dd = String(today.getDate()).padStart(2, '0');
+                dateInput.value = `${yyyy}-${mm}-${dd}`;
+            }
+
+            handleDateChange();
+            
+            const overlay = document.getElementById('add-data-overlay');
+            overlay.style.display = 'flex';
+            setTimeout(() => overlay.classList.remove('hidden'), 10);
         }
 
-        function closeAddDataModal() { const o = document.getElementById('add-data-overlay'); o.classList.add('hidden'); setTimeout(()=>o.style.display='none',400); }
-        function toggleAccordion() { const c = document.getElementById('archive-allergens-container'), i = document.getElementById('accordion-icon'); c.classList.toggle('open'); i.style.transform = c.classList.contains('open')?'rotate(180deg)':'rotate(0deg)'; }
-        function usePrevValue(id) { const i = document.getElementById(`input-${id}`), p = i.getAttribute('data-prev'); if (!i.disabled) { i.value = p!==''?p:''; validateInput(id); } }
+        function closeAddDataModal() {
+            const overlay = document.getElementById('add-data-overlay');
+            overlay.classList.add('hidden');
+            setTimeout(() => overlay.style.display = 'none', 400);
+        }
+
+        function toggleAccordion() {
+            const content = document.getElementById('archive-allergens-container');
+            const icon = document.getElementById('accordion-icon');
+            content.classList.toggle('open');
+            
+            if (content.classList.contains('open')) {
+                icon.style.transform = 'rotate(180deg)';
+            } else {
+                icon.style.transform = 'rotate(0deg)';
+            }
+        }
+
+        function usePrevValue(id) {
+            const input = document.getElementById(`input-${id}`);
+            if (input.disabled) return;
+            const prevVal = input.getAttribute('data-prev');
+            // Если предыдущего значения нет (оно было пустым/null), оставляем инпут пустым, чтобы был прочерк
+            if (prevVal !== null && prevVal !== '') {
+                input.value = prevVal;
+            } else {
+                input.value = '';
+            }
+            validateInput(id);
+        }
+
         function validateInput(id) {
-            const i = document.getElementById(`input-${id}`), a = document.getElementById(`alert-text-${id}`), val = i.value!==''?parseInt(i.value):null, prev = i.getAttribute('data-prev')!==''?parseInt(i.getAttribute('data-prev')):null;
-            let amber = false; if (val!==null) { if (val >= (VALIDATION_LIMITS[id]?.amber || 5000)) amber = true; if (prev!==null && prev>0 && val>=prev*10 && val>20) amber = true; }
-            i.classList.toggle('amber-border', amber); a.style.display = amber?'block':'none';
+            const input = document.getElementById(`input-${id}`);
+            const alertText = document.getElementById(`alert-text-${id}`);
+            const val = input.value !== '' ? parseInt(input.value) : null;
+            
+            const prevValAttr = input.getAttribute('data-prev');
+            const prevValue = prevValAttr !== '' ? parseInt(prevValAttr) : null;
+            
+            let isAmber = false;
+            if (val !== null) {
+                const limit = VALIDATION_LIMITS[id] ? VALIDATION_LIMITS[id].amber : 5000;
+                
+                if (val >= limit) isAmber = true;
+                if (prevValue !== null && prevValue > 0 && val >= prevValue * 10 && val > 20) isAmber = true;
+            }
+
+            if (isAmber) {
+                input.classList.add('amber-border');
+                alertText.style.display = 'block';
+            } else {
+                input.classList.remove('amber-border');
+                alertText.style.display = 'none';
+            }
+            
             checkSaveBtnState();
         }
-        function toggleAllMeasurements(no) { db.today.allergens.forEach(a => { const i = document.getElementById(`input-${a.id}`); if(i){ i.disabled=no; if(no){ i.value=''; i.classList.remove('amber-border'); document.getElementById(`alert-text-${a.id}`).style.display='none'; } } }); checkSaveBtnState(); }
+
+        function toggleAllMeasurements(isNoData) {
+            db.today.allergens.forEach(item => {
+                const input = document.getElementById(`input-${item.id}`);
+                if (input) {
+                    input.disabled = isNoData;
+                    if (isNoData) {
+                        input.value = '';
+                        input.classList.remove('amber-border');
+                        const alertText = document.getElementById(`alert-text-${item.id}`);
+                        if (alertText) alertText.style.display = 'none';
+                    }
+                }
+            });
+            checkSaveBtnState();
+        }
+
         function checkSaveBtnState() {
-            const no = document.getElementById('global-no-data-toggle').checked;
-            let any = false; db.today.allergens.forEach(a => { if(document.getElementById(`input-${a.id}`)?.value!=='') any=true; });
-            document.getElementById('save-data-btn').disabled = !(any || no);
+            const btn = document.getElementById('save-data-btn');
+            const isGlobalNoData = document.getElementById('global-no-data-toggle').checked;
+            
+            let hasAnyValue = false;
+            db.today.allergens.forEach(item => {
+                const input = document.getElementById(`input-${item.id}`);
+                if (input && input.value !== '') hasAnyValue = true;
+            });
+
+            btn.disabled = !(hasAnyValue || isGlobalNoData);
         }
 
         function deleteData() {
-            const date = document.getElementById('input-date').value, label = dateToLabel(date), idx = db.charts.today.labels.indexOf(label);
-            if (idx !== -1) {
-                db.charts.today.labels.splice(idx, 1);
-                db.charts.today.datasets.forEach(d => d.data.splice(idx, 1));
-                const lastIdx = db.charts.today.labels.length-1;
-                if (lastIdx >= 0) {
+            const dateInput = document.getElementById('input-date').value;
+            const targetLabel = dateToLabel(dateInput);
+            const labelIdx = db.charts.today.labels.indexOf(targetLabel);
+            
+            if (labelIdx !== -1) {
+                db.charts.today.labels.splice(labelIdx, 1);
+                db.charts.today.datasets.forEach(d => {
+                    d.data.splice(labelIdx, 1);
+                });
+                
+                const newLatestIdx = db.charts.today.labels.length - 1;
+                if (newLatestIdx >= 0) {
                     let maxVal = -1;
-                    db.today.allergens.forEach(a => {
-                        const ds = db.charts.today.datasets.find(d => d.label === a.name), val = ds?.data[lastIdx];
-                        a.value = val;
-                        if(val!==null) { a.level = val>=100?'critical':val>=50?'high':val>=10?'warning':'safe'; if(val>maxVal) maxVal=val; }
+                    db.today.allergens.forEach(item => {
+                        const dataset = db.charts.today.datasets.find(d => d.label === item.name);
+                        const val = dataset ? dataset.data[newLatestIdx] : null;
+                        item.value = val;
+                        if (val !== null) {
+                            if (val >= 100) item.level = 'critical';
+                            else if (val >= 50) item.level = 'high';
+                            else if (val >= 10) item.level = 'warning';
+                            else item.level = 'safe';
+                            if (val > maxVal) maxVal = val;
+                        }
                     });
+                    
                     db.today.hasDataToday = maxVal !== -1;
-                    db.today.overallRisk = maxVal>=100?'critical':maxVal>=50?'high':maxVal>=10?'warning':'safe';
-                } else db.today.hasDataToday = false;
-                renderTodayData(); initCharts();
+                    if (maxVal >= 100) db.today.overallRisk = 'critical';
+                    else if (maxVal >= 50) db.today.overallRisk = 'high';
+                    else if (maxVal >= 10) db.today.overallRisk = 'warning';
+                    else db.today.overallRisk = 'safe';
+                } else {
+                    db.today.hasDataToday = false;
+                }
+                
+                renderTodayData();
+                initCharts();
             }
             closeAddDataModal();
         }
 
         function commitSave() {
-            const no = document.getElementById('global-no-data-toggle').checked, date = document.getElementById('input-date').value, label = dateToLabel(date);
-            let idx = db.charts.today.labels.indexOf(label);
-            if (idx === -1) {
-                db.charts.today.labels.push(label); db.charts.today.datasets.forEach(d => d.data.push(null));
-                const sorted = db.charts.today.labels.map((l, i) => i).sort((a, b) => new Date(labelToDateStr(db.charts.today.labels[a])) - new Date(labelToDateStr(db.charts.today.labels[b])));
-                db.charts.today.labels = sorted.map(i => db.charts.today.labels[i]);
-                db.charts.today.datasets.forEach(d => d.data = sorted.map(i => d.data[i]));
-                idx = db.charts.today.labels.indexOf(label);
+            const isGlobalNoData = document.getElementById('global-no-data-toggle').checked;
+            const dateInput = document.getElementById('input-date').value;
+            const targetLabel = dateToLabel(dateInput);
+            
+            let labelIdx = db.charts.today.labels.indexOf(targetLabel);
+            const isNewDate = labelIdx === -1;
+
+            if (isNewDate) {
+                db.charts.today.labels.push(targetLabel);
+                db.charts.today.datasets.forEach(d => d.data.push(null));
+                
+                const indices = db.charts.today.labels.map((l, i) => i);
+                indices.sort((a, b) => new Date(labelToDateStr(db.charts.today.labels[a])) - new Date(labelToDateStr(db.charts.today.labels[b])));
+                
+                db.charts.today.labels = indices.map(i => db.charts.today.labels[i]);
+                db.charts.today.datasets.forEach(d => {
+                    d.data = indices.map(i => d.data[i]);
+                });
+                
+                labelIdx = db.charts.today.labels.indexOf(targetLabel);
             }
-            let maxVal = -1; const last = idx === db.charts.today.labels.length - 1;
-            db.today.allergens.forEach(a => {
-                const input = document.getElementById(`input-${a.id}`), ds = db.charts.today.datasets.find(d => d.label === a.name);
-                let val = (!no && input?.value !== '') ? parseInt(input.value) : null;
-                if (ds) ds.data[idx] = val;
-                if (last) {
-                    a.value = val;
-                    if (val !== null) { a.level = val>=100?'critical':val>=50?'high':val>=10?'warning':'safe'; if(val>maxVal) maxVal=val; }
+
+            let maxVal = -1; 
+            const isLatestDate = labelIdx === db.charts.today.labels.length - 1;
+
+            db.today.allergens.forEach(item => {
+                const input = document.getElementById(`input-${item.id}`);
+                if (!input) return;
+
+                let finalVal = null;
+                // Пустая строка (placeholder —) будет сохранена как null
+                if (!isGlobalNoData && input.value !== '') {
+                    finalVal = parseInt(input.value);
+                }
+
+                const dataset = db.charts.today.datasets.find(d => d.label === item.name);
+                if (dataset) {
+                    dataset.data[labelIdx] = finalVal;
+                }
+
+                if (isLatestDate) {
+                    let finalLevel = 'safe';
+                    if (finalVal !== null) {
+                        if (finalVal >= 100) finalLevel = 'critical';
+                        else if (finalVal >= 50) finalLevel = 'high';
+                        else if (finalVal >= 10) finalLevel = 'warning';
+                        else finalLevel = 'safe';
+                        
+                        if (finalVal > maxVal) maxVal = finalVal;
+                    }
+                    item.value = finalVal;
+                    if (finalVal !== null) item.level = finalLevel;
                 }
             });
-            if (last) {
-                if (maxVal === -1) { db.today.hasDataToday = false; db.today.overallRisk = 'safe'; }
-                else { db.today.hasDataToday = true; db.today.overallRisk = maxVal>=100?'critical':maxVal>=50?'high':maxVal>=10?'warning':'safe'; }
+
+            if (isLatestDate) {
+                if (maxVal === -1) {
+                    db.today.hasDataToday = false;
+                    db.today.overallRisk = 'safe';
+                } else {
+                    db.today.hasDataToday = true;
+                    if (maxVal >= 100) db.today.overallRisk = 'critical';
+                    else if (maxVal >= 50) db.today.overallRisk = 'high';
+                    else if (maxVal >= 10) db.today.overallRisk = 'warning';
+                    else db.today.overallRisk = 'safe';
+                }
                 renderTodayData();
             }
-            if (date) { const d = new Date(date); db.metadata.lastUpdated = d.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' }).replace(' г.', ''); updateDate(); }
-            initCharts(); lucide.createIcons(); closeAddDataModal();
+
+            if (dateInput) {
+                const dateObj = new Date(dateInput);
+                const opts = { day: 'numeric', month: 'long', year: 'numeric' };
+                db.metadata.lastUpdated = dateObj.toLocaleDateString('ru-RU', opts).replace(' г.', '');
+                updateDate();
+            }
+
+            initCharts();
+            lucide.createIcons();
+            
+            closeAddDataModal();
         }
     </script>
 </body>
